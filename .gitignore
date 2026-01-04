@@ -1,4 +1,4 @@
-.agent/*
+.agent/
 node_modules/
 .next/
 out/

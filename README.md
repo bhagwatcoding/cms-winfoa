@@ -1,35 +1,89 @@
-# N.S.D. Education Portal
+# 🎓 N.S.D. Education Portal
 
-## 🎓 Enterprise-Level Education Management System
-
-A modern, full-stack educational branch management system built with Next.js 16, MongoDB, and the latest UI/UX principles.
+A modern, full-stack education management system built with Next.js 16, MongoDB, and TypeScript. Features a complete authentication system, student/employee management, course administration, and result tracking.
 
 ---
 
 ## ✨ Features
 
-### 🏢 **Core Functionality**
-- **Student Management** - Complete CRUD operations for student records
-- **Admission System** - Streamlined student registration with form validation
-- **Course Management** - Dynamic course catalog with pricing and duration
-- **Wallet System** - Integrated payment and recharge functionality
-- **Transaction History** - Complete financial tracking with credits/debits
+### 🔐 Authentication System
+- **Session-based Authentication** - Secure cookie-based sessions
+- **User Registration** - New user signup with validation
+- **Login System** - Email/password authentication
+- **Password Reset** - Token-based password recovery
+- **Route Protection** - Middleware-based access control
+- **Multi-tenant Support** - Subdomain routing for centers
 
-### 🎨 **Premium UI/UX**
-- **Modern Design** - Clean, professional interface inspired by latest design trends
-- **Glassmorphism Effects** - Semi-transparent headers with backdrop blur
-- **Smooth Animations** - Micro-interactions on buttons and cards (hover scale effects)
-- **Responsive Layout** - Mobile-first design that works on all devices
-- **Custom Scrollbars** - Styled scrollbars for enhanced visual appeal
-- **Color-Coded Cards** - Vibrant dashboard cards matching your reference design
+### 👥 User Management
+- **Multiple User Roles** - Admin, Staff, Student
+- **User Profiles** - Complete user information management
+- **Status Management** - Active, Inactive, On-leave
 
-### 🔧 **Enterprise Architecture**
-- **Type Safety** - Full TypeScript implementation across the stack
-- **Server Actions** - Next.js 14+ Server Actions for data mutations
-- **Database Layer** - Mongoose models with proper schemas and validations
-- **Modular Structure** - Well-organized folder hierarchy
-- **Reusable Components** - Shadcn-inspired UI component library
-- **Constants Management** - Centralized configuration and routes
+### 🎓 Academic Features
+- **Student Management** - Complete student records
+- **Course Catalog** - Course creation and management
+- **Result Tracking** - Exam results with grades
+- **Employee Management** - Staff and teacher records
+- **Center Management** - Multi-center support
+
+### 🎨 Modern UI/UX
+- **Glassmorphism Design** - Modern, premium aesthetics
+- **Responsive Layout** - Mobile-first design
+- **Smooth Animations** - Engaging user experience
+- **Gradient Colors** - Beautiful color schemes
+- **Accessible Components** - WCAG compliant
+
+---
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 20 or higher
+- MongoDB (local or Atlas)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone <your-repo-url>
+cd education
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Set up environment variables**
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+```env
+MONGODB_URI=mongodb://localhost:27017/education-portal
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NEXT_PUBLIC_ROOT_DOMAIN=localhost:3000
+```
+
+4. **Start MongoDB**
+```bash
+# If using local MongoDB
+mongod
+
+# Or use MongoDB Atlas (cloud)
+```
+
+5. **Run development server**
+```bash
+npm run dev
+```
+
+6. **Open your browser**
+```
+http://localhost:3000
+```
 
 ---
 
@@ -38,314 +92,370 @@ A modern, full-stack educational branch management system built with Next.js 16,
 ```
 education/
 ├── src/
-│   ├── app/                          # Next.js App Router
-│   │   ├── admission/                # Student admission form
-│   │   ├── admit-card/               # Admit card generation
-│   │   ├── api/
-│   │   │   └── seed/                 # Database seeding endpoint
-│   │   ├── certificate/              # Branch certificates
-│   │   ├── change-password/          # Password management
-│   │   ├── courses/                  # Course management
-│   │   ├── downloads/                # Document downloads
-│   │   ├── employees/                # Employee management
-│   │   ├── notifications/            # Notification center
-│   │   ├── offers/                   # Monthly offers
-│   │   ├── results/                  # Exam results
-│   │   ├── students/                 # Student dashboard
-│   │   ├── support/                  # Contact support
-│   │   ├── terms/                    # Terms & conditions
-│   │   ├── wallet/
-│   │   │   ├── recharge/             # Wallet recharge
-│   │   │   └── transactions/         # Transaction history
-│   │   ├── layout.tsx                # Root layout with sidebar/header
-│   │   ├── page.tsx                  # Dashboard homepage
-│   │   └── globals.css               # Global styles
+│   ├── app/                      # Next.js app directory
+│   │   ├── (auth)/              # Authentication pages
+│   │   │   ├── login/
+│   │   │   ├── signup/
+│   │   │   ├── forgot-password/
+│   │   │   └── reset-password/
+│   │   ├── api/                 # API routes
+│   │   │   ├── auth/            # Auth endpoints
+│   │   │   └── center/          # Protected APIs
+│   │   ├── center/              # Protected center area
+│   │   └── layout.tsx           # Root layout
 │   │
-│   ├── components/
-│   │   ├── dashboard/
-│   │   │   └── dashboard-card.tsx    # Reusable dashboard card
-│   │   ├── layout/
-│   │   │   ├── header.tsx            # App header
-│   │   │   └── sidebar.tsx           # Navigation sidebar
-│   │   └── ui/                       # UI component library
-│   │       ├── button.tsx
-│   │       ├── card.tsx
-│   │       ├── input.tsx
-│   │       └── label.tsx
+│   ├── actions/                 # Server actions
+│   │   ├── auth.ts             # Login/Register actions
+│   │   └── password-reset.ts   # Password reset actions
 │   │
-│   └── lib/
-│       ├── actions/                  # Server Actions
-│       │   ├── center.ts             # Center management
-│       │   ├── courses.ts            # Course CRUD
-│       │   └── students.ts           # Student CRUD
-│       ├── constants/
-│       │   └── index.ts              # App constants and routes
-│       ├── models/                   # Mongoose schemas
-│       │   ├── Center.ts
-│       │   ├── Course.ts
-│       │   ├── Student.ts
-│       │   └── User.ts
-│       ├── types/
-│       │   └── index.ts              # TypeScript interfaces
-│       ├── db.ts                     # MongoDB connection
-│       ├── seed.ts                   # Database seeder
-│       └── utils.ts                  # Utility functions
+│   ├── components/              # React components
+│   │   ├── auth/               # Auth components
+│   │   ├── center/             # Center-specific components
+│   │   └── ui/                 # Reusable UI components
+│   │
+│   ├── lib/                     # Utilities and configs
+│   │   ├── auth.ts             # Auth utilities
+│   │   ├── db.ts               # Database connection
+│   │   ├── contexts/           # React contexts
+│   │   ├── helpers/            # Helper functions
+│   │   ├── models/             # Mongoose models
+│   │   └── utils.ts            # Utility functions
+│   │
+│   └── middleware.ts            # Route middleware
 │
-├── public/                           # Static assets
-├── .gitignore
-├── next.config.ts
-├── package.json
-├── postcss.config.js
-├── tailwind.config.ts
-└── tsconfig.json
+├── public/                      # Static files
+├── .env.local                   # Environment variables
+├── AUTHENTICATION.md            # Auth documentation
+├── FIXES_AND_IMPROVEMENTS.md   # Changes log
+└── README.md                    # This file
 ```
 
 ---
 
-## 🚀 Getting Started
+## 🗄️ Database Models
 
-### Prerequisites
-- Node.js 18+ installed
-- MongoDB running locally or connection string
-- Git (optional)
+### User Model
+- Name, email, password (hashed)
+- Role: admin, staff, student
+- Status: active, inactive, on-leave
+- Center association
 
-### Installation
+### Session Model
+- User reference
+- Token (secure random)
+- Expiration (7 days)
+- User agent, IP tracking
 
-1. **Install Dependencies**
-```bash
-npm install
-```
+### Student Model
+- Personal information
+- Course enrollment
+- Admission details
+- Profile image
 
-2. **Configure Environment**
-Create a `.env.local` file (optional, defaults to local MongoDB):
-```env
-MONGODB_URI=mongodb://localhost:27017/education
-NODE_ENV=development
-```
+### Employee Model
+- Staff information
+- Role and designation
+- Department and salary
+- Employment details
 
-3. **Seed Database** (Optional)
-Visit http://localhost:3000/api/seed after starting the server to populate sample data.
+### Course Model
+- Course name and code
+- Duration and fees
+- Course details
 
-4. **Run Development Server**
-```bash
-npm run dev
-```
+### Result Model
+- Student and course reference
+- Marks and grades
+- Exam date
+- Pass/fail status
 
-5. **Build for Production**
-```bash
-npm run build
-npm start
-```
+### Center Model
+- Center information
+- Multi-tenant support
 
-The application will be available at **http://localhost:3000**
-
----
-
-## 🎨 Design System
-
-### Color Palette
-- **Primary**: Blue (#005c8a for sidebar, #3b82f6 for accents)
-- **Success**: Green (#10b981)
-- **Warning**: Yellow (#eab308)
-- **Danger**: Red (#ef4444)
-- **Neutral**: Slate grays
-
-### Typography
-- **Font Family**: System UI stack (optimized for performance)
-- **Headings**: Bold, larger sizes for hierarchy
-- **Body**: Regular weight, 14px base
-
-### Components
-All UI components follow a consistent design language:
-- Rounded corners (8-16px)
-- Subtle shadows for depth
-- Hover states with scale animations
-- Focus rings for accessibility
+### PasswordResetToken Model
+- Email reference
+- Secure token
+- 1-hour expiration
 
 ---
 
-## 💾 Database Models
+## 🔑 API Endpoints
 
-### Center
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/logout` - User logout
+- `GET /api/auth/me` - Get current user
+
+### Students
+- `GET /api/center/students` - List students
+- `POST /api/center/students` - Create student
+- `GET /api/center/students/[id]` - Get student
+- `PATCH /api/center/students/[id]` - Update student
+- `DELETE /api/center/students/[id]` - Delete student
+- `GET /api/center/students/stats` - Statistics
+
+### Employees
+- `GET /api/center/employees` - List employees
+- `POST /api/center/employees` - Create employee
+- `GET /api/center/employees/[id]` - Get employee
+- `PATCH /api/center/employees/[id]` - Update employee
+- `DELETE /api/center/employees/[id]` - Delete employee
+- `GET /api/center/employees/stats` - Statistics
+
+### Courses
+- `GET /api/center/courses` - List courses
+- `POST /api/center/courses` - Create course
+- `GET /api/center/courses/[id]` - Get course
+- `PATCH /api/center/courses/[id]` - Update course
+- `DELETE /api/center/courses/[id]` - Delete course
+
+### Results
+- `GET /api/center/results` - List results
+- `POST /api/center/results` - Create result
+- `GET /api/center/results/[id]` - Get result
+- `PATCH /api/center/results/[id]` - Update result
+- `DELETE /api/center/results/[id]` - Delete result
+- `GET /api/center/results/stats` - Statistics
+
+---
+
+## 🎯 Usage Examples
+
+### Using Auth Context (Client-Side)
+
 ```typescript
-{
-  name: string;
-  code: string; // e.g., "BR-141"
-  address: string;
-  contact: string;
-  walletBalance: number;
+'use client';
+
+import { useAuth } from '@/lib/contexts/auth-context';
+import { LogoutButton } from '@/components/auth/logout-button';
+import { UserProfile } from '@/components/auth/user-profile';
+
+export function MyComponent() {
+  const { user, authenticated, loading } = useAuth();
+
+  if (loading) return <div>Loading...</div>;
+  if (!authenticated) return <div>Please login</div>;
+
+  return (
+    <div>
+      <UserProfile />
+      <p>Welcome, {user?.name}!</p>
+      <LogoutButton />
+    </div>
+  );
 }
 ```
 
-### Student
+### Server Actions
+
 ```typescript
-{
-  name: string;
-  fatherName: string;
-  motherName: string;
-  dob: Date;
-  gender: 'male' | 'female' | 'other';
-  centerId: ObjectId;
-  courseId: ObjectId;
-  admissionDate: Date;
-  status: 'active' | 'completed' | 'dropped';
+// In your component
+'use client';
+
+import { authenticate } from '@/actions/auth';
+import { useActionState } from 'react';
+
+export function LoginForm() {
+  const [state, dispatch] = useActionState(authenticate, {});
+
+  return (
+    <form action={dispatch}>
+      <input name="email" type="email" required />
+      <input name="password" type="password" required />
+      <button type="submit">Login</button>
+      {state?.message && <p>{state.message}</p>}
+    </form>
+  );
 }
 ```
 
-### Course
-```typescript
-{
-  name: string;
-  code: string;
-  duration: string; // e.g., "6 Months"
-  fee: number;
-}
-```
+### Server-Side Auth Check
 
-### User
 ```typescript
-{
-  name: string;
-  email: string;
-  role: 'admin' | 'staff' | 'student';
-  centerId: ObjectId;
-  joinedAt: Date;
+import { getSession, requireAuth } from '@/lib/auth';
+
+// Optional auth
+export async function GET() {
+  const { user } = await getSession();
+  if (!user) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  // ...
+}
+
+// Required auth (throws if not authenticated)
+export async function POST() {
+  const user = await requireAuth();
+  // User is guaranteed to exist
 }
 ```
 
 ---
 
-## 🔌 API Routes
+## 🔒 Security Features
 
-### Seed Database
-**GET** `/api/seed`
-- Initializes the database with sample center and user data
-- Returns: `{ message: "Database seeded successfully" }`
+### Password Security
+- ✅ bcrypt hashing (10 rounds)
+- ✅ Minimum 6 characters
+- ✅ Password field excluded from queries
+- ✅ No plain text storage
 
----
+### Session Security
+- ✅ HttpOnly cookies (XSS protection)
+- ✅ Secure flag in production
+- ✅ SameSite: Lax (CSRF protection)
+- ✅ 7-day expiration
+- ✅ Random 32-byte tokens
 
-## 🎯 Key Features Implemented
-
-### ✅ Dashboard
-- Welcome banner with center information
-- 15 colorful feature cards with navigation
-- Real-time wallet balance display
-- Responsive grid layout
-
-### ✅ Admission Form
-- Complete student registration form
-- Form validation
-- File upload for student photos
-- Course selection dropdown
-
-### ✅ Student Management
-- Statistics cards (Total, Active, Completed, Dropped)
-- Student list with status indicators
-- Sortable and filterable table
-
-### ✅ Course Catalog
-- Card-based course display
-- Course details (name, code, duration, fee)
-- Student enrollment count
-- Edit and view actions
-
-### ✅ Wallet System
-- Recharge interface with quick amount selection
-- Transaction history with credit/debit indicators
-- Balance statistics
-- Payment method information
+### Route Protection
+- ✅ Middleware-based protection
+- ✅ Automatic redirect to login
+- ✅ Session validation
+- ✅ Public path handling
 
 ---
 
-## 🛠️ Technology Stack
+## 🎨 UI Components
 
-- **Framework**: Next.js 16.1.1 (App Router with Turbopack)
+### Authentication Components
+- `LoginForm` - Email/password login
+- `SignupForm` - User registration
+- `ForgotPasswordForm` - Password reset request
+- `ResetPasswordForm` - Password reset with token
+- `LogoutButton` - Logout functionality
+- `UserProfile` - Display user info
+
+### UI Components
+- `Button` - Custom button component
+- `Input` - Form input component
+- `Label` - Form label component
+- `Card` - Card container component
+- `Skeleton` - Loading placeholder
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 16.1.1 (Turbopack)
 - **Language**: TypeScript 5
 - **Database**: MongoDB with Mongoose 9.1.1
+- **Authentication**: Session-based (custom)
+- **Password**: bcryptjs 3.0.3
+- **Validation**: Zod
 - **Styling**: Tailwind CSS 3.4.1
-- **UI Components**: Custom components with class-variance-authority
 - **Icons**: Lucide React
-- **State Management**: React Server Components + Server Actions
+- **UI**: Custom components
 
 ---
 
-## 📝 Development Guidelines
+## 📚 Documentation
 
-### Code Organization
-- **Components**: Use PascalCase for component files
-- **Server Actions**: Prefix with "use server" directive
-- **Types**: Define in `lib/types/index.ts`
-- **Constants**: Centralize in `lib/constants/index.ts`
+- **[AUTHENTICATION.md](./AUTHENTICATION.md)** - Complete auth system docs
+- **[FIXES_AND_IMPROVEMENTS.md](./FIXES_AND_IMPROVEMENTS.md)** - Changelog
+- **Code Comments** - Inline documentation
 
-### Best Practices
-- Always use TypeScript interfaces
-- Implement proper error handling
-- Use Server Actions for data mutations
-- Keep components focused and reusable
-- Follow the DRY principle
+---
 
-### Git Workflow
+## 🚧 Development
+
+### Running Tests
 ```bash
-git add .
-git commit -m "feat: description of changes"
-git push origin main
+npm run test        # Run tests
+npm run test:watch  # Watch mode
+```
+
+### Building for Production
+```bash
+npm run build       # Build production bundle
+npm run start       # Start production server
+```
+
+### Linting
+```bash
+npm run lint        # Run ESLint
 ```
 
 ---
 
-## 🔐 Security
+## 🐛 Troubleshooting
 
-- Environment variables for sensitive data
-- MongoDB connection with proper error handling
-- Input validation on all forms
-- Type-safe API routes
+### MongoDB Connection Issues
+1. Check if MongoDB is running
+2. Verify `MONGODB_URI` in `.env.local`
+3. Check network connectivity
+4. Verify database permissions
 
----
+### Authentication Not Working
+1. Clear browser cookies
+2. Check session expiration
+3. Verify middleware configuration
+4. Check API routes
 
-## 🎓 Sample Data
-
-Default seeded data includes:
-- **Center**: RAMDHARI SINGH DINKAR COMPUTER TRAINING CENTER (BR-141)
-- **Admin**: Purushottam Singh (purushottam@example.com)
-- **Wallet Balance**: ₹107.00
-- **Join Date**: September 23, 2023
-
----
-
-## 📊 Performance
-
-- **Build Time**: ~20 seconds
-- **Server Start**: ~3-6 seconds
-- **TypeScript Compilation**: ~17 seconds
-- **Static Page Generation**: Pre-rendered for optimal performance
+### Build Errors
+1. Delete `.next` folder
+2. Run `npm install`
+3. Clear node_modules: `rm -rf node_modules && npm install`
 
 ---
 
-## 🚧 Future Enhancements
+## 🤝 Contributing
 
-- [ ] Authentication system (NextAuth.js)
-- [ ] Real-time notifications
-- [ ] PDF generation for certificates
-- [ ] Advanced analytics dashboard
-- [ ] Multi-branch support
-- [ ] Role-based access control (RBAC)
-- [ ] Email notifications
-- [ ] SMS integration
-- [ ] Payment gateway integration
-- [ ] Attendance tracking
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+---
+
+## 📝 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👥 Authors
+
+**N.S.D. Education Portal Team**
+
+---
+
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- Vercel for hosting and deployment
+- MongoDB for the database
+- All contributors and supporters
 
 ---
 
 ## 📞 Support
 
-For questions or issues, contact support through the **Contact Support** page in the application.
+For issues or questions:
+- Check [AUTHENTICATION.md](./AUTHENTICATION.md)
+- Review [FIXES_AND_IMPROVEMENTS.md](./FIXES_AND_IMPROVEMENTS.md)
+- Check code comments
+- Open an issue on GitHub
 
 ---
 
-## 📄 License
-
-Private - N.S.D. Education Portal © 2024
+**Built with ❤️ using Next.js, MongoDB, and TypeScript**
 
 ---
 
-**Built with ❤️ using Next.js and modern web technologies**
+## 🎉 Current Status
+
+✅ **All systems operational!**
+- Authentication working
+- Database models complete
+- API endpoints functional
+- UI components ready
+- Development server running
+- Documentation complete
+
+**Ready for development and deployment! 🚀**
+
+---
+
+*Last Updated: January 4, 2025*
+*Version: 1.0.0*
