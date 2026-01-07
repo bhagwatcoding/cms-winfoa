@@ -1,6 +1,6 @@
 import connectDB from './db';
-import Center from './models/Center';
-import User from './models/User';
+import Center from './models/edu/Center';
+import User from './models/edu/User';
 import bcrypt from 'bcryptjs';
 
 export async function seedDatabase() {

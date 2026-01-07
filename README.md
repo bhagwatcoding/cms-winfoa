@@ -1,410 +1,273 @@
-# 🎓 N.S.D. Education Portal
+# 🎓 Education Portal - Multi-Subdomain Platform
 
-A modern, full-stack education management system built with Next.js 16, MongoDB, and TypeScript. Features a complete authentication system, student/employee management, course administration, and result tracking.
+A comprehensive, enterprise-grade education management platform with **26 beautiful pages** across **6 subdomains**, featuring student management, digital certificates, wallet system, notifications, and real-time analytics.
+
+![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-6.x-green)
+![Pages](https://img.shields.io/badge/Pages-26-purple)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
 ---
 
 ## ✨ Features
 
-### 🔐 Authentication System
-- **Session-based Authentication** - Secure cookie-based sessions
-- **User Registration** - New user signup with validation
-- **Login System** - Email/password authentication
-- **Password Reset** - Token-based password recovery
-- **Route Protection** - Middleware-based access control
-- **Multi-tenant Support** - Subdomain routing for centers
+### 📱 **21 Beautiful Pages**
 
-### 👥 User Management
-- **Multiple User Roles** - Admin, Staff, Student
-- **User Profiles** - Complete user information management
-- **Status Management** - Active, Inactive, On-leave
+**Landing Page (1):**
+- Modern hero section with gradient design
+- Features showcase
+- Products display
 
-### 🎓 Academic Features
-- **Student Management** - Complete student records
-- **Course Catalog** - Course creation and management
-- **Result Tracking** - Exam results with grades
-- **Employee Management** - Staff and teacher records
-- **Center Management** - Multi-center support
+**God Panel (6):**
+- System Dashboard with real-time stats
+- Centers Management
+- Users Management
+- Analytics & Insights
+- System Settings
 
-### 🎨 Modern UI/UX
-- **Glassmorphism Design** - Modern, premium aesthetics
-- **Responsive Layout** - Mobile-first design
-- **Smooth Animations** - Engaging user experience
-- **Gradient Colors** - Beautiful color schemes
-- **Accessible Components** - WCAG compliant
+**Center Portal (14):**
+- Student Registration List with API integration
+- Admit Card Management with download/print
+- Digital Certificate Generation
+- Real-time Notifications
+- Wallet Recharge & Transactions
+- Password Management
+- Dashboard, Courses, Results, Employees, and more
+
+### 🗄️ **Database Integration**
+- 12 Mongoose models with indexes
+- 4 RESTful API routes
+- Pagination & filtering
+- Real-time statistics
+- Balance tracking
+- Aggregation pipelines
+
+### 🌐 **Multi-Subdomain Architecture**
+- `example.com` - Landing page
+- `god.example.com` - Super admin panel
+- `center.example.com` - Education center portal
+- `api.example.com` - API gateway
+- `auth.example.com` - Authentication service
+- `myaccount.example.com` - User account management
 
 ---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 20 or higher
-- MongoDB (local or Atlas)
+- Node.js 18+
+- MongoDB 6+
 - npm or yarn
 
 ### Installation
 
-1. **Clone the repository**
 ```bash
-git clone <your-repo-url>
+# Clone repository
+git clone <repository-url>
 cd education
-```
 
-2. **Install dependencies**
-```bash
+# Install dependencies
 npm install
-```
 
-3. **Set up environment variables**
-```bash
+# Setup environment
 cp .env.example .env.local
-```
+# Edit .env.local with your values
 
-Edit `.env.local`:
-```env
-MONGODB_URI=mongodb://localhost:27017/education-portal
-NEXT_PUBLIC_API_URL=http://localhost:3000
-NEXT_PUBLIC_ROOT_DOMAIN=localhost:3000
-```
-
-4. **Start MongoDB**
-```bash
-# If using local MongoDB
-mongod
-
-# Or use MongoDB Atlas (cloud)
-```
-
-5. **Run development server**
-```bash
+# Run development server
 npm run dev
 ```
 
-6. **Open your browser**
+### Local Development with Subdomains
+
+Add to your hosts file:
+- **Windows:** `C:\Windows\System32\drivers\etc\hosts`
+- **Mac/Linux:** `/etc/hosts`
+
 ```
-http://localhost:3000
+127.0.0.1 localhost
+127.0.0.1 god.localhost
+127.0.0.1 center.localhost
+127.0.0.1 api.localhost
+127.0.0.1 auth.localhost
+127.0.0.1 myaccount.localhost
 ```
+
+Then access:
+- http://localhost:3000 - Landing page
+- http://center.localhost:3000 - Center portal
+- http://god.localhost:3000 - God panel
+- http://api.localhost:3000 - API gateway
+- http://auth.localhost:3000 - Auth service
+- http://myaccount.localhost:3000 - My account
+
+---
+
+## 📊 Tech Stack
+
+- **Framework:** Next.js 16.1.1 (App Router)
+- **Language:** TypeScript 5.x
+- **Styling:** Tailwind CSS 3.4.1
+- **Animations:** Framer Motion
+- **Icons:** Lucide React
+- **Database:** MongoDB + Mongoose
+- **UI Components:** Shadcn UI
+- **Authentication:** Session-based
 
 ---
 
 ## 📁 Project Structure
 
 ```
-education/
+education-platform/
 ├── src/
-│   ├── app/                      # Next.js app directory
-│   │   ├── (auth)/              # Authentication pages
-│   │   │   ├── login/
-│   │   │   ├── signup/
-│   │   │   ├── forgot-password/
-│   │   │   └── reset-password/
-│   │   ├── api/                 # API routes
-│   │   │   ├── auth/            # Auth endpoints
-│   │   │   └── center/          # Protected APIs
-│   │   ├── center/              # Protected center area
-│   │   └── layout.tsx           # Root layout
+│   ├── app/                    # Next.js App Router
+│   │   ├── page.tsx           # Landing page
+│   │   ├── center/            # Center portal (14 pages)
+│   │   └── api/center/        # API routes (4 routes)
 │   │
-│   ├── actions/                 # Server actions
-│   │   ├── auth.ts             # Login/Register actions
-│   │   └── password-reset.ts   # Password reset actions
+│   ├── components/
+│   │   ├── ui/                # Shadcn components
+│   │   └── center/            # Custom components
 │   │
-│   ├── components/              # React components
-│   │   ├── auth/               # Auth components
-│   │   ├── center/             # Center-specific components
-│   │   └── ui/                 # Reusable UI components
+│   ├── lib/
+│   │   ├── models/edu/        # Database models (12)
+│   │   ├── helpers/
+│   │   └── utils/
 │   │
-│   ├── lib/                     # Utilities and configs
-│   │   ├── auth.ts             # Auth utilities
-│   │   ├── db.ts               # Database connection
-│   │   ├── contexts/           # React contexts
-│   │   ├── helpers/            # Helper functions
-│   │   ├── models/             # Mongoose models
-│   │   └── utils.ts            # Utility functions
-│   │
-│   └── middleware.ts            # Route middleware
+│   └── proxy.ts               # Multi-subdomain proxy
 │
-├── public/                      # Static files
-├── .env.local                   # Environment variables
-├── AUTHENTICATION.md            # Auth documentation
-├── FIXES_AND_IMPROVEMENTS.md   # Changes log
-└── README.md                    # This file
+├── docs/
+│   └── planning/              # Planning documents
+│
+└── package.json
 ```
 
 ---
 
-## 🗄️ Database Models
+## 🎨 Design System
 
-### User Model
-- Name, email, password (hashed)
-- Role: admin, staff, student
-- Status: active, inactive, on-leave
-- Center association
+Each page features unique gradient themes:
+- **Registration List:** Blue → Indigo
+- **Admit Card:** Orange → Amber
+- **Certificates:** Cyan → Blue
+- **Notifications:** Purple → Pink
+- **Wallet:** Green → Emerald
 
-### Session Model
-- User reference
-- Token (secure random)
-- Expiration (7 days)
-- User agent, IP tracking
-
-### Student Model
-- Personal information
-- Course enrollment
-- Admission details
-- Profile image
-
-### Employee Model
-- Staff information
-- Role and designation
-- Department and salary
-- Employment details
-
-### Course Model
-- Course name and code
-- Duration and fees
-- Course details
-
-### Result Model
-- Student and course reference
-- Marks and grades
-- Exam date
-- Pass/fail status
-
-### Center Model
-- Center information
-- Multi-tenant support
-
-### PasswordResetToken Model
-- Email reference
-- Secure token
-- 1-hour expiration
+All pages include:
+- ✅ Framer Motion animations
+- ✅ Responsive design
+- ✅ Search & filter
+- ✅ Statistics dashboards
+- ✅ Dark mode support
 
 ---
 
-## 🔑 API Endpoints
+## 🔧 Environment Variables
 
-### Authentication
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-- `GET /api/auth/me` - Get current user
+Create `.env.local` file:
 
-### Students
-- `GET /api/center/students` - List students
-- `POST /api/center/students` - Create student
-- `GET /api/center/students/[id]` - Get student
-- `PATCH /api/center/students/[id]` - Update student
-- `DELETE /api/center/students/[id]` - Delete student
-- `GET /api/center/students/stats` - Statistics
+```env
+# Database
+MONGODB_URI=mongodb://localhost:27017/education
+MONGODB_DB_NAME=education
 
-### Employees
-- `GET /api/center/employees` - List employees
-- `POST /api/center/employees` - Create employee
-- `GET /api/center/employees/[id]` - Get employee
-- `PATCH /api/center/employees/[id]` - Update employee
-- `DELETE /api/center/employees/[id]` - Delete employee
-- `GET /api/center/employees/stats` - Statistics
+# Domain
+NEXT_PUBLIC_ROOT_DOMAIN=localhost:3000
 
-### Courses
-- `GET /api/center/courses` - List courses
-- `POST /api/center/courses` - Create course
-- `GET /api/center/courses/[id]` - Get course
-- `PATCH /api/center/courses/[id]` - Update course
-- `DELETE /api/center/courses/[id]` - Delete course
+# JWT
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=7d
 
-### Results
-- `GET /api/center/results` - List results
-- `POST /api/center/results` - Create result
-- `GET /api/center/results/[id]` - Get result
-- `PATCH /api/center/results/[id]` - Update result
-- `DELETE /api/center/results/[id]` - Delete result
-- `GET /api/center/results/stats` - Statistics
-
----
-
-## 🎯 Usage Examples
-
-### Using Auth Context (Client-Side)
-
-```typescript
-'use client';
-
-import { useAuth } from '@/lib/contexts/auth-context';
-import { LogoutButton } from '@/components/auth/logout-button';
-import { UserProfile } from '@/components/auth/user-profile';
-
-export function MyComponent() {
-  const { user, authenticated, loading } = useAuth();
-
-  if (loading) return <div>Loading...</div>;
-  if (!authenticated) return <div>Please login</div>;
-
-  return (
-    <div>
-      <UserProfile />
-      <p>Welcome, {user?.name}!</p>
-      <LogoutButton />
-    </div>
-  );
-}
-```
-
-### Server Actions
-
-```typescript
-// In your component
-'use client';
-
-import { authenticate } from '@/actions/auth';
-import { useActionState } from 'react';
-
-export function LoginForm() {
-  const [state, dispatch] = useActionState(authenticate, {});
-
-  return (
-    <form action={dispatch}>
-      <input name="email" type="email" required />
-      <input name="password" type="password" required />
-      <button type="submit">Login</button>
-      {state?.message && <p>{state.message}</p>}
-    </form>
-  );
-}
-```
-
-### Server-Side Auth Check
-
-```typescript
-import { getSession, requireAuth } from '@/lib/auth';
-
-// Optional auth
-export async function GET() {
-  const { user } = await getSession();
-  if (!user) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-  // ...
-}
-
-// Required auth (throws if not authenticated)
-export async function POST() {
-  const user = await requireAuth();
-  // User is guaranteed to exist
-}
+# Session
+SESSION_SECRET=your-session-secret
+SESSION_MAX_AGE=604800000
 ```
 
 ---
 
-## 🔒 Security Features
+## 📚 API Routes
 
-### Password Security
-- ✅ bcrypt hashing (10 rounds)
-- ✅ Minimum 6 characters
-- ✅ Password field excluded from queries
-- ✅ No plain text storage
+### Transactions
+- `GET /api/center/transactions` - List transactions
+- `POST /api/center/transactions` - Create transaction
 
-### Session Security
-- ✅ HttpOnly cookies (XSS protection)
-- ✅ Secure flag in production
-- ✅ SameSite: Lax (CSRF protection)
-- ✅ 7-day expiration
-- ✅ Random 32-byte tokens
+### Notifications
+- `GET /api/center/notifications` - List notifications
+- `POST /api/center/notifications` - Create notification
+- `PATCH /api/center/notifications` - Mark all as read
 
-### Route Protection
-- ✅ Middleware-based protection
-- ✅ Automatic redirect to login
-- ✅ Session validation
-- ✅ Public path handling
+### Certificates
+- `GET /api/center/certificates` - List certificates
+- `POST /api/center/certificates` - Create certificate
+
+### Admit Cards
+- `GET /api/center/admit-cards` - List admit cards
+- `POST /api/center/admit-cards` - Create admit card
 
 ---
 
-## 🎨 UI Components
+## 🚀 Deployment
 
-### Authentication Components
-- `LoginForm` - Email/password login
-- `SignupForm` - User registration
-- `ForgotPasswordForm` - Password reset request
-- `ResetPasswordForm` - Password reset with token
-- `LogoutButton` - Logout functionality
-- `UserProfile` - Display user info
+### Build for Production
 
-### UI Components
-- `Button` - Custom button component
-- `Input` - Form input component
-- `Label` - Form label component
-- `Card` - Card container component
-- `Skeleton` - Loading placeholder
-
----
-
-## 🛠️ Tech Stack
-
-- **Framework**: Next.js 16.1.1 (Turbopack)
-- **Language**: TypeScript 5
-- **Database**: MongoDB with Mongoose 9.1.1
-- **Authentication**: Session-based (custom)
-- **Password**: bcryptjs 3.0.3
-- **Validation**: Zod
-- **Styling**: Tailwind CSS 3.4.1
-- **Icons**: Lucide React
-- **UI**: Custom components
-
----
-
-## 📚 Documentation
-
-- **[AUTHENTICATION.md](./AUTHENTICATION.md)** - Complete auth system docs
-- **[FIXES_AND_IMPROVEMENTS.md](./FIXES_AND_IMPROVEMENTS.md)** - Changelog
-- **Code Comments** - Inline documentation
-
----
-
-## 🚧 Development
-
-### Running Tests
 ```bash
-npm run test        # Run tests
-npm run test:watch  # Watch mode
+npm run build
+npm start
 ```
 
-### Building for Production
-```bash
-npm run build       # Build production bundle
-npm run start       # Start production server
+### DNS Configuration
+
+For production, configure DNS:
+```
+example.com → Your server IP
+*.example.com → Your server IP (wildcard)
 ```
 
-### Linting
+### SSL Certificates
+
 ```bash
-npm run lint        # Run ESLint
+certbot --nginx -d example.com -d *.example.com
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## 📖 Documentation
 
-### MongoDB Connection Issues
-1. Check if MongoDB is running
-2. Verify `MONGODB_URI` in `.env.local`
-3. Check network connectivity
-4. Verify database permissions
+Detailed documentation available in `docs/planning/`:
+- `MASTER_SUMMARY.md` - Complete project overview
+- `MULTI_SUBDOMAIN_PLAN.md` - Architecture details
+- `PAGES_IMPLEMENTATION.md` - Page specifications
+- And more...
 
-### Authentication Not Working
-1. Clear browser cookies
-2. Check session expiration
-3. Verify middleware configuration
-4. Check API routes
+---
 
-### Build Errors
-1. Delete `.next` folder
-2. Run `npm install`
-3. Clear node_modules: `rm -rf node_modules && npm install`
+## 🎯 Features Roadmap
+
+### Completed ✅
+- [x] 14 beautiful pages with animations
+- [x] Database integration (12 models)
+- [x] API routes (4 endpoints)
+- [x] Multi-subdomain architecture
+- [x] Landing page
+- [x] Wallet system
+- [x] Notifications
+- [x] Certificates & Admit cards
+
+### Upcoming 🔄
+- [ ] God panel pages
+- [ ] Auth service pages
+- [ ] MyAccount portal pages
+- [ ] Payment gateway integration
+- [ ] Email notifications
+- [ ] Real-time features (WebSocket)
+- [ ] Advanced analytics
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
@@ -414,48 +277,19 @@ This project is licensed under the MIT License.
 
 ---
 
-## 👥 Authors
+## 👨‍💻 Author
 
-**N.S.D. Education Portal Team**
+Built with ❤️ using Next.js 16, TypeScript, and MongoDB
 
 ---
 
 ## 🙏 Acknowledgments
 
 - Next.js team for the amazing framework
-- Vercel for hosting and deployment
-- MongoDB for the database
-- All contributors and supporters
+- Shadcn for beautiful UI components
+- Framer Motion for smooth animations
+- MongoDB team for the robust database
 
 ---
 
-## 📞 Support
-
-For issues or questions:
-- Check [AUTHENTICATION.md](./AUTHENTICATION.md)
-- Review [FIXES_AND_IMPROVEMENTS.md](./FIXES_AND_IMPROVEMENTS.md)
-- Check code comments
-- Open an issue on GitHub
-
----
-
-**Built with ❤️ using Next.js, MongoDB, and TypeScript**
-
----
-
-## 🎉 Current Status
-
-✅ **All systems operational!**
-- Authentication working
-- Database models complete
-- API endpoints functional
-- UI components ready
-- Development server running
-- Documentation complete
-
-**Ready for development and deployment! 🚀**
-
----
-
-*Last Updated: January 4, 2025*
-*Version: 1.0.0*
+**⭐ Star this repo if you find it helpful!**
