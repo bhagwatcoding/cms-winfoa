@@ -1,8 +1,7 @@
-import { MainLayout } from "@/components/center/layout/main-layout";
+import { MainLayout } from "@/shared/components/skills";
 import { getSession } from "@/lib/auth";
 import connectDB from "@/lib/db";
-import Center from "@/lib/models/edu/Center";
-import Student from "@/lib/models/edu/Student";
+import { Center, Student } from "@/models";
 
 export const metadata = {
   title: {
@@ -49,12 +48,8 @@ export default async function CenterLayout({
         name: user.name,
         email: user.email,
         role: user.role,
-        joinedAt: user.joinedAt.toISOString(),
         centerName: center.name,
-        centerCode: center.code,
-        walletBalance: center.walletBalance,
-        address: center.address,
-        contact: center.contact
+        walletBalance: center.walletBalance
       };
 
       stats = studentStats[0] || { total: 0, active: 0, completed: 0 };

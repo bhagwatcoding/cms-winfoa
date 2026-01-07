@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import AdmitCard from '@/lib/models/edu/AdmitCard';
+import { AdmitCard } from '@/models';
 import { getSession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {

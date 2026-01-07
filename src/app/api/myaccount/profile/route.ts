@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import User from '@/lib/models/edu/User';
+import { User } from '@/models';
 import { getSession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
@@ -30,7 +30,7 @@ export async function PUT(request: NextRequest) {
         const { password, role, ...updateData } = body;
 
         const updatedUser = await User.findByIdAndUpdate(
-            user.id,
+            user._id.toString(),
             { $set: updateData },
             { new: true }
         ).select('-password');

@@ -4,13 +4,10 @@ import {
     Building2, Users, TrendingUp, DollarSign,
     Shield, CheckCircle2, Activity, Settings, Zap
 } from 'lucide-react';
-import { StatsGrid } from '@/components/upm/dashboard/stats-grid';
-import { QuickActions } from '@/components/upm/dashboard/quick-actions';
-import { SystemHealth } from '@/components/upm/dashboard/system-health';
-import { RecentActivities } from '@/components/upm/dashboard/recent-activities';
+import { StatsGrid, QuickActions, SystemHealth, RecentActivities, Stat, RecentActivity } from '@/features/admin/components';
 
 export default function GodDashboard() {
-    const stats = [
+    const stats: Stat[] = [
         {
             title: 'Total Centers',
             value: '156',
@@ -45,7 +42,7 @@ export default function GodDashboard() {
         },
     ];
 
-    const recentActivities = [
+    const recentActivities: RecentActivity[] = [
         {
             type: 'center',
             message: 'New center registered: ABC Institute',

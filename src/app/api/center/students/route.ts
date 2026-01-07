@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import Student from '@/lib/models/edu/Student';
+import { Student } from '@/models';
 import { getSession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {

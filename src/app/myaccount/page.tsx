@@ -1,9 +1,7 @@
-import { getProfile, getUserStats } from '@/myaccount/actions/profile'
-import { getPreferences } from '@/myaccount/actions/settings'
-import { getRecentActivity } from '@/myaccount/actions/activity'
-import { AccountOverview } from '@/myaccount/components/profile/account-overview'
-import { UserStatsCard } from '@/myaccount/components/profile/user-stats-card'
-import { ActivityLogTable } from '@/myaccount/components/activity/activity-log-table'
+
+import { getProfile, getUserStats, getPreferences, getRecentActivity } from '@/features/account/actions'
+
+import { AccountOverview, UserStatsCard, ActivityLogTable } from '@/features/account/components'
 import { redirect } from 'next/navigation'
 
 export default async function MyAccountPage() {

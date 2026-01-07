@@ -2,6 +2,10 @@
 .agent/
 node_modules/
 
+#planing
+docs/
+scripts/
+
 # Next.js
 .next/
 out/

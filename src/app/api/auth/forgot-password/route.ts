@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import User from '@/lib/models/edu/User';
-import PasswordResetToken from '@/lib/models/edu/PasswordResetToken';
+import { User, PasswordResetToken } from '@/models';
 import crypto from 'crypto';
 
 export async function POST(request: NextRequest) {

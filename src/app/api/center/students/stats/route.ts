@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import Student from '@/lib/models/edu/Student';
+import { Student } from '@/models';
 
 // GET /api/students/stats - Get student statistics
 export async function GET() {

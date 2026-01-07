@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Shield, Phone, Building2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/ui/use-toast';
 import { useRouter } from 'next/navigation';
 import { signupAction } from '@/auth/actions/signup';
 

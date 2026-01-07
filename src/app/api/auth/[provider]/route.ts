@@ -3,10 +3,11 @@ import { getOAuthUrl, type OAuthProvider } from '@/auth/lib/oauth/providers'
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { provider: string } }
+    { params }: { params: Promise<{ provider: string }> }
 ) {
     try {
-        const provider = params.provider as OAuthProvider
+        const { provider: providerParam } = await params
+        const provider = providerParam as OAuthProvider
 
         // Validate provider
         if (provider !== 'google' && provider !== 'github') {
@@ -36,7 +37,7 @@ export async function GET(
 // Handle POST requests (same as GET)
 export async function POST(
     request: NextRequest,
-    { params }: { params: { provider: string } }
+    { params }: { params: Promise<{ provider: string }> }
 ) {
     return GET(request, { params })
 }

@@ -6,15 +6,16 @@ import {
 } from '@/auth/lib/oauth/providers'
 import { AuthService } from '@/auth/services/auth.service'
 import { SessionService } from '@/auth/services/session.service'
-import User from '@/edu/models/User'
+import { User } from '@/models'
 import connectDB from '@/lib/db'
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { provider: string } }
+    { params }: { params: Promise<{ provider: string }> }
 ) {
     try {
-        const provider = params.provider as OAuthProvider
+        const { provider: providerParam } = await params
+        const provider = providerParam as OAuthProvider
         const searchParams = request.nextUrl.searchParams
         const code = searchParams.get('code')
         const error = searchParams.get('error')

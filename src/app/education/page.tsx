@@ -1,5 +1,5 @@
-import { DashboardGrid } from "@/edu/components/dashboard/dashboard-grid";
-import { getDashboardStats } from "@/edu/actions/dashboard";
+import { DashboardGrid } from "@/skills/components/dashboard/dashboard-grid";
+import { getDashboardStats } from "@/skills/actions/dashboard";
 
 export const metadata = {
     title: "Dashboard"

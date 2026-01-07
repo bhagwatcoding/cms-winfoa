@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import Employee from '@/lib/models/edu/Employee';
+import { Employee } from '@/models';
 
 // GET /api/employees/[id] - Get employee by ID
 export async function GET(

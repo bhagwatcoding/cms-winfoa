@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import User from '@/lib/models/edu/User';
-import Student from '@/lib/models/edu/Student'; // If registering as student creates a student record
-import Employee from '@/lib/models/edu/Employee'; // If registering as employee
+import { User, Student, Employee, Session } from '@/models';
 import crypto from 'crypto';
-import Session from '@/lib/models/edu/Session';
 import { cookies } from 'next/headers';
 
 export async function POST(request: NextRequest) {

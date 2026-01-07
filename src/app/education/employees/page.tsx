@@ -1,9 +1,8 @@
-
 import React from 'react';
-import { EmployeesClient } from '@/components/center/employees/employees-client';
+import { EmployeesClient } from '@/shared/components/skills';
 import { getSession } from '@/lib/auth';
 import connectDB from '@/lib/db';
-import User from '@/lib/models/edu/User';
+import { Employee } from '@/models';
 import { redirect } from 'next/navigation';
 
 export default async function EmployeesPage() {
@@ -15,10 +14,9 @@ export default async function EmployeesPage() {
 
     await connectDB();
 
-    // Fetch employees (users who are not students) belonging to this center
-    const employeesData = await User.find({
-        centerId: user.centerId,
-        role: { $ne: 'student' }
+    // Fetch employees belonging to this center
+    const employeesData = await Employee.find({
+        centerId: user.centerId
     }).sort({ createdAt: -1 });
 
     // Serialize Mongoose documents to plain objects
@@ -26,11 +24,12 @@ export default async function EmployeesPage() {
         _id: emp._id.toString(),
         name: emp.name,
         email: emp.email,
-        role: emp.role,
         phone: emp.phone || '',
+        designation: emp.designation,
+        salary: emp.salary || 0,
         status: emp.status,
-        joinedAt: emp.joinedAt.toISOString(),
+        joiningDate: emp.joiningDate ? emp.joiningDate.toISOString() : new Date().toISOString(),
     }));
 
-    return <EmployeesClient initialEmployees={employees} />;
+    return <EmployeesClient employees={employees} />;
 }

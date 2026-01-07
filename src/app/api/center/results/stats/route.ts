@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
-import Result from '@/lib/models/edu/Result';
+import { Result } from '@/models';
 
 // GET /api/results/stats - Get result statistics
 export async function GET() {

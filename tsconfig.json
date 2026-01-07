@@ -27,38 +27,53 @@
       "@/*": [
         "./src/*"
       ],
-      "@/api/*": [
-        "./src/subdomain/api/*"
-      ],
-      "@/my/*": [
-        "./src/subdomain/myaccount/*"
-      ],
-      "@/edu/*": [
-        "./src/subdomain/education/*"
+      "@/features/*": [
+        "./src/features/*"
       ],
       "@/auth/*": [
-        "./src/subdomain/auth/*"
+        "./src/features/auth/*"
       ],
-      "@dev/*": [
-        "./src/subdomain/developer/*"
+      "@/account/*": [
+        "./src/features/account/*"
       ],
-      "@ump/*": [
-        "./src/subdomain/ump/*"
+      "@/api-mgmt/*": [
+        "./src/features/api-management/*"
       ],
-      "@/components/*": [
-        "./src/components/*"
+      "@/admin/*": [
+        "./src/features/admin/*"
       ],
-      "@/ui/*": [
-        "./src/components/ui/*"
-      ],
-      "@/lib/*": [
-        "./src/lib/*"
-      ],
-      "@/models/*": [
-        "./src/subdomain/education/models/*"
+      "@/skills/*": [
+        "./src/features/skills/*"
       ],
       "@/shared/*": [
         "./src/shared/*"
+      ],
+      "@/components/*": [
+        "./src/shared/components/*"
+      ],
+      "@/ui": [
+        "./src/shared/components/ui"
+      ],
+      "@/ui/*": [
+        "./src/shared/components/ui/*"
+      ],
+      "@/lib/*": [
+        "./src/shared/lib/*"
+      ],
+      "@/models": [
+        "./src/shared/lib/db/models"
+      ],
+      "@/models/*": [
+        "./src/shared/lib/db/models/*"
+      ],
+      "@/actions/*": [
+        "./src/shared/actions/*"
+      ],
+      "@/hooks/*": [
+        "./src/shared/hooks/*"
+      ],
+      "@/types/*": [
+        "./src/shared/types/*"
       ]
     }
   },
@@ -67,7 +82,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

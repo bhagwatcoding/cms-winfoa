@@ -1,6 +1,6 @@
-import { getApiKeys } from '@/api/actions/apikey'
-import { CreateApiKeyForm } from '@/api/components/create-api-key-form'
-import { ApiKeyList } from '@/api/components/api-key-list'
+import { getApiKeys } from '@/api-mgmt/actions/apikey'
+import { CreateApiKeyForm } from '@/api-mgmt/components/create-api-key-form'
+import { ApiKeyList } from '@/api-mgmt/components/api-key-list'
 import { redirect } from 'next/navigation'
 
 export default async function ApiKeysPage() {
