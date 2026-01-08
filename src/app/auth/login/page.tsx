@@ -66,7 +66,7 @@ export default function LoginPage() {
                                 <div className="flex items-center justify-between">
                                     <Label htmlFor="password">Password</Label>
                                     <Link
-                                        href="/auth/forgot-password"
+                                        href="/forgot-password"
                                         className="text-sm text-blue-600 hover:text-blue-700"
                                     >
                                         Forgot password?
@@ -105,7 +105,7 @@ export default function LoginPage() {
 
                             <div className="text-center text-sm text-muted-foreground">
                                 Don't have an account?{' '}
-                                <Link href="/auth/signup" className="text-blue-600 hover:text-blue-700 font-medium">
+                                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
                                     Sign up
                                 </Link>
                             </div>

@@ -62,8 +62,7 @@ const ApiRequestSchema = new Schema<IApiRequest>({
     },
     timestamp: {
         type: Date,
-        default: Date.now,
-        index: true
+        default: Date.now
     }
 })
 

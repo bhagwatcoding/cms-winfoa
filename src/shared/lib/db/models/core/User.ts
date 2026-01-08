@@ -22,6 +22,11 @@ export interface IUser extends Document {
     emailVerified: boolean
     isActive: boolean
     lastLogin?: Date
+
+    customPermissions?: string[] // Additional permissions beyond role
+    permissionOverrides?: string[] // Override role permissions
+    walletBalance?: number;
+
     createdAt: Date
     updatedAt: Date
     comparePassword(candidatePassword: string): Promise<boolean>
@@ -95,6 +100,19 @@ const UserSchema = new Schema<IUser>(
         },
         lastLogin: {
             type: Date
+        },
+        // ✨ NEW: Custom Permissions (Database-driven)
+        customPermissions: {
+            type: [String],
+            default: []
+        },
+        permissionOverrides: {
+            type: [String],
+            default: []
+        },
+        walletBalance: {
+            type: Number,
+            default: 0
         }
     },
     {
@@ -108,11 +126,11 @@ const UserSchema = new Schema<IUser>(
     }
 )
 
-// Indexes for performance
-UserSchema.index({ email: 1 })
-UserSchema.index({ umpUserId: 1 })
+// Indexes for performance (no need for email/umpUserId as they're already indexed via unique constraint)
 UserSchema.index({ role: 1 })
 UserSchema.index({ isActive: 1 })
+UserSchema.index({ centerId: 1, status: 1 }) // Compound index for center queries
+
 
 // Hash password before saving
 UserSchema.pre('save', async function (next) {

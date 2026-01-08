@@ -71,8 +71,7 @@ const TransactionSchema = new Schema<ITransaction, ITransactionModel>(
         transactionId: {
             type: String,
             required: true,
-            unique: true,
-            index: true,
+            unique: true
         },
         balance: {
             type: Number,

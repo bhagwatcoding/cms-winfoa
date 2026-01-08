@@ -1,11 +1,28 @@
 'use server';
 
 import connectDB from '@/lib/db';
-import { User, Session } from '@/models';
-import bcrypt from 'bcryptjs';
-import { cookies } from 'next/headers';
+import { User } from '@/models';
+import { getDashboardUrlForRole } from '@/lib/helpers';
+import { loginSchema, type LoginInput } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
+import { createSession, setSessionCookie } from '@/lib/session';
+import type { LoginResponse } from '@/types/api';
 
-export async function loginUser(email: string, password: string) {
+export async function loginUser(credentials: LoginInput): Promise<LoginResponse> {
+    // Validate input
+    const validation = validateSchema(loginSchema, credentials);
+
+    if (!validation.success) {
+        return {
+            success: false,
+            error: validation.errors?.[0]?.message || 'Invalid credentials',
+            errors: validation.errors
+        };
+    }
+
+    // TypeScript: validation.data is guaranteed to exist when success is true
+    const { email, password } = validation.data!;
+
     try {
         await connectDB();
 
@@ -20,7 +37,7 @@ export async function loginUser(email: string, password: string) {
         }
 
         // Check password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await user.comparePassword(password);
 
         if (!isPasswordValid) {
             return {
@@ -37,36 +54,22 @@ export async function loginUser(email: string, password: string) {
             };
         }
 
-        // Create session
-        const sessionToken = generateSessionToken();
-        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+        // Create session using new session utilities
+        const session = await createSession(
+            user._id.toString(),
+            '', // userAgent - can be passed from client
+            ''  // ipAddress - can be extracted from request
+        );
 
-        await Session.create({
-            userId: user._id,
-            token: sessionToken,
-            expiresAt,
-            userAgent: '', // Will be set from client
-            ipAddress: '' // Will be set from server
-        });
+        // Set session cookie
+        await setSessionCookie(session.token, session.expiresAt);
 
-        // Set cookie
-        (await cookies()).set('session_token', sessionToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            expires: expiresAt,
-            path: '/'
-        });
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
 
-        // Determine redirect based on role
-        let redirectUrl = '/myaccount';
-        if (user.role === 'admin' || user.role === 'god') {
-            redirectUrl = '/ump';
-        } else if (user.role === 'center') {
-            redirectUrl = '/skills';
-        } else if (user.role === 'developer') {
-            redirectUrl = '/developer';
-        }
+        // Get role-based dashboard URL
+        const redirectUrl = getDashboardUrlForRole(user.role);
 
         return {
             success: true,
@@ -75,7 +78,8 @@ export async function loginUser(email: string, password: string) {
                 id: user._id.toString(),
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                image: user.image
             }
         };
     } catch (error: any) {
@@ -87,18 +91,12 @@ export async function loginUser(email: string, password: string) {
     }
 }
 
-export async function logoutUser() {
+import { logout as logoutSession } from '@/lib/session';
+import type { LogoutResponse } from '@/types/api';
+
+export async function logoutUser(): Promise<LogoutResponse> {
     try {
-        const cookieStore = await cookies();
-        const sessionToken = cookieStore.get('session_token')?.value;
-
-        if (sessionToken) {
-            await connectDB();
-            await Session.findOneAndDelete({ token: sessionToken });
-        }
-
-        cookieStore.delete('session_token');
-
+        await logoutSession();
         return { success: true };
     } catch (error: any) {
         console.error('Logout error:', error);
@@ -107,8 +105,4 @@ export async function logoutUser() {
             error: error.message || 'Logout failed'
         };
     }
-}
-
-function generateSessionToken(): string {
-    return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
 }

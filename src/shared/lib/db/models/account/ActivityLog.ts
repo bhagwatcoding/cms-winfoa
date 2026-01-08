@@ -42,7 +42,7 @@ const ActivityLogSchema = new Schema<IActivityLog>({
     ipAddress: { type: String },
     userAgent: { type: String },
     location: { type: String },
-    timestamp: { type: Date, default: Date.now }
+    timestamp: { type: Date, default: Date.now } // No index here, TTL index below
 })
 
 // Compound index for efficient queries

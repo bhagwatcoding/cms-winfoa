@@ -19,14 +19,12 @@ const UserRegistrySchema = new Schema<IUserRegistry>(
         userId: {
             type: String,
             required: true,
-            unique: true,
-            index: true
+            unique: true
         },
         email: {
             type: String,
             required: true,
-            unique: true,
-            index: true
+            unique: true
         },
         role: {
             type: String,

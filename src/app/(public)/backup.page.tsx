@@ -49,7 +49,7 @@ export default function LandingPage() {
 
                         {/* CTA Buttons */}
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                            <Link href="/auth/signup">
+                            <Link href="/signup">
                                 <Button size="lg" className="text-lg px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
                                     Get Started Free
                                     <ArrowRight className="ml-2 h-5 w-5" />
@@ -257,13 +257,13 @@ export default function LandingPage() {
                         Join thousands of institutions already using WINFOA
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/auth/signup">
+                        <Link href="/signup">
                             <Button size="lg" className="text-lg px-8 py-6 bg-white text-indigo-600 hover:bg-gray-100">
                                 Start Free Trial
                                 <ArrowRight className="ml-2 h-5 w-5" />
                             </Button>
                         </Link>
-                        <Link href="/auth/login">
+                        <Link href="/login">
                             <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-2 border-white text-white hover:bg-white/10">
                                 Sign In
                             </Button>

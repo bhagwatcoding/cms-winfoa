@@ -99,7 +99,7 @@ const CertificateSchema = new Schema<ICertificate, ICertificateModel>(
 // Indexes
 CertificateSchema.index({ studentId: 1, status: 1 });
 CertificateSchema.index({ centerId: 1, status: 1, createdAt: -1 });
-CertificateSchema.index({ certificateNumber: 1 }, { unique: true });
+// Note: certificateNumber index is auto-created by unique: true in schema
 
 // Generate certificate number
 CertificateSchema.statics.generateCertificateNumber = function () {

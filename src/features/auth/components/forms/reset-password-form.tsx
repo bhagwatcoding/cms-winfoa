@@ -61,7 +61,7 @@ export function ResetPasswordForm() {
                         This password reset link is invalid or has expired.
                     </p>
                     <a
-                        href="/auth/forgot-password"
+                        href="/forgot-password"
                         className="inline-block mt-4 text-primary hover:underline"
                     >
                         Request a new reset link
@@ -83,7 +83,7 @@ export function ResetPasswordForm() {
                         Your password has been changed. You can now log in with your new password.
                     </p>
                     <a
-                        href="/auth/login"
+                        href="/login"
                         className="inline-block mt-6"
                     >
                         <Button size="lg">
@@ -168,7 +168,7 @@ export function ResetPasswordForm() {
 
             <div className="text-center text-sm">
                 <a
-                    href="/auth/login"
+                    href="/login"
                     className="text-muted-foreground hover:text-primary transition-colors"
                 >
                     Back to login

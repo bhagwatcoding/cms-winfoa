@@ -128,9 +128,9 @@ export default function SignupPage() {
                                         disabled={loading}
                                         className="w-full pl-12 pr-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all appearance-none disabled:opacity-50"
                                     >
-                                        <option value="Student">Student</option>
-                                        <option value="Center Admin">Center Admin</option>
-                                        <option value="Employee">Employee</option>
+                                        <option value="student">Student</option>
+                                        <option value="center">Center Admin</option>
+                                        <option value="staff">Employee</option>
                                     </select>
                                 </div>
                             </div>
@@ -238,7 +238,7 @@ export default function SignupPage() {
                     </div>
 
                     {/* Sign In Link */}
-                    <Link href="/auth/login">
+                    <Link href="/login">
                         <button className="w-full px-6 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
                             Sign In Instead
                         </button>

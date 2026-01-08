@@ -134,7 +134,7 @@ export function SignupForm() {
             <div className="text-center text-sm">
                 Already have an account?{' '}
                 <a
-                    href="/auth/login"
+                    href="/login"
                     className="text-primary font-medium hover:underline"
                 >
                     Sign in

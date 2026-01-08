@@ -71,9 +71,6 @@ export class AuthService {
             }
         })
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(userData.password, 12)
-
         // Generate full name if not provided
         const name = userData.name ||
             `${userData.firstName || ''} ${userData.lastName || ''}`.trim() ||
@@ -82,7 +79,7 @@ export class AuthService {
         // Create user with UMP-generated ID
         const user = await User.create({
             email: userData.email.toLowerCase().trim(),
-            password: hashedPassword,
+            password: userData.password,
             firstName: userData.firstName,
             lastName: userData.lastName,
             name,

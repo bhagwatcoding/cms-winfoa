@@ -40,7 +40,7 @@ export function LoginForm() {
                     <div className="flex items-center justify-between">
                         <Label htmlFor="password">Password</Label>
                         <a
-                            href="/auth/forgot-password"
+                            href="/forgot-password"
                             className="text-sm text-primary hover:underline"
                             tabIndex={-1}
                         >
@@ -101,7 +101,7 @@ export function LoginForm() {
             <div className="text-center text-sm">
                 Don't have an account?{' '}
                 <a
-                    href="/auth/signup"
+                    href="/signup"
                     className="text-primary font-medium hover:underline"
                 >
                     Create account

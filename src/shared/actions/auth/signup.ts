@@ -4,6 +4,7 @@ import connectDB from '@/lib/db';
 import { User, Session } from '@/models';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
+import { getDashboardUrlForRole } from '@/lib/helpers';
 
 interface SignupData {
     name: string;
@@ -51,22 +52,20 @@ export async function signupUser(data: SignupData) {
             expiresAt
         });
 
-        // Set cookie
-        (await cookies()).set('session_token', sessionToken, {
+        // Set cookie (match proxy's expected cookie name: auth_session)
+        (await cookies()).set('auth_session', sessionToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             expires: expiresAt,
-            path: '/'
+            path: '/',
+            domain: process.env.NODE_ENV === 'production'
+                ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
+                : undefined
         });
 
-        // Determine redirect
-        let redirectUrl = '/myaccount';
-        if (user.role === 'admin' || user.role === 'god') {
-            redirectUrl = '/ump';
-        } else if (user.role === 'center') {
-            redirectUrl = '/skills';
-        }
+        // Get role-based dashboard URL
+        const redirectUrl = getDashboardUrlForRole(user.role);
 
         return {
             success: true,

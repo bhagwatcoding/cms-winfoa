@@ -23,6 +23,9 @@ export type { IUser } from './core/User'
 export { default as Session } from './core/Session'
 export type { ISession } from './core/Session'
 
+export { Role } from './core/Role'
+export type { IRole } from './core/Role'
+
 // ==========================================
 // ACCOUNT MODELS (MyAccount subdomain)
 // ==========================================
@@ -83,3 +86,11 @@ export type { INotification } from './skills/Notification'
 
 export { default as PasswordResetToken } from './skills/PasswordResetToken'
 export type { IPasswordResetToken } from './skills/PasswordResetToken'
+
+// ==========================================
+// WALLET MODELS
+// ==========================================
+
+export { default as WalletTransaction } from './wallet/WalletTransaction'
+export type { IWalletTransaction } from './wallet/WalletTransaction'
+

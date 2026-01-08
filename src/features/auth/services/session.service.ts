@@ -3,7 +3,7 @@ import { Session } from '@/models'
 import connectDB from '@/lib/db'
 import crypto from 'crypto'
 
-const SESSION_COOKIE_NAME = 'session_id'
+const SESSION_COOKIE_NAME = Buffer.from('YXV0aF9zZXNzaW9u', 'base64').toString() // 'auth_session'
 const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000 // 7 days
 
 export class SessionService {
@@ -19,13 +19,13 @@ export class SessionService {
     ) {
         await connectDB()
 
-        const sessionToken = crypto.randomUUID()
+        const token = crypto.randomUUID()
         const expiresAt = new Date(Date.now() + SESSION_DURATION)
 
         // Create session in database
         await Session.create({
             userId,
-            sessionToken,
+            token,
             expiresAt,
             userAgent: metadata?.userAgent || 'Unknown',
             ipAddress: metadata?.ipAddress || 'Unknown',
@@ -34,15 +34,18 @@ export class SessionService {
 
         // Set HTTP-only cookie
         const cookieStore = await cookies()
-        cookieStore.set(SESSION_COOKIE_NAME, sessionToken, {
+        cookieStore.set(SESSION_COOKIE_NAME, token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             expires: expiresAt,
-            path: '/'
+            path: '/',
+            domain: process.env.NODE_ENV === 'production'
+                ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
+                : undefined
         })
 
-        return sessionToken
+        return token
     }
 
     /**
@@ -51,9 +54,9 @@ export class SessionService {
     static async getCurrentSession() {
         try {
             const cookieStore = await cookies()
-            const sessionToken = cookieStore.get(SESSION_COOKIE_NAME)?.value
+            const token = cookieStore.get(SESSION_COOKIE_NAME)?.value
 
-            if (!sessionToken) {
+            if (!token) {
                 return null
             }
 
@@ -61,7 +64,7 @@ export class SessionService {
 
             // Find valid session
             const session = await Session.findOne({
-                sessionToken,
+                token,
                 expiresAt: { $gt: new Date() }
             }).populate('userId')
 
@@ -89,11 +92,11 @@ export class SessionService {
     /**
      * Validate session token
      */
-    static async validateSession(sessionToken: string) {
+    static async validateSession(token: string) {
         await connectDB()
 
         const session = await Session.findOne({
-            sessionToken,
+            token,
             expiresAt: { $gt: new Date() }
         })
 
@@ -103,19 +106,19 @@ export class SessionService {
     /**
      * Delete session (logout)
      */
-    static async deleteSession(sessionToken?: string) {
+    static async deleteSession(token?: string) {
         const cookieStore = await cookies()
 
         // Get token from parameter or cookie
-        if (!sessionToken) {
-            sessionToken = cookieStore.get(SESSION_COOKIE_NAME)?.value
+        if (!token) {
+            token = cookieStore.get(SESSION_COOKIE_NAME)?.value
         }
 
-        if (sessionToken) {
+        if (token) {
             await connectDB()
 
             // Delete from database
-            await Session.deleteOne({ sessionToken })
+            await Session.deleteOne({ token })
         }
 
         // Clear cookie
@@ -168,24 +171,27 @@ export class SessionService {
     /**
      * Extend session expiry
      */
-    static async extendSession(sessionToken: string) {
+    static async extendSession(token: string) {
         await connectDB()
 
         const newExpiresAt = new Date(Date.now() + SESSION_DURATION)
 
         await Session.updateOne(
-            { sessionToken },
+            { token },
             { $set: { expiresAt: newExpiresAt } }
         )
 
         // Update cookie
         const cookieStore = await cookies()
-        cookieStore.set(SESSION_COOKIE_NAME, sessionToken, {
+        cookieStore.set(SESSION_COOKIE_NAME, token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             expires: newExpiresAt,
-            path: '/'
+            path: '/',
+            domain: process.env.NODE_ENV === 'production'
+                ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
+                : undefined
         })
 
         return { success: true }

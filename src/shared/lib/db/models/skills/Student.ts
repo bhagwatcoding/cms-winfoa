@@ -26,4 +26,10 @@ const StudentSchema: Schema = new Schema({
     status: { type: String, enum: ['active', 'completed', 'dropped'], default: 'active' },
 }, { timestamps: true });
 
+// Indexes for performance
+StudentSchema.index({ centerId: 1, status: 1 });
+StudentSchema.index({ courseId: 1, admissionDate: -1 });
+StudentSchema.index({ status: 1, admissionDate: -1 });
+
+
 export default mongoose.models.Student || mongoose.model<IStudent>('Student', StudentSchema);

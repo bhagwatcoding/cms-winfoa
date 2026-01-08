@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getLoginRedirectUrl } from '@/helpers';
 
-type SubdomainType = 'ump' | 'god' | 'skills' | 'api' | 'auth' | 'myaccount' | 'www' | null;
+type SubdomainType = 'ump' | 'god' | 'skills' | 'api' | 'auth' | 'myaccount' | 'www' | 'wallet' | null;
 
-interface ProxyConfig {
+export interface ProxyConfig {
     subdomain: SubdomainType;
     path: string;
     hostname: string;
@@ -10,6 +11,7 @@ interface ProxyConfig {
 }
 
 export class SubdomainProxy {
+
     private static readonly CONFIG = {
         ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000',
         AUTH_COOKIE: 'auth_session',
@@ -32,7 +34,7 @@ export class SubdomainProxy {
             const subdomain = cleanHost.replace(`.${cleanRoot}`, '');
 
             // Validate subdomain
-            const validSubdomains: SubdomainType[] = ['ump', 'god', 'skills', 'api', 'auth', 'myaccount', 'www'];
+            const validSubdomains: SubdomainType[] = ['ump', 'god', 'skills', 'api', 'auth', 'myaccount', 'www', 'wallet'];
             if (validSubdomains.includes(subdomain as SubdomainType)) {
                 return subdomain as SubdomainType;
             }
@@ -66,17 +68,12 @@ export class SubdomainProxy {
     ): NextResponse {
         // Redirect to auth if not authenticated
         if (!isAuthenticated && !this.isPublicPath(path)) {
-            // Redirect to auth subdomain
-            const protocol = request.nextUrl.protocol;
-            const authHost = `auth.${this.CONFIG.ROOT_DOMAIN.split(':')[0]}`;
-            const port = this.CONFIG.ROOT_DOMAIN.split(':')[1] ? `:${this.CONFIG.ROOT_DOMAIN.split(':')[1]}` : '';
-            const authUrl = `${protocol}//${authHost}${port}/login?redirect=${encodeURIComponent(request.url)}`;
-
+            const authUrl = getLoginRedirectUrl(request.url);
             return NextResponse.redirect(authUrl);
         }
 
-        // Rewrite to provider routes (god panel)
-        return NextResponse.rewrite(new URL(`/provider${path === '/' ? '' : path}`, request.url));
+        // Rewrite to god routes
+        return NextResponse.rewrite(new URL(`/god${path === '/' ? '' : path}`, request.url));
     }
 
     /**
@@ -95,11 +92,7 @@ export class SubdomainProxy {
 
         // Redirect to auth if not authenticated
         if (!isAuthenticated && !this.isPublicPath(path)) {
-            const protocol = request.nextUrl.protocol;
-            const authHost = `auth.${this.CONFIG.ROOT_DOMAIN.split(':')[0]}`;
-            const port = this.CONFIG.ROOT_DOMAIN.split(':')[1] ? `:${this.CONFIG.ROOT_DOMAIN.split(':')[1]}` : '';
-            const authUrl = `${protocol}//${authHost}${port}/login?redirect=${encodeURIComponent(request.url)}`;
-
+            const authUrl = getLoginRedirectUrl(request.url);
             return NextResponse.redirect(authUrl);
         }
 
@@ -155,16 +148,31 @@ export class SubdomainProxy {
     ): NextResponse {
         // Redirect to auth if not authenticated
         if (!isAuthenticated) {
-            const protocol = request.nextUrl.protocol;
-            const authHost = `auth.${this.CONFIG.ROOT_DOMAIN.split(':')[0]}`;
-            const port = this.CONFIG.ROOT_DOMAIN.split(':')[1] ? `:${this.CONFIG.ROOT_DOMAIN.split(':')[1]}` : '';
-            const authUrl = `${protocol}//${authHost}${port}/login?redirect=${encodeURIComponent(request.url)}`;
-
+            const authUrl = getLoginRedirectUrl(request.url);
             return NextResponse.redirect(authUrl);
         }
 
         // Rewrite to myaccount routes
         return NextResponse.rewrite(new URL(`/myaccount${path === '/' ? '' : path}`, request.url));
+    }
+
+    /**
+     * Handle WALLET subdomain (wallet.example.com)
+     * User wallet management portal
+     */
+    private static handleWalletSubdomain(
+        request: NextRequest,
+        path: string,
+        isAuthenticated: boolean
+    ): NextResponse {
+        // Redirect to auth if not authenticated
+        if (!isAuthenticated) {
+            const authUrl = getLoginRedirectUrl(request.url);
+            return NextResponse.redirect(authUrl);
+        }
+
+        // Rewrite to wallet routes
+        return NextResponse.rewrite(new URL(`/wallet${path === '/' ? '' : path}`, request.url));
     }
 
     /**
@@ -178,11 +186,7 @@ export class SubdomainProxy {
     ): NextResponse {
         // Redirect to auth if not authenticated
         if (!isAuthenticated && !this.isPublicPath(path)) {
-            const protocol = request.nextUrl.protocol;
-            const authHost = `auth.${this.CONFIG.ROOT_DOMAIN.split(':')[0]}`;
-            const port = this.CONFIG.ROOT_DOMAIN.split(':')[1] ? `:${this.CONFIG.ROOT_DOMAIN.split(':')[1]}` : '';
-            const authUrl = `${protocol}//${authHost}${port}/login?redirect=${encodeURIComponent(request.url)}`;
-
+            const authUrl = getLoginRedirectUrl(request.url);
             return NextResponse.redirect(authUrl);
         }
 
@@ -198,6 +202,14 @@ export class SubdomainProxy {
         request: NextRequest,
         path: string
     ): NextResponse {
+        // Auto-redirect auth-related paths to auth subdomain
+        const authPaths = ['/login', '/signup', '/forgot-password', '/reset-password', '/verify-email'];
+        if (authPaths.includes(path) || path.startsWith('/auth/')) {
+            const rootDomain = this.CONFIG.ROOT_DOMAIN;
+            const authUrl = `http://auth.${rootDomain}${path.startsWith('/auth/') ? path.replace('/auth', '') : path}`;
+            return NextResponse.redirect(authUrl);
+        }
+
         // Just serve the root routes (landing page)
         return NextResponse.next();
     }
@@ -247,6 +259,10 @@ export class SubdomainProxy {
 
             case 'myaccount':
                 response = this.handleMyAccountSubdomain(request, path, isAuthenticated);
+                break;
+
+            case 'wallet':
+                response = this.handleWalletSubdomain(request, path, isAuthenticated);
                 break;
 
             default:

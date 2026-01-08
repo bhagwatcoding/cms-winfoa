@@ -33,8 +33,7 @@ const ApiKeySchema = new Schema<IApiKey>(
     key: {
       type: String,
       required: true,
-      unique: true,
-      index: true
+      unique: true
     },
     keyPrefix: {
       type: String,
@@ -72,26 +71,26 @@ const ApiKeySchema = new Schema<IApiKey>(
 )
 
 // Generate API key
-ApiKeySchema.statics.generateKey = function() {
+ApiKeySchema.statics.generateKey = function () {
   const key = `winfoa_${crypto.randomBytes(32).toString('hex')}`
   const prefix = key.substring(0, 12)
   const hashedKey = crypto.createHash('sha256').update(key).digest('hex')
-  
+
   return { key, prefix, hashedKey }
 }
 
 // Verify API key
-ApiKeySchema.methods.verifyKey = function(providedKey: string): boolean {
+ApiKeySchema.methods.verifyKey = function (providedKey: string): boolean {
   const hashedProvidedKey = crypto.createHash('sha256').update(providedKey).digest('hex')
   return this.hashedKey === hashedProvidedKey
 }
 
 // Increment request count
-ApiKeySchema.methods.incrementRequests = async function() {
+ApiKeySchema.methods.incrementRequests = async function () {
   this.requestCount += 1
   this.lastUsedAt = new Date()
   await this.save()
 }
 
-export default mongoose.models.ApiKey || 
+export default mongoose.models.ApiKey ||
   mongoose.model<IApiKey>('ApiKey', ApiKeySchema)

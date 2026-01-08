@@ -60,17 +60,32 @@
       "@/lib/*": [
         "./src/shared/lib/*"
       ],
+      "@/helpers": [
+        "./src/shared/lib/helpers"
+      ],
       "@/models": [
         "./src/shared/lib/db/models"
       ],
       "@/models/*": [
         "./src/shared/lib/db/models/*"
       ],
+      "@/actions": [
+        "./src/shared/actions"
+      ],
       "@/actions/*": [
         "./src/shared/actions/*"
       ],
+      "@/utils": [
+        "./src/shared/lib/utils"
+      ],
+      "@/hooks": [
+        "./src/shared/hooks"
+      ],
       "@/hooks/*": [
         "./src/shared/hooks/*"
+      ],
+      "@/types": [
+        "./src/shared/types"
       ],
       "@/types/*": [
         "./src/shared/types/*"
