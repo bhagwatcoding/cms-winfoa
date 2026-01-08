@@ -3,11 +3,8 @@
 // Components
 export * from './components';
 
-// Models
-export * from './models';
-
 // Services
-// export * from './services';
+export * from './services/userid.service';
 
 // Types
 // export * from './types';

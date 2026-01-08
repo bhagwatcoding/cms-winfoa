@@ -24,9 +24,16 @@
     ],
     "baseUrl": ".",
     "paths": {
+      // ==========================================
+      // ROOT PATHS
+      // ==========================================
       "@/*": [
         "./src/*"
       ],
+
+      // ==========================================
+      // FEATURE PATHS (Multi-Subdomain Features)
+      // ==========================================
       "@/features/*": [
         "./src/features/*"
       ],
@@ -45,9 +52,26 @@
       "@/skills/*": [
         "./src/features/skills/*"
       ],
+      "@/ump/*": [
+        "./src/features/ump/*"
+      ],
+      "@/myaccount/*": [
+        "./src/features/myaccount/*"
+      ],
+      "@/developer/*": [
+        "./src/features/developer/*"
+      ],
+
+      // ==========================================
+      // SHARED PATHS (Common Across Subdomains)
+      // ==========================================
       "@/shared/*": [
         "./src/shared/*"
       ],
+
+      // ==========================================
+      // COMPONENT PATHS
+      // ==========================================
       "@/components/*": [
         "./src/shared/components/*"
       ],
@@ -57,33 +81,84 @@
       "@/ui/*": [
         "./src/shared/components/ui/*"
       ],
+
+      // ==========================================
+      // LIBRARY PATHS (Core Utilities)
+      // ==========================================
       "@/lib/*": [
         "./src/shared/lib/*"
       ],
+      "@/lib/db": [
+        "./src/shared/lib/db"
+      ],
+      "@/lib/session": [
+        "./src/shared/lib/session"
+      ],
+      "@/lib/permissions": [
+        "./src/shared/lib/permissions"
+      ],
+      "@/lib/constants": [
+        "./src/shared/lib/constants"
+      ],
+      "@/lib/validations": [
+        "./src/shared/lib/validations"
+      ],
+      "@/lib/crypto": [
+        "./src/shared/lib/crypto"
+      ],
+      "@/lib/helpers": [
+        "./src/shared/lib/helpers"
+      ],
+      "@/lib/utils": [
+        "./src/shared/lib/utils"
+      ],
+      "@/lib/types": [
+        "./src/shared/lib/types"
+      ],
+
+      // ==========================================
+      // ALIASES (Shortcuts)
+      // ==========================================
       "@/helpers": [
         "./src/shared/lib/helpers"
       ],
+      "@/utils": [
+        "./src/shared/lib/utils"
+      ],
+
+      // ==========================================
+      // DATABASE PATHS
+      // ==========================================
       "@/models": [
         "./src/shared/lib/db/models"
       ],
       "@/models/*": [
         "./src/shared/lib/db/models/*"
       ],
+
+      // ==========================================
+      // ACTIONS PATHS (Server Actions)
+      // ==========================================
       "@/actions": [
         "./src/shared/actions"
       ],
       "@/actions/*": [
         "./src/shared/actions/*"
       ],
-      "@/utils": [
-        "./src/shared/lib/utils"
-      ],
+
+      // ==========================================
+      // HOOKS PATHS
+      // ==========================================
       "@/hooks": [
         "./src/shared/hooks"
       ],
       "@/hooks/*": [
         "./src/shared/hooks/*"
       ],
+
+      // ==========================================
+      // TYPES PATHS
+      // ==========================================
       "@/types": [
         "./src/shared/types"
       ],
@@ -100,6 +175,10 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".next",
+    "out",
+    "build",
+    "dist"
   ]
 }

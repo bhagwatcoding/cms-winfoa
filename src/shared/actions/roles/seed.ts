@@ -6,7 +6,7 @@
 'use server';
 
 import connectDB from '@/lib/db';
-import { Role } from '@/lib/db/models/core/Role';
+import { Role } from '@/models/core/Role';
 import {
     SUPER_ADMIN_PERMISSIONS,
     ADMIN_PERMISSIONS,

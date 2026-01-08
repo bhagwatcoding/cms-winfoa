@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { EmployeesClient } from '@/shared/components/skills';
+import { EmployeesClient } from '@/components/skills';
 import { getSession } from '@/lib/auth';
 import connectDB from '@/lib/db';
 import { Employee } from '@/models';

@@ -1,9 +1,10 @@
 import "./globals.css";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/ui/toaster";
+import { ErrorBoundary } from "@/ui/error-boundary";
 
 export const metadata = {
-  title: "App : Management System",
-  description: "Application Branch Management System",
+  title: "WINFOA - Education Management System",
+  description: "Comprehensive education management platform with multi-subdomain architecture",
 };
 
 export default function RootLayout({
@@ -12,10 +13,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <Toaster />
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className="antialiased">
+        <ErrorBoundary>
+          <Toaster />
+          {children}
+        </ErrorBoundary>
       </body>
     </html>
   );

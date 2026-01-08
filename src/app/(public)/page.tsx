@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import { Button } from '@/ui/button';
 import { GraduationCap, ArrowRight, CheckCircle2, Shield, Zap, Users } from 'lucide-react';

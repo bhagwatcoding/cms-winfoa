@@ -106,7 +106,7 @@ export async function removeUserPermissionAction(
         // Remove permission
         if (user.customPermissions) {
             user.customPermissions = user.customPermissions.filter(
-                p => p !== permission
+                (p: string) => p !== permission
             );
         }
 

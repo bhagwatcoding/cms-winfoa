@@ -1,4 +1,4 @@
-import { MainLayout } from "@/shared/components/skills";
+import { MainLayout } from "@/components/skills";
 import { getSession } from "@/lib/auth";
 import connectDB from "@/lib/db";
 import { Center } from "@/models";

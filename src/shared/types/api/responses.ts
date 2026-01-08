@@ -77,9 +77,10 @@ export interface PaginationMeta {
 }
 
 export interface PaginatedResponse<T> extends BaseResponse {
-    success: true;
+    success: boolean;
     data: T[];
     pagination: PaginationMeta;
+    error?: string;
 }
 
 // ==========================================

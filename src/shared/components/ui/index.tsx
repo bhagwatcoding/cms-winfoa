@@ -1,23 +1,31 @@
-// UI Components Barrel Export
-export * from './alert-dialog'
+/**
+ * UI Components Barrel Export
+ * Central export point for all UI components
+ */
+
+// Core Components
 export * from './alert'
+export * from './alert-dialog'
 export * from './badge'
 export * from './button'
 export * from './card'
-export * from './dialog'
 export * from './checkbox'
+export * from './dialog'
 export * from './input'
 export * from './label'
 export * from './select'
 export * from './separator'
-export * from './sheet'
-export * from './sidebar'
-export * from './skeleton'
+// export * from './skeleton'
 export * from './switch'
-export * from './toast'
-export * from './tooltip'
 export * from './table'
+export * from './toast'
+export * from './toaster'
+export * from './tooltip'
 export * from './use-toast'
-export { useIsMobile } from "@/shared/hooks/use-mobile"
 
+// Layout Components
+export * from './sidebar'
 
+// Utility Components
+export * from './error-boundary'
+export * from './skeleton-loader'

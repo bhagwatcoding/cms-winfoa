@@ -24,7 +24,7 @@ export default function NotFound() {
                         Sorry, we couldn't find the page you're looking for. It might have been moved or doesn't exist.
                     </p>
 
-                    <div className="flex flexing-col sm:flex-row gap-3 justify-center">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
                         <Link href="/" passHref>
                             <Button className="w-full sm:w-auto gap-2 bg-blue-600 hover:bg-blue-700">
                                 <Home className="w-4 h-4" />
