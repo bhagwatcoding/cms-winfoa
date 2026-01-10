@@ -4,7 +4,6 @@ import {
     getOAuthUserInfo,
     type OAuthProvider
 } from '@/auth/lib/oauth/providers'
-import { AuthService } from '@/auth/services/auth.service'
 import { SessionService } from '@/auth/services/session.service'
 import { User } from '@/models'
 import connectDB from '@/lib/db'

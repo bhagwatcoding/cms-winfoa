@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         const studentId = searchParams.get('studentId');
 
         const skip = (page - 1) * limit;
-        const query: any = { centerId: user.centerId };
+        const query: Record<string, unknown> = { centerId: user.centerId };
 
         if (studentId) query.studentId = studentId;
 
@@ -37,7 +37,8 @@ export async function GET(request: NextRequest) {
             certificates,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch certificates:', error);
         return NextResponse.json({ error: 'Failed to fetch certificates' }, { status: 500 });
     }
 }
@@ -65,7 +66,8 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json(certificate, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create certificate:', error);
         return NextResponse.json({ error: 'Failed to create certificate' }, { status: 500 });
     }
 }

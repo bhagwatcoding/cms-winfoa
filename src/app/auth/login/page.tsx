@@ -8,118 +8,150 @@ import { Input } from '@/ui/input'
 import { Label } from '@/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/ui/card'
 import { Alert, AlertDescription } from '@/ui/alert'
-import { Loader2, Mail, Lock, Shield } from 'lucide-react'
+import { Loader2, Mail, Lock, Shield, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
 
 export default function LoginPage() {
     const [state, formAction, isPending] = useActionState(loginAction, null)
+    const [showPassword, setShowPassword] = useState(false)
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-950 dark:via-blue-950 dark:to-indigo-950 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 {/* Logo/Brand */}
-                <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl mb-4">
-                        <Shield className="w-8 h-8 text-white" />
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-center mb-8"
+                >
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl mb-4 shadow-lg">
+                        <Shield className="w-10 h-10 text-white" />
                     </div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                    <h1 className="text-4xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
                         Welcome Back
                     </h1>
-                    <p className="text-slate-600 mt-2">
-                        Sign in to your account to continue
+                    <p className="text-slate-600 dark:text-slate-400 text-lg">
+                        Sign in to continue to your account
                     </p>
-                </div>
+                </motion.div>
 
                 {/* Login Form Card */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Sign In</CardTitle>
-                        <CardDescription>
-                            Enter your credentials to access your account
-                        </CardDescription>
-                    </CardHeader>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 }}
+                >
+                    <Card className="border-2 shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
+                        <CardHeader className="space-y-1 pb-4">
+                            <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
+                            <CardDescription className="text-center">
+                                Enter your credentials to access your account
+                            </CardDescription>
+                        </CardHeader>
 
-                    <form action={formAction}>
-                        <CardContent className="space-y-4">
-                            {state?.error && (
-                                <Alert variant="destructive">
-                                    <AlertDescription>{state.error}</AlertDescription>
-                                </Alert>
-                            )}
+                        <form action={formAction}>
+                            <CardContent className="space-y-5">
+                                {state?.error && (
+                                    <Alert variant="destructive" className="border-2">
+                                        <AlertDescription className="font-medium">{state.error}</AlertDescription>
+                                    </Alert>
+                                )}
 
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <div className="relative">
-                                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        placeholder="Enter your email"
-                                        className="pl-10"
-                                        required
-                                        disabled={isPending}
-                                    />
+                                <div className="space-y-2">
+                                    <Label htmlFor="email" className="text-sm font-semibold">
+                                        Email Address
+                                    </Label>
+                                    <div className="relative">
+                                        <Mail className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+                                        <Input
+                                            id="email"
+                                            name="email"
+                                            type="email"
+                                            placeholder="your.email@example.com"
+                                            className="pl-11 h-12 border-2 focus:ring-2 focus:ring-blue-500"
+                                            required
+                                            disabled={isPending}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <Label htmlFor="password">Password</Label>
-                                    <Link
-                                        href="/forgot-password"
-                                        className="text-sm text-blue-600 hover:text-blue-700"
-                                    >
-                                        Forgot password?
+                                <div className="space-y-2">
+                                    <div className="flex items-center justify-between">
+                                        <Label htmlFor="password" className="text-sm font-semibold">
+                                            Password
+                                        </Label>
+                                        <Link
+                                            href="/forgot-password"
+                                            className="text-sm text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                                        >
+                                            Forgot password?
+                                        </Link>
+                                    </div>
+                                    <div className="relative">
+                                        <Lock className="absolute left-3 top-3.5 h-5 w-5 text-slate-400" />
+                                        <Input
+                                            id="password"
+                                            name="password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder="Enter your password"
+                                            className="pl-11 pr-11 h-12 border-2 focus:ring-2 focus:ring-blue-500"
+                                            required
+                                            disabled={isPending}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                                        >
+                                            {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </CardContent>
+
+                            <CardFooter className="flex flex-col space-y-4 pt-4">
+                                <Button
+                                    type="submit"
+                                    className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] disabled:hover:scale-100"
+                                    disabled={isPending}
+                                >
+                                    {isPending ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                            Signing in...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Sign In
+                                            <ArrowRight className="ml-2 h-5 w-5" />
+                                        </>
+                                    )}
+                                </Button>
+
+                                <div className="text-center text-sm text-muted-foreground pt-2">
+                                    Don&apos;t have an account?{' '}
+                                    <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-semibold underline transition-colors">
+                                        Sign up
                                     </Link>
                                 </div>
-                                <div className="relative">
-                                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        placeholder="Enter your password"
-                                        className="pl-10"
-                                        required
-                                        disabled={isPending}
-                                    />
-                                </div>
-                            </div>
-                        </CardContent>
-
-                        <CardFooter className="flex flex-col space-y-4">
-                            <Button
-                                type="submit"
-                                className="w-full"
-                                disabled={isPending}
-                            >
-                                {isPending ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Signing in...
-                                    </>
-                                ) : (
-                                    'Sign In'
-                                )}
-                            </Button>
-
-                            <div className="text-center text-sm text-muted-foreground">
-                                Don't have an account?{' '}
-                                <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium">
-                                    Sign up
-                                </Link>
-                            </div>
-                        </CardFooter>
-                    </form>
-                </Card>
+                            </CardFooter>
+                        </form>
+                    </Card>
+                </motion.div>
 
                 {/* Footer */}
-                <p className="text-center text-sm text-muted-foreground mt-6">
+                <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-center text-sm text-slate-500 mt-6"
+                >
                     By signing in, you agree to our{' '}
-                    <Link href="/terms" className="text-blue-600 hover:text-blue-700">
+                    <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-semibold underline">
                         Terms of Service
                     </Link>
-                </p>
+                </motion.p>
             </div>
         </div>
     )

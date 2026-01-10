@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { Session } from '@/models';
 import { cookies } from 'next/headers';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
     try {
         const cookieStore = await cookies();
         const token = cookieStore.get('auth_session')?.value;
@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
         cookieStore.delete('auth_session');
 
         return NextResponse.json({ message: 'Logged out successfully' });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Logout error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

@@ -57,7 +57,7 @@ interface Student {
     motherName: string;
     dob: string;
     gender: string;
-    courseId: any;
+    courseId: string;
     status: string;
     profileImage?: string;
     createdAt?: string;
@@ -90,19 +90,24 @@ export default function StudentsPage() {
     });
 
     // Load data
-    const loadData = async () => {
-        setIsLoading(true);
-        const [studentsData, coursesData] = await Promise.all([
-            getStudents(),
-            getCourses()
-        ]);
-        setStudents(studentsData);
-        setCourses(coursesData);
-        setIsLoading(false);
-    };
-
     useEffect(() => {
+        let cancelled = false;
+        const loadData = async () => {
+            setIsLoading(true);
+            const [studentsData, coursesData] = await Promise.all([
+                getStudents(),
+                getCourses()
+            ]);
+            if (!cancelled) {
+                setStudents(studentsData);
+                setCourses(coursesData);
+                setIsLoading(false);
+            }
+        };
         loadData();
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     // Filter students
@@ -134,7 +139,7 @@ export default function StudentsPage() {
             motherName: student.motherName,
             dob: student.dob.split('T')[0],
             gender: student.gender,
-            courseId: student.courseId?._id || '',
+            courseId: student.courseId || '',
             status: student.status
         });
         setIsDialogOpen(true);
@@ -427,7 +432,7 @@ export default function StudentsPage() {
 
                                                                     <div className="grid grid-cols-2 gap-4">
                                                                         <div className="space-y-2">
-                                                                            <Label htmlFor="edit-father">Father's Name</Label>
+                                                                            <Label htmlFor="edit-father">Father&apos;s Name</Label>
                                                                             <Input
                                                                                 id="edit-father"
                                                                                 value={formData.fatherName}
@@ -436,7 +441,7 @@ export default function StudentsPage() {
                                                                             />
                                                                         </div>
                                                                         <div className="space-y-2">
-                                                                            <Label htmlFor="edit-mother">Mother's Name</Label>
+                                                                            <Label htmlFor="edit-mother">Mother&apos;s Name</Label>
                                                                             <Input
                                                                                 id="edit-mother"
                                                                                 value={formData.motherName}
@@ -527,7 +532,7 @@ export default function StudentsPage() {
                                                             <AlertDialogHeader>
                                                                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                                 <AlertDialogDescription>
-                                                                    This will permanently delete "{student.name}".
+                                                                    This will permanently delete &quot;{student.name}&quot;.
                                                                     This action cannot be undone.
                                                                 </AlertDialogDescription>
                                                             </AlertDialogHeader>

@@ -21,10 +21,11 @@ export async function GET() {
                 dropped,
             }
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching student stats:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch student stats';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }

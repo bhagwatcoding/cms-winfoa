@@ -11,7 +11,8 @@ export async function GET(request: NextRequest) {
         }
 
         return NextResponse.json({ user });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to get profile:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
@@ -27,7 +28,7 @@ export async function PUT(request: NextRequest) {
         const body = await request.json();
 
         // Prevent Updating sensitive fields like password, role directly here if needed
-        const { password, role, ...updateData } = body;
+        const { ...updateData } = body;
 
         const updatedUser = await User.findByIdAndUpdate(
             user._id.toString(),
@@ -36,7 +37,8 @@ export async function PUT(request: NextRequest) {
         ).select('-password');
 
         return NextResponse.json({ user: updatedUser });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to update profile:', error);
         return NextResponse.json({ error: 'Failed to update profile' }, { status: 500 });
     }
 }

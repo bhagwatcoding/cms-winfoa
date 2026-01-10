@@ -20,10 +20,11 @@ export async function GET(
         }
 
         return NextResponse.json({ success: true, data: employee });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching employee:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }
@@ -57,18 +58,19 @@ export async function PUT(
             data: employee,
             message: 'Employee updated successfully'
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error updating employee:', error);
 
-        if (error.code === 11000) {
+        if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
             return NextResponse.json(
                 { success: false, error: 'Email already exists' },
                 { status: 400 }
             );
         }
 
+        const errorMessage = error instanceof Error ? error.message : 'Failed to update employee';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }
@@ -95,10 +97,11 @@ export async function DELETE(
             success: true,
             message: 'Employee deleted successfully'
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error deleting employee:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to delete employee';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }

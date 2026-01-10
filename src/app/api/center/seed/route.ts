@@ -12,9 +12,11 @@ export async function GET() {
                 { status: 500 }
             );
         }
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to seed database:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to seed database';
         return NextResponse.json(
-            { error: error.message || 'Failed to seed database' },
+            { error: errorMessage },
             { status: 500 }
         );
     }

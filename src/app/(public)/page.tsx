@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/ui/button';
-import { GraduationCap, ArrowRight, CheckCircle2, Shield, Zap, Users } from 'lucide-react';
+import { GraduationCap, ArrowRight, Shield, Zap, Users } from 'lucide-react';
 
 export default function LandingPage() {
     return (

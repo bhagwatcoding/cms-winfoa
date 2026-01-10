@@ -28,7 +28,8 @@ export async function GET(request: NextRequest) {
             courses,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch courses:', error);
         return NextResponse.json({ error: 'Failed to fetch courses' }, { status: 500 });
     }
 }
@@ -47,7 +48,8 @@ export async function POST(request: NextRequest) {
         const course = await Course.create(body);
 
         return NextResponse.json(course, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create course:', error);
         return NextResponse.json({ error: 'Failed to create course' }, { status: 500 });
     }
 }

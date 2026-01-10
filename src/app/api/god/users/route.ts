@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         const role = searchParams.get('role');
 
         const skip = (page - 1) * limit;
-        const query: any = {};
+        const query: Record<string, unknown> = {};
 
         if (role && role !== 'all') query.role = role;
 
@@ -32,7 +32,8 @@ export async function GET(request: NextRequest) {
             users,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch users:', error);
         return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
     }
 }
@@ -51,7 +52,8 @@ export async function POST(request: NextRequest) {
         const newUser = await User.create(body);
 
         return NextResponse.json({ ...newUser.toObject(), password: undefined }, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create user:', error);
         return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
     }
 }

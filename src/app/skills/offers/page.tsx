@@ -12,7 +12,7 @@ export default function OffersPage() {
             </div>
 
             <div className="rounded-2xl bg-white p-8 shadow-sm border border-slate-100">
-                <p className="text-slate-600">Check out this month's special offers and promotions.</p>
+                <p className="text-slate-600">Check out this month&apos;s special offers and promotions.</p>
             </div>
         </div>
     );

@@ -1,10 +1,12 @@
 import "./globals.css";
-import { Toaster } from "@/ui/toaster";
-import { ErrorBoundary } from "@/ui/error-boundary";
+import { Toaster, ErrorBoundary } from "@/ui";
 
 export const metadata = {
-  title: "WINFOA - Education Management System",
-  description: "Comprehensive education management platform with multi-subdomain architecture",
+  title: {
+    template: "%s - Education Management System",
+    default: "Winfoa - Education Management System"
+  },
+  description: "Comprehensive cms management platform with multi-subdomain architecture",
 };
 
 export default function RootLayout({

@@ -21,10 +21,11 @@ export async function GET() {
                 inactive,
             }
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching employee stats:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch employee stats';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }

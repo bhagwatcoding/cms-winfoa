@@ -41,17 +41,15 @@ export class SubdomainRouter extends ProxyUtils{
     }
     
     static handleAuth(req: NextRequest, path: string, authed: boolean): NextResponse {
-        if (authed && this.isPublicPath(path)) {
+        if (!authed && this.isPublicPath(path)) {
             const redirect = req.nextUrl.searchParams.get('redirect');
-            
             if (redirect) {
                 const rootDomain = CONFIG.ROOT_DOMAIN.replace(CONFIG.PORT_REGEX, '');
                 if (redirect.includes(rootDomain)) {
                     return NextResponse.redirect(redirect);
                 }
             }
-
-            const url = new URL('/', req.url);
+            const url = new URL('/', req.url) ;
             url.hostname = CONFIG.ROOT_DOMAIN.replace(CONFIG.PORT_REGEX, '');
             return NextResponse.redirect(url);
         }
@@ -74,7 +72,7 @@ export class SubdomainRouter extends ProxyUtils{
             const authUrl = this.buildAuthUrl(req);
             authUrl.searchParams.set('redirect', req.url);
             return NextResponse.redirect(authUrl);
-        }
+        } 
         return NextResponse.rewrite(this.buildUrl('/wallet', path, req));
     }
     

@@ -64,15 +64,20 @@ export default function CoursesPage() {
     });
 
     // Load courses
-    const loadCourses = async () => {
-        setIsLoading(true);
-        const data = await getCourses();
-        setCourses(data);
-        setIsLoading(false);
-    };
-
     useEffect(() => {
-        loadCourses();
+        let cancelled = false;
+        const loadCourses = async () => {
+            setIsLoading(true);
+            const data = await getCourses();
+            if (!cancelled) {
+                setCourses(data);
+                setIsLoading(false);
+            }
+        };
+        // loadCourses();
+        return () => {
+            cancelled = true;
+        };
     }, []);
 
     // Filter courses based on search
@@ -158,7 +163,7 @@ export default function CoursesPage() {
                     });
                     setIsDialogOpen(false);
                     resetForm();
-                    loadCourses();
+                    // loadCourses();
                 } else {
                     toast({
                         variant: "destructive",
@@ -188,7 +193,7 @@ export default function CoursesPage() {
                         title: "Success!",
                         description: `Course "${courseName}" deleted successfully.`,
                     });
-                    loadCourses();
+                    // loadCourses();
                 } else {
                     toast({
                         variant: "destructive",
@@ -437,7 +442,7 @@ export default function CoursesPage() {
                                             <AlertDialogHeader>
                                                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                 <AlertDialogDescription>
-                                                    This will permanently delete the course "{course.name}".
+                                                    This will permanently delete the course &quot;{course.name}&quot;.
                                                     This action cannot be undone.
                                                 </AlertDialogDescription>
                                             </AlertDialogHeader>

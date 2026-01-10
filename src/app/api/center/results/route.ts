@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '20');
 
         const skip = (page - 1) * limit;
-        const query: any = { centerId: user.centerId };
+        const query: Record<string, unknown> = { centerId: user.centerId };
 
         const [results, total] = await Promise.all([
             Result.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
@@ -29,7 +29,8 @@ export async function GET(request: NextRequest) {
             results,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch results:', error);
         return NextResponse.json({ error: 'Failed to fetch results' }, { status: 500 });
     }
 }
@@ -48,7 +49,8 @@ export async function POST(request: NextRequest) {
         const result = await Result.create({ ...body, centerId: user.centerId });
 
         return NextResponse.json(result, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create result:', error);
         return NextResponse.json({ error: 'Failed to create result' }, { status: 500 });
     }
 }

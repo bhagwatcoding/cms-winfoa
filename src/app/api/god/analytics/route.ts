@@ -36,7 +36,8 @@ export async function GET(request: NextRequest) {
             certificates: totalCertificates,
             recentTransactions,
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch analytics:', error);
         return NextResponse.json({ error: 'Failed to fetch analytics' }, { status: 500 });
     }
 }

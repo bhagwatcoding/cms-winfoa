@@ -31,10 +31,11 @@ export async function GET() {
                 pending: 0, // This can be calculated based on scheduled exams if you have that data
             }
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching result stats:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch result stats';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }

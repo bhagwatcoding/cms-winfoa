@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '20');
 
         const skip = (page - 1) * limit;
-        const query: any = { centerId: user.centerId };
+        const query: Record<string, unknown> = { centerId: user.centerId };
 
         const [admitCards, total] = await Promise.all([
             AdmitCard.find(query)
@@ -34,7 +34,8 @@ export async function GET(request: NextRequest) {
             admitCards,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch admit cards:', error);
         return NextResponse.json({ error: 'Failed to fetch admit cards' }, { status: 500 });
     }
 }
@@ -56,7 +57,8 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json(admitCard, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create admit card:', error);
         return NextResponse.json({ error: 'Failed to create admit card' }, { status: 500 });
     }
 }

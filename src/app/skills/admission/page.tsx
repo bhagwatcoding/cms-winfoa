@@ -198,11 +198,11 @@ export default function AdmissionPage() {
                             {/* Father's Name */}
                             <div className="space-y-2">
                                 <Label htmlFor="fatherName" className="text-sm font-medium">
-                                    Father's Name <span className="text-red-500">*</span>
+                                    Father&apos;s Name <span className="text-red-500">*</span>
                                 </Label>
                                 <Input
                                     id="fatherName"
-                                    placeholder="Enter father's name"
+                                    placeholder="Enter father&apos;s name"
                                     value={formData.fatherName}
                                     onChange={(e) => setFormData({ ...formData, fatherName: e.target.value })}
                                     required
@@ -213,7 +213,7 @@ export default function AdmissionPage() {
                             {/* Mother's Name */}
                             <div className="space-y-2">
                                 <Label htmlFor="motherName" className="text-sm font-medium">
-                                    Mother's Name <span className="text-red-500">*</span>
+                                    Mother&apos;s Name <span className="text-red-500">*</span>
                                 </Label>
                                 <Input
                                     id="motherName"

@@ -22,10 +22,11 @@ export async function GET(
         }
 
         return NextResponse.json({ success: true, data: result });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching result:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch result';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }
@@ -60,10 +61,11 @@ export async function PUT(
             data: result,
             message: 'Result updated successfully'
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error updating result:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to update result';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }
@@ -90,10 +92,11 @@ export async function DELETE(
             success: true,
             message: 'Result deleted successfully'
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error deleting result:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to delete result';
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, error: errorMessage },
             { status: 500 }
         );
     }

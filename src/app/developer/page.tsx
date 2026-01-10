@@ -38,7 +38,7 @@ export default function DeveloperPortalPage() {
                                 <h3 className="font-semibold">Make Your First Request</h3>
                                 <div className="mt-2 p-4 bg-gray-950 rounded-lg">
                                     <code className="text-sm text-green-400">
-                                        curl -H "Authorization: Bearer YOUR_API_KEY" \<br />
+                                        curl -H &quot;Authorization: Bearer YOUR_API_KEY&quot; \<br />
                                         &nbsp;&nbsp;https://api.winfoa.com/v1/users
                                     </code>
                                 </div>

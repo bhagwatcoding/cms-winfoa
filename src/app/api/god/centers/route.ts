@@ -28,7 +28,8 @@ export async function GET(request: NextRequest) {
             centers,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch centers:', error);
         return NextResponse.json({ error: 'Failed to fetch centers' }, { status: 500 });
     }
 }
@@ -47,7 +48,8 @@ export async function POST(request: NextRequest) {
         const center = await Center.create(body);
 
         return NextResponse.json(center, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create center:', error);
         return NextResponse.json({ error: 'Failed to create center' }, { status: 500 });
     }
 }

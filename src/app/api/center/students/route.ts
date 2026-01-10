@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         const search = searchParams.get('search') || '';
 
         const skip = (page - 1) * limit;
-        const query: any = { centerId: user.centerId };
+        const query: Record<string, unknown> = { centerId: user.centerId };
 
         if (search) {
             query.$or = [
@@ -38,7 +38,8 @@ export async function GET(request: NextRequest) {
             students,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch students:', error);
         return NextResponse.json({ error: 'Failed to fetch students' }, { status: 500 });
     }
 }
@@ -57,7 +58,8 @@ export async function POST(request: NextRequest) {
         const student = await Student.create({ ...body, centerId: user.centerId });
 
         return NextResponse.json(student, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create student:', error);
         return NextResponse.json({ error: 'Failed to create student' }, { status: 500 });
     }
 }

@@ -1,14 +1,14 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { AuthService, SessionService } from '../services'
+import connectDB from '@/lib/db'
+import { User, Session } from '@/models'
+import bcrypt from 'bcryptjs'
+import { cookies } from 'next/headers'
+import crypto from 'crypto'
 
-export async function signupAction(prevState: any, formData: FormData) {
-    let redirectUrl = '/'
-
+export async function signupAction(prevState: unknown, formData: FormData) {
     try {
-        const firstName = formData.get('firstName') as string
-        const lastName = formData.get('lastName') as string
         const name = formData.get('name') as string
         const email = formData.get('email') as string
         const password = formData.get('password') as string
@@ -17,48 +17,95 @@ export async function signupAction(prevState: any, formData: FormData) {
         const role = formData.get('role') as string
 
         // Validate input
-        // Allow either 'name' or ('firstName' AND 'lastName')
-        if (!(name || (firstName && lastName)) || !email || !password || !confirmPassword) {
-            return { error: 'All fields are required' }
+        if (!name || !email || !password || !confirmPassword) {
+            return { error: 'All required fields must be filled' }
         }
 
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return { error: 'Invalid email format' }
+        }
+
+        // Validate password match
         if (password !== confirmPassword) {
             return { error: 'Passwords do not match' }
         }
 
-        // Register user
-        const user = await AuthService.register({
-            email,
-            password,
-            firstName,
-            lastName,
-            name,
-            phone,
-            role: role || 'user' // Default to user if not provided
+        // Validate password strength
+        if (password.length < 6) {
+            return { error: 'Password must be at least 6 characters long' }
+        }
+
+        // Connect to database
+        await connectDB()
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email: email.toLowerCase().trim() })
+        if (existingUser) {
+            return { error: 'Email already registered. Please login instead.' }
+        }
+
+        // Map UI roles to DB roles
+        let userRole = 'student'
+        if (role === 'center' || role === 'Center Admin') userRole = 'center'
+        else if (role === 'staff' || role === 'Employee') userRole = 'staff'
+        else if (role === 'student' || role === 'Student') userRole = 'student'
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 12)
+
+        // Create user
+        const user = await User.create({
+            email: email.toLowerCase().trim(),
+            password: hashedPassword,
+            name: name.trim(),
+            phone: phone?.trim() || '',
+            role: userRole,
+            status: 'active',
+            isActive: true,
+            emailVerified: false,
+            joinedAt: new Date(),
         })
 
         // Create session
-        await SessionService.createSession(user._id.toString())
+        const token = crypto.randomBytes(32).toString('hex')
+        const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
+
+        await Session.create({
+            token,
+            userId: user._id,
+            expiresAt,
+            userAgent: 'unknown',
+            ipAddress: 'unknown',
+        })
+
+        // Set cookie
+        const cookieStore = await cookies()
+        cookieStore.set('auth_session', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            expires: expiresAt,
+            path: '/',
+        })
 
         // Determine redirect URL based on role
         const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000'
         const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
 
-        // Map roles to subdomains/dashboards
-        if (['admin', 'staff'].includes(user.role)) {
-            redirectUrl = `${protocol}://ump.${rootDomain}`
-        } else if (user.role === 'center') {
+        let redirectUrl = `${protocol}://myaccount.${rootDomain}`
+        if (userRole === 'center') {
             redirectUrl = `${protocol}://skills.${rootDomain}`
-        } else {
-            redirectUrl = `${protocol}://myaccount.${rootDomain}`
+        } else if (['admin', 'staff'].includes(userRole)) {
+            redirectUrl = `${protocol}://center.${rootDomain}`
         }
-    } catch (error: any) {
-        console.error('Signup action error:', error)
-        return {
-            error: error.message || 'Signup failed. Please try again.'
-        }
-    }
 
-    // Redirect after successful signup
-    redirect(redirectUrl)
+        // Redirect after successful signup
+        redirect(redirectUrl)
+    } catch (error: unknown) {
+        console.error('Signup action error:', error)
+        const errorMessage = error instanceof Error ? error.message : 'Signup failed. Please try again.'
+        return { error: errorMessage }
+    }
 }

@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         const type = searchParams.get('type');
 
         const skip = (page - 1) * limit;
-        const query: any = { userId: user._id };
+        const query: Record<string, unknown> = { userId: user._id };
 
         if (type) query.type = type;
 
@@ -32,7 +32,8 @@ export async function GET(request: NextRequest) {
             transactions,
             pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch transactions:', error);
         return NextResponse.json({ error: 'Failed to fetch transactions' }, { status: 500 });
     }
 }
@@ -58,7 +59,8 @@ export async function POST(request: NextRequest) {
         });
 
         return NextResponse.json(transaction, { status: 201 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to create transaction:', error);
         return NextResponse.json({ error: 'Failed to create transaction' }, { status: 500 });
     }
 }

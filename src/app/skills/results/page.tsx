@@ -171,7 +171,7 @@ export default function ResultsPage() {
                         </table>
                         {filteredResults.length === 0 && (
                             <div className="text-center py-8 text-slate-500">
-                                No results found matching "{searchTerm}"
+                                No results found matching &quot;{searchTerm}&quot;
                             </div>
                         )}
                     </div>

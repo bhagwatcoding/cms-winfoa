@@ -6,15 +6,13 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
-import { cn } from "@/utils"
-import {
-  Button,
-  Input,
-  Separator,
-  Skeleton,
-  Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle,
-  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
-} from '@/ui'
+import { cn } from "@/lib/utils"
+import {Button} from "./button"
+import {Input} from "./input"
+import {Separator} from "./separator"
+import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./sheet"
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./tooltip"
+
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -651,9 +649,9 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Random width between 50 to 90%.
+  // Fixed width for skeleton - using a stable value instead of random
   const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
+    return '70%'
   }, [])
 
   return (

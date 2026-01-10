@@ -2,16 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import {
-    Lock,
-    Key,
-    CheckCircle2,
-    AlertCircle,
-    Eye,
-    EyeOff,
-    Shield,
-    Info
-} from 'lucide-react';
+import {    Lock,    Key,    CheckCircle2,    AlertCircle,    Eye,    EyeOff,    Shield,    Info} from 'lucide-react';
 
 export default function ChangePasswordPage() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -94,7 +85,7 @@ export default function ChangePasswordPage() {
                                 <li>• Use a strong password with a mix of letters, numbers, and symbols</li>
                                 <li>• Never share your password with anyone</li>
                                 <li>• Change your password regularly</li>
-                                <li>• Don't use the same password across multiple sites</li>
+                                <li>• Don&apos;t use the same password across multiple sites</li>
                             </ul>
                         </div>
                     </div>
@@ -242,7 +233,7 @@ export default function ChangePasswordPage() {
                                 Need Help?
                             </h3>
                             <p className="text-sm text-amber-700 dark:text-amber-300 mb-4">
-                                If you've forgotten your current password, you can reset it using the forgot password option.
+                                If you&apos;ve forgotten your current password, you can reset it using the forgot password option.
                             </p>
                             <button className="w-full px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors">
                                 Forgot Password?

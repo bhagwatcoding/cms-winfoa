@@ -5,8 +5,8 @@ import { User } from '@/models';
 import { getDashboardUrlForRole } from '@/lib/helpers';
 import { loginSchema, type LoginInput } from '@/lib/validations';
 import { validateSchema } from '@/lib/validations/utils';
-import { createSession, setSessionCookie } from '@/lib/session';
-import type { LoginResponse } from '@/types/api';
+import { createSession, setSessionCookie, logout as logoutSession } from '@/lib/session';
+import type { LoginResponse, LogoutResponse } from '@/types/api';
 
 export async function loginUser(credentials: LoginInput): Promise<LoginResponse> {
     // Validate input
@@ -90,9 +90,6 @@ export async function loginUser(credentials: LoginInput): Promise<LoginResponse>
         };
     }
 }
-
-import { logout as logoutSession } from '@/lib/session';
-import type { LogoutResponse } from '@/types/api';
 
 export async function logoutUser(): Promise<LogoutResponse> {
     try {

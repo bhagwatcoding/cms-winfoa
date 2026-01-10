@@ -56,10 +56,8 @@ export class ProxyHandler extends SubdomainRouter{
         const hostname = request.headers.get('host') || '';
         const subdomain = this.getSubdomain(hostname);
         const authed = this.isAuthenticated(request);
-        console.log(subdomain);
 
         let response: NextResponse;
-        console.log()
         switch (subdomain) {
             case 'provider': response = this.handleProvider(request, path, authed); break;
             case 'ump': response = this.handleUmp(request, path, authed); break;

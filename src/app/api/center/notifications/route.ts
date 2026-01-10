@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const limit = parseInt(searchParams.get('limit') || '20');
 
-        const query: any = { userId: user._id };
+        const query: Record<string, unknown> = { userId: user._id };
 
         const notifications = await Notification.find(query)
             .sort({ createdAt: -1 })
@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
             .lean();
 
         return NextResponse.json({ notifications });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to fetch notifications:', error);
         return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });
     }
 }
@@ -57,7 +58,8 @@ export async function PATCH(request: NextRequest) {
         }
 
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Failed to update notifications:', error);
         return NextResponse.json({ error: 'Failed to update notifications' }, { status: 500 });
     }
 }

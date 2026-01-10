@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
         console.log(`Reset token for ${email}: ${token}`);
 
         return NextResponse.json({ message: 'If an account exists, a reset link has been sent.' });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        console.error('Forgot password error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
