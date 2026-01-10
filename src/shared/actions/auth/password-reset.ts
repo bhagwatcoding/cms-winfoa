@@ -3,6 +3,7 @@
 import connectDB from '@/lib/db';
 import { User } from '@/models';
 import bcrypt from 'bcryptjs';
+import { getErrorMessage } from '@/lib/utils';
 
 // Request password reset
 export async function requestPasswordReset(email: string) {
@@ -35,11 +36,11 @@ export async function requestPasswordReset(email: string) {
             success: true,
             message: 'Password reset link sent to your email.'
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Password reset request error:', error);
         return {
             success: false,
-            error: error.message || 'Failed to process request'
+            error: getErrorMessage(error) || 'Failed to process request'
         };
     }
 }
@@ -73,11 +74,11 @@ export async function resetPassword(token: string, newPassword: string) {
             success: true,
             message: 'Password reset successfully'
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Password reset error:', error);
         return {
             success: false,
-            error: error.message || 'Failed to reset password'
+            error: getErrorMessage(error) || 'Failed to reset password'
         };
     }
 }
@@ -115,11 +116,11 @@ export async function changePassword(userId: string, currentPassword: string, ne
             success: true,
             message: 'Password changed successfully'
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Change password error:', error);
         return {
             success: false,
-            error: error.message || 'Failed to change password'
+            error: getErrorMessage(error) || 'Failed to change password'
         };
     }
 }

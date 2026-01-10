@@ -149,7 +149,7 @@ export function getRoute(route: string, params: Record<string, string>): string 
  * @param params - Query parameters
  * @returns Query string
  */
-export function buildQueryString(params: Record<string, any>): string {
+export function buildQueryString(params: Record<string, unknown>): string {
     const query = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {

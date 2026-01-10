@@ -14,7 +14,7 @@ export interface IAdmitCard extends Document {
     examCenterAddress: string;
     status: 'available' | 'pending' | 'not-eligible';
     admitCardUrl?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }

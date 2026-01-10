@@ -18,7 +18,7 @@ export async function UserList({ currentUser, page, search, role, status }: User
         page,
         limit: 10,
         search: search || undefined,
-        role: role as any || undefined,
+        role: (role as string) || undefined,
         status: status || undefined,
     });
 

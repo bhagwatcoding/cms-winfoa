@@ -12,7 +12,7 @@ export interface ICertificate extends Document {
     issueDate: Date;
     status: 'issued' | 'ready' | 'pending';
     certificateUrl?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }

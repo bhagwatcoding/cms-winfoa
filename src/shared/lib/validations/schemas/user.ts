@@ -154,6 +154,22 @@ export const updateProfileSchema = z.object({
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 
 // ==========================================
+// USER PREFERENCES SCHEMA
+// ==========================================
+
+export const updateUserPreferencesSchema = z.object({
+    language: z.string().min(2).max(10).optional(),
+    theme: z.enum(['light', 'dark', 'system']).optional(),
+    notifications: z.object({
+        email: z.boolean().optional(),
+        push: z.boolean().optional(),
+        sms: z.boolean().optional(),
+    }).optional(),
+});
+
+export type UpdateUserPreferencesInput = z.infer<typeof updateUserPreferencesSchema>;
+
+// ==========================================
 // BULK USER OPERATIONS
 // ==========================================
 

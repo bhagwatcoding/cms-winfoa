@@ -10,7 +10,7 @@ export interface ITransaction extends Document {
     paymentMethod?: string;
     transactionId: string;
     balance: number;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -24,7 +24,7 @@ export interface ITransactionModel extends Model<ITransaction> {
         amount: number;
         description: string;
         paymentMethod?: string;
-        metadata?: Record<string, any>;
+        metadata?: Record<string, unknown>;
     }): Promise<ITransaction>;
 }
 
@@ -136,7 +136,7 @@ TransactionSchema.statics.createTransaction = async function (this: ITransaction
     amount: number;
     description: string;
     paymentMethod?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }) {
     const transactionId = `TXN${Date.now()}${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
 

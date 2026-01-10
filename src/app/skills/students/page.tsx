@@ -57,7 +57,7 @@ interface Student {
     motherName: string;
     dob: string;
     gender: string;
-    courseId: string;
+    courseId: string | { _id: string; name: string; code: string };
     status: string;
     profileImage?: string;
     createdAt?: string;
@@ -89,26 +89,22 @@ export default function StudentsPage() {
         status: 'active'
     });
 
-    // Load data
+    // Load data function
+    const loadData = async () => {
+        setIsLoading(true);
+        const [studentsData, coursesData] = await Promise.all([
+            getStudents(),
+            getCourses()
+        ]);
+        setStudents(studentsData);
+        setCourses(coursesData);
+        setIsLoading(false);
+    };
+
+    // Initial load
     useEffect(() => {
-        let cancelled = false;
-        const loadData = async () => {
-            setIsLoading(true);
-            const [studentsData, coursesData] = await Promise.all([
-                getStudents(),
-                getCourses()
-            ]);
-            if (!cancelled) {
-                setStudents(studentsData);
-                setCourses(coursesData);
-                setIsLoading(false);
-            }
-        };
         loadData();
-        return () => {
-            cancelled = true;
-        };
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Filter students
     const filteredStudents = students.filter(student => {
@@ -133,13 +129,16 @@ export default function StudentsPage() {
     // Handle edit
     const handleEdit = (student: Student) => {
         setEditingStudent(student);
+        const courseIdValue = typeof student.courseId === 'object'
+            ? student.courseId?._id
+            : student.courseId || '';
         setFormData({
             name: student.name,
             fatherName: student.fatherName,
             motherName: student.motherName,
             dob: student.dob.split('T')[0],
             gender: student.gender,
-            courseId: student.courseId || '',
+            courseId: courseIdValue,
             status: student.status
         });
         setIsDialogOpen(true);
@@ -380,10 +379,10 @@ export default function StudentsPage() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="text-sm font-medium text-slate-900">
-                                                    {student.courseId?.name || 'N/A'}
+                                                    {typeof student.courseId === 'object' ? student.courseId?.name : 'N/A'}
                                                 </div>
                                                 <div className="text-xs text-slate-500">
-                                                    {student.courseId?.code || ''}
+                                                    {typeof student.courseId === 'object' ? student.courseId?.code : ''}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">

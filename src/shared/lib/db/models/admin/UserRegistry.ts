@@ -10,7 +10,7 @@ export interface IUserRegistry extends Document {
     metadata: {
         subdomain?: string
         source?: string
-        [key: string]: any
+        [key: string]: unknown
     }
 }
 

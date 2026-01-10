@@ -7,7 +7,7 @@ export class UserIdService {
      */
     static async generateUserId(): Promise<string> {
         await connectDB()
-        const userId = await (UserRegistry as any).generateUserId()
+        const userId = await (UserRegistry as { generateUserId: () => Promise<string> }).generateUserId()
         return userId
     }
 
@@ -18,7 +18,7 @@ export class UserIdService {
         email: string
         role: string
         createdBy?: string
-        metadata?: any
+        metadata?: Record<string, unknown>
     }) {
         await connectDB()
 
@@ -100,7 +100,7 @@ export class UserIdService {
         const { page = 1, limit = 50, status, role } = options
         const skip = (page - 1) * limit
 
-        const filter: any = {}
+        const filter: Record<string, unknown> = {}
         if (status) filter.status = status
         if (role) filter.role = role
 
@@ -181,7 +181,7 @@ export class UserIdService {
             active: stats[0]?.active || 0,
             inactive: stats[0]?.inactive || 0,
             pending: stats[0]?.pending || 0,
-            byRole: byRole.reduce((acc: any, item: any) => {
+            byRole: byRole.reduce((acc: Record<string, number>, item: { _id: string; count: number }) => {
                 acc[item._id] = item.count
                 return acc
             }, {})

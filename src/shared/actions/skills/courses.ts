@@ -3,6 +3,9 @@
 import connectDB from '@/lib/db';
 import { Course } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createCourseSchema, updateCourseSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all courses
 export async function getCourses() {
@@ -33,32 +36,52 @@ export async function getCourseById(id: string) {
 }
 
 // Create course
-export async function createCourse(data: any) {
+export async function createCourse(data: unknown) {
     try {
         await connectDB();
-        const course = await Course.create(data);
+        // Validate input
+        const validation = validateSchema(createCourseSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const course = await Course.create(validation.data);
 
         revalidatePath('/skills/courses');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(course))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating course:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create course'
+            error: getErrorMessage(error) || 'Failed to create course'
         };
     }
 }
 
 // Update course
-export async function updateCourse(id: string, data: any) {
+export async function updateCourse(id: string, data: unknown) {
     try {
         await connectDB();
+        // Validate input
+        const validation = validateSchema(updateCourseSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const course = await Course.findByIdAndUpdate(
             id,
-            { $set: data },
+            { $set: validation.data },
             { new: true, runValidators: true }
         );
 
@@ -71,11 +94,11 @@ export async function updateCourse(id: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(course))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating course:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update course'
+            error: getErrorMessage(error) || 'Failed to update course'
         };
     }
 }
@@ -92,11 +115,11 @@ export async function deleteCourse(id: string) {
 
         revalidatePath('/skills/courses');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting course:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete course'
+            error: getErrorMessage(error) || 'Failed to delete course'
         };
     }
 }

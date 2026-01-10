@@ -2,7 +2,7 @@
 
 import {
     Building2, Users, TrendingUp, DollarSign,
-    Shield, CheckCircle2, Activity, Settings, Zap
+    Shield, CheckCircle2, Activity, Settings
 } from 'lucide-react';
 import { StatsGrid, QuickActions, SystemHealth, RecentActivities, Stat, RecentActivity } from '@/features/admin/components';
 

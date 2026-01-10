@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model, model, models } from 'mongoose';
 
 export interface INotification extends Document {
     userId: mongoose.Types.ObjectId;
@@ -8,7 +8,7 @@ export interface INotification extends Document {
     type: 'info' | 'success' | 'warning' | 'error';
     read: boolean;
     link?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -89,7 +89,7 @@ NotificationSchema.statics.createNotification = async function (data: {
     message: string;
     type?: 'info' | 'success' | 'warning' | 'error';
     link?: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
 }) {
     return await this.create(data);
 };
@@ -107,7 +107,7 @@ NotificationSchema.statics.getUserNotifications = async function (
     const { page = 1, limit = 20, type, read } = options;
     const skip = (page - 1) * limit;
 
-    const query: any = { userId: new mongoose.Types.ObjectId(userId) };
+    const query: mongoose.QueryFilter<INotification> = { userId: new mongoose.Types.ObjectId(userId) };
     if (type) query.type = type;
     if (read !== undefined) query.read = read;
 
@@ -130,6 +130,6 @@ NotificationSchema.statics.getUserNotifications = async function (
 };
 
 const Notification: Model<INotification> =
-    mongoose.models.Notification || mongoose.model<INotification>('Notification', NotificationSchema);
+    models.Notification || model<INotification>('Notification', NotificationSchema);
 
 export default Notification;

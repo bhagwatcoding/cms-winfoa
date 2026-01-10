@@ -108,7 +108,7 @@ export class AuthService {
     /**
      * Send verification email (stub)
      */
-    static async sendVerificationEmail(user: any) {
+    static async sendVerificationEmail(user: { email: string; name?: string }) {
         const token = crypto.randomBytes(32).toString('hex')
         const url = `${process.env.NEXT_PUBLIC_APP_URL}/auth/verify?token=${token}`
 

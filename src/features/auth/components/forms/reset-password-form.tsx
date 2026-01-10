@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { Button, Input, Label } from '@/ui'
 import { Loader2, CheckCircle2 } from 'lucide-react'
 
-async function resetPasswordAction(prevState: any, formData: FormData) {
+async function resetPasswordAction(prevState: unknown, formData: FormData) {
     'use server'
 
     try {
@@ -37,8 +37,9 @@ async function resetPasswordAction(prevState: any, formData: FormData) {
             success: true,
             message: 'Your password has been reset successfully!'
         }
-    } catch (error: any) {
-        return { error: error.message || 'Failed to reset password. Please try again.' }
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to reset password. Please try again.';
+        return { error: errorMessage }
     }
 }
 

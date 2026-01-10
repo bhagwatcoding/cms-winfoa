@@ -1,8 +1,11 @@
 'use server';
 
 import connectDB from '@/lib/db';
-import { Certificate, Student, Course } from '@/models';
+import { Certificate } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createCertificateSchema, updateCertificateSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all certificates
 export async function getCertificates() {
@@ -54,32 +57,52 @@ export async function getCertificateByCertNo(certNo: string) {
 }
 
 // Create certificate
-export async function createCertificate(data: any) {
+export async function createCertificate(data: unknown) {
     try {
         await connectDB();
-        const certificate = await Certificate.create(data);
+        // Validate input
+        const validation = validateSchema(createCertificateSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const certificate = await Certificate.create(validation.data!);
 
         revalidatePath('/skills/certificate');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(certificate))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating certificate:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create certificate'
+            error: getErrorMessage(error) || 'Failed to create certificate'
         };
     }
 }
 
 // Update certificate
-export async function updateCertificate(id: string, data: any) {
+export async function updateCertificate(id: string, data: unknown) {
     try {
         await connectDB();
+        // Validate input
+        const validation = validateSchema(updateCertificateSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const certificate = await Certificate.findByIdAndUpdate(
             id,
-            { $set: data },
+            { $set: validation.data },
             { new: true, runValidators: true }
         );
 
@@ -92,11 +115,11 @@ export async function updateCertificate(id: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(certificate))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating certificate:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update certificate'
+            error: getErrorMessage(error) || 'Failed to update certificate'
         };
     }
 }
@@ -113,11 +136,11 @@ export async function deleteCertificate(id: string) {
 
         revalidatePath('/skills/certificate');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting certificate:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete certificate'
+            error: getErrorMessage(error) || 'Failed to delete certificate'
         };
     }
 }

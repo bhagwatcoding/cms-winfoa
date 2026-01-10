@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     Search,
-    Filter,
     Download,
     User,
     Calendar,
@@ -18,11 +17,9 @@ import {
     Building2,
     Hash,
     CreditCard,
-    BookOpen,
     Clock,
     Users,
     FileText,
-    TrendingUp
 } from 'lucide-react';
 
 interface Student {
@@ -263,8 +260,8 @@ export default function RegistrationListPage() {
                             <button
                                 onClick={() => setFilterStatus('all')}
                                 className={`px-6 py-3 rounded-xl font-medium transition-all ${filterStatus === 'all'
-                                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/50'
-                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/50'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                                     }`}
                             >
                                 All
@@ -272,8 +269,8 @@ export default function RegistrationListPage() {
                             <button
                                 onClick={() => setFilterStatus('passed')}
                                 className={`px-6 py-3 rounded-xl font-medium transition-all ${filterStatus === 'passed'
-                                        ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-lg shadow-emerald-500/50'
-                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-lg shadow-emerald-500/50'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                                     }`}
                             >
                                 Passed
@@ -281,8 +278,8 @@ export default function RegistrationListPage() {
                             <button
                                 onClick={() => setFilterStatus('pending')}
                                 className={`px-6 py-3 rounded-xl font-medium transition-all ${filterStatus === 'pending'
-                                        ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-500/50'
-                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-white shadow-lg shadow-amber-500/50'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                                     }`}
                             >
                                 Pending
@@ -290,8 +287,8 @@ export default function RegistrationListPage() {
                             <button
                                 onClick={() => setFilterStatus('failed')}
                                 className={`px-6 py-3 rounded-xl font-medium transition-all ${filterStatus === 'failed'
-                                        ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-500/50'
-                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white shadow-lg shadow-red-500/50'
+                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                                     }`}
                             >
                                 Failed

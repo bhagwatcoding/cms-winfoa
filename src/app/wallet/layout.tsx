@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CreditCard, History, Home, LogOut, Wallet, ArrowUpRight, Landmark } from 'lucide-react';
+import { CreditCard, History, Home, LogOut, Wallet } from 'lucide-react';
 
 export default function WalletLayout({
     children,

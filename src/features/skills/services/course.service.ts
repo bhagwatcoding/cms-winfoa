@@ -54,7 +54,7 @@ export class CourseService {
     /**
      * Update course
      */
-    static async update(id: string, data: any) {
+    static async update(id: string, data: Partial<Record<string, unknown>>) {
         await connectDB()
 
         // If updating code, check uniqueness

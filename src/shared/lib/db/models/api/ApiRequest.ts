@@ -9,8 +9,8 @@ export interface IApiRequest extends Document {
     responseTime: number
     ipAddress: string
     userAgent: string
-    requestBody?: any
-    responseBody?: any
+    requestBody?: unknown
+    responseBody?: unknown
     error?: string
     timestamp: Date
 }

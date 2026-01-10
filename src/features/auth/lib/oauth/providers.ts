@@ -114,7 +114,7 @@ async function getGitHubUserEmail(accessToken: string): Promise<string> {
     })
 
     const emails = await response.json()
-    const primaryEmail = emails.find((e: any) => e.primary && e.verified)
+    const primaryEmail = emails.find((e: { primary: boolean; verified: boolean; email: string }) => e.primary && e.verified)
 
     return primaryEmail?.email || emails[0]?.email
 }

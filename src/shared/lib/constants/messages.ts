@@ -21,6 +21,10 @@ export const SUCCESS_MESSAGES = {
     USER_UPDATED: 'User updated successfully',
     USER_DELETED: 'User deleted successfully',
     PROFILE_UPDATED: 'Profile updated successfully',
+    USER_ACTIVATED: 'User activated successfully',
+    USER_DEACTIVATED: 'User deactivated successfully',
+    SESSION_INVALIDATED: 'Session invalidated successfully',
+    PERMISSIONS_UPDATED: 'User permissions updated successfully',
 
     // Student
     STUDENT_CREATED: 'Student created successfully',

@@ -15,7 +15,7 @@ export interface BaseResponse {
     error?: string;
 }
 
-export interface SuccessResponse<T = any> extends BaseResponse {
+export interface SuccessResponse<T = unknown> extends BaseResponse {
     success: true;
     data: T;
     message?: string;
@@ -28,7 +28,7 @@ export interface ErrorResponse extends BaseResponse {
     code?: string;
 }
 
-export type ApiResponse<T = any> = SuccessResponse<T> | ErrorResponse;
+export type ApiResponse<T = unknown> = SuccessResponse<T> | ErrorResponse;
 
 // ==========================================
 // AUTHENTICATION RESPONSES
@@ -87,14 +87,14 @@ export interface PaginatedResponse<T> extends BaseResponse {
 // CRUD RESPONSE TYPES
 // ==========================================
 
-export interface CreateResponse<T = any> extends BaseResponse {
+export interface CreateResponse<T = unknown> extends BaseResponse {
     success: boolean;
     data?: T;
     error?: string;
     errors?: ValidationError[];
 }
 
-export interface UpdateResponse<T = any> extends BaseResponse {
+export interface UpdateResponse<T = unknown> extends BaseResponse {
     success: boolean;
     data?: T;
     error?: string;
@@ -117,13 +117,13 @@ export interface BulkOperationResponse extends BaseResponse {
 // FETCH RESPONSE TYPES
 // ==========================================
 
-export interface FetchOneResponse<T = any> extends BaseResponse {
+export interface FetchOneResponse<T = unknown> extends BaseResponse {
     success: boolean;
     data?: T;
     error?: string;
 }
 
-export interface FetchManyResponse<T = any> extends BaseResponse {
+export interface FetchManyResponse<T = unknown> extends BaseResponse {
     success: boolean;
     data?: T[];
     total?: number;
@@ -137,7 +137,7 @@ export interface FetchManyResponse<T = any> extends BaseResponse {
 
 export interface StatisticsResponse extends BaseResponse {
     success: boolean;
-    data?: Record<string, any>;
+    data?: Record<string, unknown>;
     error?: string;
 }
 

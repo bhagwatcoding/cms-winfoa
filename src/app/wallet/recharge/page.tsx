@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { rechargeWallet } from '../actions';
-import { CheckCircle2, CreditCard, Smartphone, Zap } from 'lucide-react';
+import { CreditCard, Smartphone, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function RechargePage() {
@@ -72,8 +72,8 @@ export default function RechargePage() {
                         <button
                             onClick={() => setMethod('upi')}
                             className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${method === 'upi'
-                                    ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300'
-                                    : 'border-slate-100 dark:border-slate-700 hover:border-slate-300 text-slate-500'
+                                ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300'
+                                : 'border-slate-100 dark:border-slate-700 hover:border-slate-300 text-slate-500'
                                 }`}
                         >
                             <Smartphone size={24} />
@@ -82,8 +82,8 @@ export default function RechargePage() {
                         <button
                             onClick={() => setMethod('card')}
                             className={`p-4 rounded-xl border-2 flex flex-col items-center gap-3 transition-all ${method === 'card'
-                                    ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300'
-                                    : 'border-slate-100 dark:border-slate-700 hover:border-slate-300 text-slate-500'
+                                ? 'border-indigo-600 bg-indigo-50/50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300'
+                                : 'border-slate-100 dark:border-slate-700 hover:border-slate-300 text-slate-500'
                                 }`}
                         >
                             <CreditCard size={24} />

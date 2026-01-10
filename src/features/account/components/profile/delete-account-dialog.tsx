@@ -17,7 +17,7 @@ import { AlertTriangle, Loader2 } from 'lucide-react'
 export function DeleteAccountDialog() {
     const [open, setOpen] = useState(false)
     const [confirmation, setConfirmation] = useState('')
-    const [state, formAction, isPending] = useActionState<any, FormData>(deleteAccount, null)
+    const [state, formAction, isPending] = useActionState<unknown, FormData>(deleteAccount, null)
 
     const isConfirmed = confirmation === 'DELETE'
 

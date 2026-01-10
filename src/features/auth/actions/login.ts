@@ -65,27 +65,32 @@ export async function loginAction(prevState: unknown, formData: FormData) {
             ipAddress: 'unknown',
         })
 
-        // Set cookie
+        // Set cookie - with domain for cross-subdomain access
         const cookieStore = await cookies()
+        const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000'
+        const domain = process.env.NODE_ENV === 'production'
+            ? `.${rootDomain.replace(/:\d+$/, '')}`
+            : undefined
+
         cookieStore.set('auth_session', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             expires: expiresAt,
             path: '/',
+            domain,
         })
 
         // Determine redirect URL based on role
-        const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000'
         const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
 
         let redirectUrl = `${protocol}://myaccount.${rootDomain}`
-        if (user.role === 'skills') {
-            redirectUrl = `${protocol}://skills.${rootDomain}`
-        } else if (['admin', 'staff', 'super-admin'].includes(user.role)) {
-            redirectUrl = `${protocol}://skills.${rootDomain}`
-        } else if (user.role === 'super-admin') {
+        if (user.role === 'super-admin') {
             redirectUrl = `${protocol}://ump.${rootDomain}`
+        } else if (['admin', 'staff'].includes(user.role)) {
+            redirectUrl = `${protocol}://skills.${rootDomain}`
+        } else if (user.role === 'center') {
+            redirectUrl = `${protocol}://skills.${rootDomain}`
         }
 
         // Redirect after successful login

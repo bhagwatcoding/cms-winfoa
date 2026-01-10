@@ -17,7 +17,7 @@ export class ApiKeyService {
         await connectDB()
 
         // Generate key
-        const { key, prefix, hashedKey } = (ApiKey as any).generateKey()
+        const { key, prefix, hashedKey } = ApiKey.generateKey()
 
         // Create API key
         const apiKey = await ApiKey.create({

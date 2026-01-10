@@ -1,8 +1,11 @@
 'use server';
 
 import connectDB from '@/lib/db';
-import { Result, Student, Course } from '@/models';
+import { Result } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createResultSchema, updateResultSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all results
 export async function getResults() {
@@ -38,32 +41,52 @@ export async function getResultById(id: string) {
 }
 
 // Create result
-export async function createResult(data: any) {
+export async function createResult(data: unknown) {
     try {
         await connectDB();
-        const result = await Result.create(data);
+        // Validate input
+        const validation = validateSchema(createResultSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const result = await Result.create(validation.data!);
 
         revalidatePath('/skills/results');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(result))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating result:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create result'
+            error: getErrorMessage(error) || 'Failed to create result'
         };
     }
 }
 
 // Update result
-export async function updateResult(id: string, data: any) {
+export async function updateResult(id: string, data: unknown) {
     try {
         await connectDB();
+        // Validate input
+        const validation = validateSchema(updateResultSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const result = await Result.findByIdAndUpdate(
             id,
-            { $set: data },
+            { $set: validation.data! },
             { new: true, runValidators: true }
         );
 
@@ -76,11 +99,11 @@ export async function updateResult(id: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(result))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating result:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update result'
+            error: getErrorMessage(error) || 'Failed to update result'
         };
     }
 }
@@ -97,11 +120,11 @@ export async function deleteResult(id: string) {
 
         revalidatePath('/skills/results');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting result:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete result'
+            error: getErrorMessage(error) || 'Failed to delete result'
         };
     }
 }

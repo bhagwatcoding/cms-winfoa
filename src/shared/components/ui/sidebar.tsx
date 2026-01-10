@@ -7,11 +7,12 @@ import { PanelLeft } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
-import {Button} from "./button"
-import {Input} from "./input"
-import {Separator} from "./separator"
-import {Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./sheet"
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./tooltip"
+import { Button } from "./button"
+import { Input } from "./input"
+import { Separator } from "./separator"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "./sheet"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./tooltip"
+import { Skeleton } from "./skeleton"
 
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"

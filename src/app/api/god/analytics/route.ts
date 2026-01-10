@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { Transaction } from '@/models';
 import { Student } from '@/models';
 import { Certificate } from '@/models';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const { user } = await getSession();
 

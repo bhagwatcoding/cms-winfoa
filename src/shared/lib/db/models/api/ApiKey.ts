@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document, model, models } from 'mongoose'
 import crypto from 'crypto'
 
 export interface IApiKey extends Document {
@@ -92,5 +92,4 @@ ApiKeySchema.methods.incrementRequests = async function () {
   await this.save()
 }
 
-export default mongoose.models.ApiKey ||
-  mongoose.model<IApiKey>('ApiKey', ApiKeySchema)
+export default models.ApiKey || model<IApiKey>('ApiKey', ApiKeySchema)

@@ -7,7 +7,7 @@ import { Loader2, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 
 export function ChangePasswordForm() {
-    const [state, formAction, isPending] = useActionState<any, FormData>(changePassword, null)
+    const [state, formAction, isPending] = useActionState<unknown, FormData>(changePassword, null)
     const [showPasswords, setShowPasswords] = useState({
         current: false,
         new: false,

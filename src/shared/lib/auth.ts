@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import connectDB from './db';
-import { User, Session } from '@/models';
+import { Session } from '@/models';
 import type { IUser, ISession } from '@/models';
 
 // Constants

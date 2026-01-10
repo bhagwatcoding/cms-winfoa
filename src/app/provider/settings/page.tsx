@@ -7,9 +7,6 @@ import {
     Bell,
     Shield,
     Database,
-    Mail,
-    Smartphone,
-    Lock,
     Save,
     RefreshCw
 } from 'lucide-react';

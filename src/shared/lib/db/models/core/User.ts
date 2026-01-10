@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
 // User Interface - Globally accessible type
@@ -133,20 +133,17 @@ UserSchema.index({ centerId: 1, status: 1 }) // Compound index for center querie
 
 
 // Hash password before saving
-UserSchema.pre('save', async function (next) {
+// Hash password before saving
+UserSchema.pre('save', async function () {
     // Only hash if password is modified
     if (!this.isModified('password')) {
         return
     }
 
-    try {
-        // Only hash if password exists
-        if (this.password) {
-            const salt = await bcrypt.genSalt(12)
-            this.password = await bcrypt.hash(this.password, salt)
-        }
-    } catch (error: any) {
-        throw error
+    // Only hash if password exists
+    if (this.password) {
+        const salt = await bcrypt.genSalt(12)
+        this.password = await bcrypt.hash(this.password, salt)
     }
 })
 
@@ -159,7 +156,7 @@ UserSchema.methods.comparePassword = async function (
             return false
         }
         return await bcrypt.compare(candidatePassword, this.password)
-    } catch (error) {
+    } catch {
         return false
     }
 }

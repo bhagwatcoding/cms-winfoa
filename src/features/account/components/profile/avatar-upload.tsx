@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button, Label } from '@/ui'
-import { Upload, Camera, Loader2, X } from 'lucide-react'
+import { Upload, Loader2, X } from 'lucide-react'
 import Image from 'next/image'
 
 interface AvatarUploadProps {

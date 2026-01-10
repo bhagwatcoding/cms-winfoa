@@ -15,7 +15,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ initialData }: ProfileFormProps) {
-    const [state, formAction, isPending] = useActionState<any, FormData>(updateProfile, null)
+    const [state, formAction, isPending] = useActionState<unknown, FormData>(updateProfile, null)
 
     return (
         <div className="space-y-6">

@@ -3,6 +3,9 @@
 import connectDB from '@/lib/db';
 import { Notification } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createNotificationSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all notifications
 export async function getNotifications(userId?: string) {
@@ -27,7 +30,7 @@ export async function getUnreadCount(userId: string) {
         await connectDB();
         const count = await Notification.countDocuments({
             userId,
-            isRead: false
+            read: false
         });
 
         return count;
@@ -38,21 +41,31 @@ export async function getUnreadCount(userId: string) {
 }
 
 // Create notification
-export async function createNotification(data: any) {
+export async function createNotification(data: unknown) {
     try {
         await connectDB();
-        const notification = await Notification.create(data);
+        // Validate input
+        const validation = validateSchema(createNotificationSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const notification = await Notification.create(validation.data!);
 
         revalidatePath('/skills/notifications');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(notification))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating notification:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create notification'
+            error: getErrorMessage(error) || 'Failed to create notification'
         };
     }
 }
@@ -63,7 +76,7 @@ export async function markAsRead(id: string) {
         await connectDB();
         const notification = await Notification.findByIdAndUpdate(
             id,
-            { $set: { isRead: true } },
+            { $set: { read: true } },
             { new: true }
         );
 
@@ -73,11 +86,11 @@ export async function markAsRead(id: string) {
 
         revalidatePath('/skills/notifications');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error marking notification as read:', error);
         return {
             success: false,
-            error: error.message || 'Failed to mark as read'
+            error: getErrorMessage(error) || 'Failed to mark as read'
         };
     }
 }
@@ -87,17 +100,17 @@ export async function markAllAsRead(userId: string) {
     try {
         await connectDB();
         await Notification.updateMany(
-            { userId, isRead: false },
-            { $set: { isRead: true } }
+            { userId, read: false },
+            { $set: { read: true } }
         );
 
         revalidatePath('/skills/notifications');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error marking all as read:', error);
         return {
             success: false,
-            error: error.message || 'Failed to mark all as read'
+            error: getErrorMessage(error) || 'Failed to mark all as read'
         };
     }
 }
@@ -114,11 +127,11 @@ export async function deleteNotification(id: string) {
 
         revalidatePath('/skills/notifications');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting notification:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete notification'
+            error: getErrorMessage(error) || 'Failed to delete notification'
         };
     }
 }

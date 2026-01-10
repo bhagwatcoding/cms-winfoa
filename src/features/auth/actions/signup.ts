@@ -80,25 +80,30 @@ export async function signupAction(prevState: unknown, formData: FormData) {
             ipAddress: 'unknown',
         })
 
-        // Set cookie
+        // Set cookie - with domain for cross-subdomain access
         const cookieStore = await cookies()
+        const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000'
+        const domain = process.env.NODE_ENV === 'production'
+            ? `.${rootDomain.replace(/:\d+$/, '')}`
+            : undefined
+
         cookieStore.set('auth_session', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             expires: expiresAt,
             path: '/',
+            domain,
         })
 
         // Determine redirect URL based on role
-        const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000'
         const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
 
         let redirectUrl = `${protocol}://myaccount.${rootDomain}`
         if (userRole === 'center') {
             redirectUrl = `${protocol}://skills.${rootDomain}`
         } else if (['admin', 'staff'].includes(userRole)) {
-            redirectUrl = `${protocol}://center.${rootDomain}`
+            redirectUrl = `${protocol}://skills.${rootDomain}`
         }
 
         // Redirect after successful signup

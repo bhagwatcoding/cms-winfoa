@@ -95,7 +95,7 @@ export interface IActivityLog extends Document {
     description: string;
     ipAddress: string;
     userAgent: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     timestamp: Date;
 }
 
@@ -142,7 +142,7 @@ export interface IUserRegistry extends Document {
     umpUserId: string;
     registeredAt: Date;
     status: UserStatus;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -17,14 +17,14 @@ interface Activity {
     action: string
     timestamp: Date | string
     ipAddress?: string
-    details?: any
+    details?: Record<string, unknown>
 }
 
 interface ActivityLogTableProps {
     activities: Activity[]
 }
 
-const actionIcons: Record<string, any> = {
+const actionIcons: Record<string, React.ComponentType<{ className?: string }>> = {
     login: LogIn,
     logout: LogOut,
     password_change: Key,

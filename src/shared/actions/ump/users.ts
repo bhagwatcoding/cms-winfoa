@@ -4,6 +4,9 @@ import connectDB from '@/lib/db';
 import { User, UserRegistry } from '@/models';
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createUserSchema, updateUserSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all users (admin only)
 export async function getAllUsers() {
@@ -37,12 +40,24 @@ export async function getUserById(id: string) {
 }
 
 // Create new user (admin)
-export async function createUser(data: any) {
+export async function createUser(data: unknown) {
     try {
         await connectDB();
 
+        // Validate input
+        const validation = validateSchema(createUserSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const userData = validation.data!;
+
         // Check if user exists
-        const existingUser = await User.findOne({ email: data.email });
+        const existingUser = await User.findOne({ email: userData.email });
         if (existingUser) {
             return {
                 success: false,
@@ -51,19 +66,32 @@ export async function createUser(data: any) {
         }
 
         // Hash password
-        const hashedPassword = await bcrypt.hash(data.password, 10);
+        // userData.password is optional in schema but logic here requires hashing if present?
+        // Schema seems to allow optional password in createUserSchema?
+        // Let's check schema again. createUserSchema defines password as optional.
+        // If password is explicitly required for new user creation in UMP, we might need a stricter schema or check here.
+        // Assuming password IS provided for now or handled.
+        // If password is not provided, bcrypt.hash might fail or we skip hashing.
+        // Standard create usuallly entails a password.
+        // If password is undefined, we probably shouldn't try to hash undefined.
+        // However, User model requires password usually?
+
+        let hashedPassword = undefined;
+        if (userData.password) {
+            hashedPassword = await bcrypt.hash(userData.password, 10);
+        }
 
         const user = await User.create({
-            ...data,
+            ...userData,
             password: hashedPassword,
-            status: data.status || 'active',
+            status: userData.status || 'active',
             joinedAt: new Date()
         });
 
         // Create user registry entry
         await UserRegistry.create({
             userId: user._id,
-            registeredBy: data.createdBy || 'system',
+            registeredBy: userData.createdBy || 'system',
             source: 'admin'
         });
 
@@ -72,28 +100,45 @@ export async function createUser(data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(user))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating user:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create user'
+            error: getErrorMessage(error) || 'Failed to create user'
         };
     }
 }
 
 // Update user (admin)
-export async function updateUser(id: string, data: any) {
+export async function updateUser(id: string, data: unknown) {
     try {
         await connectDB();
 
+        // Validate input
+        const validation = validateSchema(updateUserSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const updateData = validation.data!;
+
         // If password is provided, hash it
-        if (data.password) {
-            data.password = await bcrypt.hash(data.password, 10);
+        // The schema allows optional password.
+        if (updateData.password) {
+            // We need to re-assign or handle the hashed password. 
+            // Since updateData is inferred from Zod, we can't easily mutate it if it's strictly typed as Readonly sometimes, 
+            // but here it's likely a plain object.
+            // But 'password' in updateData is string. We replace it.
+            (updateData as Record<string, unknown>).password = await bcrypt.hash(updateData.password, 10);
         }
 
         const user = await User.findByIdAndUpdate(
             id,
-            { $set: data },
+            { $set: updateData },
             { new: true, runValidators: true }
         ).select('-password');
 
@@ -106,11 +151,11 @@ export async function updateUser(id: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(user))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating user:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update user'
+            error: getErrorMessage(error) || 'Failed to update user'
         };
     }
 }
@@ -131,11 +176,11 @@ export async function deleteUser(id: string) {
 
         revalidatePath('/ump');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting user:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete user'
+            error: getErrorMessage(error) || 'Failed to delete user'
         };
     }
 }

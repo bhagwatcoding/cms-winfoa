@@ -6,7 +6,6 @@ import {
     Wallet,
     CreditCard,
     IndianRupee,
-    TrendingUp,
     History,
     ArrowRight,
     Smartphone,
@@ -112,8 +111,8 @@ export default function WalletRechargePage() {
                                         key={value}
                                         onClick={() => handleQuickSelect(value)}
                                         className={`p-4 rounded-xl border-2 transition-all duration-300 ${selectedAmount === value
-                                                ? 'border-green-500 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 scale-105'
-                                                : 'border-slate-200 dark:border-slate-700 hover:border-green-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                            ? 'border-green-500 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 scale-105'
+                                            : 'border-slate-200 dark:border-slate-700 hover:border-green-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                                             }`}
                                     >
                                         <p className="text-sm font-semibold">₹{value}</p>
@@ -161,13 +160,13 @@ export default function WalletRechargePage() {
                                         key={method.id}
                                         onClick={() => setSelectedMethod(method.id)}
                                         className={`w-full p-4 rounded-xl border-2 transition-all duration-300 flex items-center gap-4 ${selectedMethod === method.id
-                                                ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
-                                                : 'border-slate-200 dark:border-slate-700 hover:border-green-300 hover:bg-slate-50 dark:hover:bg-slate-800'
+                                            ? 'border-green-500 bg-green-50 dark:bg-green-950/20'
+                                            : 'border-slate-200 dark:border-slate-700 hover:border-green-300 hover:bg-slate-50 dark:hover:bg-slate-800'
                                             }`}
                                     >
                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${selectedMethod === method.id
-                                                ? 'bg-green-500 text-white'
-                                                : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
+                                            ? 'bg-green-500 text-white'
+                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                                             }`}>
                                             <method.icon className="w-6 h-6" />
                                         </div>

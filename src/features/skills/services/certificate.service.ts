@@ -11,7 +11,7 @@ export class CertificateService {
     }) {
         await connectDB()
 
-        const query: any = {}
+        const query: Record<string, unknown> = {}
         if (filters?.studentId) query.studentId = filters.studentId
         if (filters?.courseId) query.courseId = filters.courseId
 
@@ -59,7 +59,7 @@ export class CertificateService {
     /**
      * Create certificate
      */
-    static async create(data: any) {
+    static async create(data: Record<string, unknown> & { certificateNo?: string; studentId: string; courseId: string }) {
         await connectDB()
 
         // Generate certificate number if not provided
@@ -86,7 +86,7 @@ export class CertificateService {
     /**
      * Update certificate
      */
-    static async update(id: string, data: any) {
+    static async update(id: string, data: Partial<Record<string, unknown>>) {
         await connectDB()
 
         const certificate = await Certificate.findByIdAndUpdate(

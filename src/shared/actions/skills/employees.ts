@@ -3,6 +3,9 @@
 import connectDB from '@/lib/db';
 import { Employee } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createEmployeeSchema, updateEmployeeSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all employees
 export async function getEmployees() {
@@ -33,32 +36,52 @@ export async function getEmployeeById(id: string) {
 }
 
 // Create employee
-export async function createEmployee(data: any) {
+export async function createEmployee(data: unknown) {
     try {
         await connectDB();
-        const employee = await Employee.create(data);
+        // Validate input
+        const validation = validateSchema(createEmployeeSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const employee = await Employee.create(validation.data!);
 
         revalidatePath('/skills/employees');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(employee))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating employee:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create employee'
+            error: getErrorMessage(error) || 'Failed to create employee'
         };
     }
 }
 
 // Update employee
-export async function updateEmployee(id: string, data: any) {
+export async function updateEmployee(id: string, data: unknown) {
     try {
         await connectDB();
+        // Validate input
+        const validation = validateSchema(updateEmployeeSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const employee = await Employee.findByIdAndUpdate(
             id,
-            { $set: data },
+            { $set: validation.data! },
             { new: true, runValidators: true }
         );
 
@@ -71,11 +94,11 @@ export async function updateEmployee(id: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(employee))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating employee:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update employee'
+            error: getErrorMessage(error) || 'Failed to update employee'
         };
     }
 }
@@ -92,11 +115,11 @@ export async function deleteEmployee(id: string) {
 
         revalidatePath('/skills/employees');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting employee:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete employee'
+            error: getErrorMessage(error) || 'Failed to delete employee'
         };
     }
 }

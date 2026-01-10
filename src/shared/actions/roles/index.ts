@@ -10,8 +10,9 @@ import { Role, User } from '@/models';
 import type { IRole } from '@/models';
 import { getCurrentUser } from '@/lib/session';
 import { requirePermission } from '@/lib/permissions';
-import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
+import { ERROR_MESSAGES } from '@/lib/constants';
 import type { CreateResponse, UpdateResponse, DeleteResponse, FetchManyResponse } from '@/types/api';
+import { getErrorMessage } from '@/lib/utils';
 
 // ==========================================
 // CREATE ROLE
@@ -57,11 +58,11 @@ export async function createRoleAction(data: {
             message: 'Role created successfully',
             data: role.toObject() as IRole,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Create role error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -118,11 +119,11 @@ export async function updateRoleAction(
             message: 'Role updated successfully',
             data: role.toObject() as IRole,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Update role error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -172,11 +173,11 @@ export async function deleteRoleAction(roleId: string): Promise<DeleteResponse> 
             message: 'Role deleted successfully',
             deletedCount: 1,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Delete role error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -207,11 +208,11 @@ export async function getRoleAction(roleId: string): Promise<CreateResponse<IRol
             success: true,
             data: role as IRole,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Get role error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -231,7 +232,7 @@ export async function getRolesAction(params?: {
 
         await connectDB();
 
-        const query: any = {};
+        const query: Record<string, unknown> = {};
 
         if (!params?.includeInactive) {
             query.isActive = true;
@@ -246,11 +247,11 @@ export async function getRolesAction(params?: {
             data: roles as IRole[],
             total: roles.length,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Get roles error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
             data: [],
             total: 0,
         };
@@ -278,11 +279,11 @@ export async function getRoleBySlugAction(slug: string): Promise<CreateResponse<
             success: true,
             data: role as IRole,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Get role by slug error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -294,7 +295,7 @@ export async function getRoleBySlugAction(slug: string): Promise<CreateResponse<
 export async function assignRoleToUserAction(
     userId: string,
     roleId: string
-): Promise<UpdateResponse<any>> {
+): Promise<UpdateResponse<unknown>> {
     try {
         const currentUser = await getCurrentUser();
 
@@ -324,7 +325,7 @@ export async function assignRoleToUserAction(
 
         // Update user's role
         user.roleId = role._id;
-        user.role = role.slug as any; // Sync string role for backward compatibility
+        user.role = role.slug as 'super-admin' | 'admin' | 'staff' | 'student' | 'user' | 'center'; // Sync string role for backward compatibility
         await user.save();
 
         return {
@@ -332,11 +333,11 @@ export async function assignRoleToUserAction(
             message: `Role "${role.name}" assigned to ${user.name}`,
             data: user.toObject(),
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Assign role error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }

@@ -5,6 +5,7 @@ import { User, Session } from '@/models';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { getDashboardUrlForRole } from '@/lib/helpers';
+import { getErrorMessage } from '@/lib/utils';
 
 interface SignupData {
     name: string;
@@ -77,11 +78,11 @@ export async function signupUser(data: SignupData) {
                 role: user.role
             }
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Signup error:', error);
         return {
             success: false,
-            error: error.message || 'Signup failed'
+            error: getErrorMessage(error) || 'Signup failed'
         };
     }
 }

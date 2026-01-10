@@ -1,8 +1,11 @@
 'use server';
 
 import connectDB from '@/lib/db';
-import { Student, Course } from '@/models';
+import { Student } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createStudentSchema, updateStudentSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all students
 export async function getStudents() {
@@ -36,32 +39,52 @@ export async function getStudentById(id: string) {
 }
 
 // Create student
-export async function createStudent(data: any) {
+export async function createStudent(data: unknown) {
     try {
         await connectDB();
-        const student = await Student.create(data);
+        // Validate input
+        const validation = validateSchema(createStudentSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const student = await Student.create(validation.data!);
 
         revalidatePath('/skills/students');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(student))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating student:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create student'
+            error: getErrorMessage(error) || 'Failed to create student'
         };
     }
 }
 
 // Update student
-export async function updateStudent(id: string, data: any) {
+export async function updateStudent(id: string, data: unknown) {
     try {
         await connectDB();
+        // Validate input
+        const validation = validateSchema(updateStudentSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const student = await Student.findByIdAndUpdate(
             id,
-            { $set: data },
+            { $set: validation.data! },
             { new: true, runValidators: true }
         );
 
@@ -74,11 +97,11 @@ export async function updateStudent(id: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(student))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating student:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update student'
+            error: getErrorMessage(error) || 'Failed to update student'
         };
     }
 }
@@ -95,11 +118,11 @@ export async function deleteStudent(id: string) {
 
         revalidatePath('/skills/students');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting student:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete student'
+            error: getErrorMessage(error) || 'Failed to delete student'
         };
     }
 }

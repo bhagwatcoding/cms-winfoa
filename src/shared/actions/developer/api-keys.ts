@@ -4,6 +4,9 @@ import connectDB from '@/lib/db';
 import { ApiKey } from '@/models';
 import { revalidatePath } from 'next/cache';
 import crypto from 'crypto';
+import { getErrorMessage } from '@/lib/utils';
+import { updateApiKeySchema, createApiKeySchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all API keys for a user
 export async function getApiKeys(userId: string) {
@@ -38,6 +41,16 @@ export async function createApiKey(userId: string, name: string, permissions: st
     try {
         await connectDB();
 
+        // Validate input (Optional since args are typed, but good for runtime)
+        const validation = validateSchema(createApiKeySchema, { name, permissions });
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input'
+            };
+        }
+
+
         // Generate unique API key
         const key = `wf_${crypto.randomBytes(32).toString('hex')}`;
         const secret = crypto.randomBytes(48).toString('hex');
@@ -60,23 +73,33 @@ export async function createApiKey(userId: string, name: string, permissions: st
             data: JSON.parse(JSON.stringify(apiKey)),
             message: 'API key created successfully. Please save your secret key - it won\'t be shown again.'
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating API key:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create API key'
+            error: getErrorMessage(error) || 'Failed to create API key'
         };
     }
 }
 
 // Update API key
-export async function updateApiKey(id: string, userId: string, data: any) {
+export async function updateApiKey(id: string, userId: string, data: unknown) {
     try {
         await connectDB();
 
+        // Validate input
+        const validation = validateSchema(updateApiKeySchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const apiKey = await ApiKey.findOneAndUpdate(
             { _id: id, userId },
-            { $set: data },
+            { $set: validation.data },
             { new: true, runValidators: true }
         );
 
@@ -91,11 +114,11 @@ export async function updateApiKey(id: string, userId: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(apiKey))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating API key:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update API key'
+            error: getErrorMessage(error) || 'Failed to update API key'
         };
     }
 }
@@ -115,11 +138,11 @@ export async function deleteApiKey(id: string, userId: string) {
         revalidatePath('/api/keys');
 
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting API key:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete API key'
+            error: getErrorMessage(error) || 'Failed to delete API key'
         };
     }
 }
@@ -146,11 +169,11 @@ export async function toggleApiKeyStatus(id: string, userId: string) {
             data: JSON.parse(JSON.stringify(apiKey)),
             message: `API key ${apiKey.isActive ? 'activated' : 'deactivated'} successfully`
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error toggling API key status:', error);
         return {
             success: false,
-            error: error.message || 'Failed to toggle API key status'
+            error: getErrorMessage(error) || 'Failed to toggle API key status'
         };
     }
 }

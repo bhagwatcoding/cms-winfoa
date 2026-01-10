@@ -1,8 +1,11 @@
 'use server';
 
 import connectDB from '@/lib/db';
-import { AdmitCard, Student, Course } from '@/models';
+import { AdmitCard } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createAdmitCardSchema, updateAdmitCardSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get all admit cards
 export async function getAdmitCards() {
@@ -54,32 +57,52 @@ export async function getAdmitCardByNumber(admitCardNo: string) {
 }
 
 // Create admit card
-export async function createAdmitCard(data: any) {
+export async function createAdmitCard(data: unknown) {
     try {
         await connectDB();
-        const admitCard = await AdmitCard.create(data);
+        // Validate input
+        const validation = validateSchema(createAdmitCardSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const admitCard = await AdmitCard.create(validation.data!);
 
         revalidatePath('/skills/admit-card');
         return {
             success: true,
             data: JSON.parse(JSON.stringify(admitCard))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating admit card:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create admit card'
+            error: getErrorMessage(error) || 'Failed to create admit card'
         };
     }
 }
 
 // Update admit card
-export async function updateAdmitCard(id: string, data: any) {
+export async function updateAdmitCard(id: string, data: unknown) {
     try {
         await connectDB();
+        // Validate input
+        const validation = validateSchema(updateAdmitCardSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const admitCard = await AdmitCard.findByIdAndUpdate(
             id,
-            { $set: data },
+            { $set: validation.data! },
             { new: true, runValidators: true }
         );
 
@@ -92,11 +115,11 @@ export async function updateAdmitCard(id: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(admitCard))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating admit card:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update admit card'
+            error: getErrorMessage(error) || 'Failed to update admit card'
         };
     }
 }
@@ -113,11 +136,11 @@ export async function deleteAdmitCard(id: string) {
 
         revalidatePath('/skills/admit-card');
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deleting admit card:', error);
         return {
             success: false,
-            error: error.message || 'Failed to delete admit card'
+            error: getErrorMessage(error) || 'Failed to delete admit card'
         };
     }
 }

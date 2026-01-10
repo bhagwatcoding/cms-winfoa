@@ -22,7 +22,7 @@ export class SettingsService {
     /**
      * Update preferences
      */
-    static async updatePreferences(userId: string, data: any) {
+    static async updatePreferences(userId: string, data: Record<string, unknown>) {
         await connectDB()
 
         const prefs = await UserPreferences.findOneAndUpdate(

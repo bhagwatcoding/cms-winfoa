@@ -2,9 +2,9 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Shield, Phone, Building2, Loader2, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Shield, Phone, Building2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-import { useToast } from '@/ui/use-toast';
+import { useToast } from '@/ui';
 import { signupAction } from '@/auth/actions/signup';
 
 export default function SignupPage() {
@@ -125,9 +125,8 @@ export default function SignupPage() {
                                         type="text"
                                         disabled={loading}
                                         placeholder="Enter your full name"
-                                        className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${
-                                            errors.name ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
-                                        } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
+                                        className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${errors.name ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
+                                            } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
                                         required
                                     />
                                 </div>
@@ -148,9 +147,8 @@ export default function SignupPage() {
                                         type="email"
                                         disabled={loading}
                                         placeholder="your.email@example.com"
-                                        className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${
-                                            errors.email ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
-                                        } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
+                                        className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${errors.email ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
+                                            } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
                                         required
                                     />
                                 </div>
@@ -171,9 +169,8 @@ export default function SignupPage() {
                                         type="tel"
                                         disabled={loading}
                                         placeholder="+91 1234567890"
-                                        className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${
-                                            errors.phone ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
-                                        } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
+                                        className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${errors.phone ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
+                                            } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
                                     />
                                 </div>
                                 {errors.phone && (
@@ -213,9 +210,8 @@ export default function SignupPage() {
                                         type={showPassword ? 'text' : 'password'}
                                         disabled={loading}
                                         placeholder="Create a strong password"
-                                        className={`w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${
-                                            errors.password ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
-                                        } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
+                                        className={`w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${errors.password ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
+                                            } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
                                         required
                                     />
                                     <button
@@ -243,9 +239,8 @@ export default function SignupPage() {
                                         type={showConfirmPassword ? 'text' : 'password'}
                                         disabled={loading}
                                         placeholder="Confirm your password"
-                                        className={`w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${
-                                            errors.confirmPassword ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
-                                        } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
+                                        className={`w-full pl-12 pr-12 py-3.5 bg-slate-50 dark:bg-slate-800 border-2 ${errors.confirmPassword ? 'border-red-300' : 'border-slate-200 dark:border-slate-700'
+                                            } rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all disabled:opacity-50`}
                                         required
                                     />
                                     <button
@@ -271,11 +266,11 @@ export default function SignupPage() {
                             />
                             <span className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
                                 I agree to the{' '}
-                                <Link href="/terms" className="text-purple-600 hover:text-purple-700 font-semibold underline">
+                                <Link href="#" className="text-purple-600 hover:text-purple-700 font-semibold underline">
                                     Terms of Service
                                 </Link>{' '}
                                 and{' '}
-                                <Link href="/privacy" className="text-purple-600 hover:text-purple-700 font-semibold underline">
+                                <Link href="#" className="text-purple-600 hover:text-purple-700 font-semibold underline">
                                     Privacy Policy
                                 </Link>
                             </span>

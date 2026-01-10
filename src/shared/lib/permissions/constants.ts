@@ -1,7 +1,4 @@
-/**
- * Advanced Role & Permission System
- * Dynamic, database-driven, high-performance RBAC (Role-Based Access Control)
- */
+
 
 import type { UserRole } from '@/types/models';
 

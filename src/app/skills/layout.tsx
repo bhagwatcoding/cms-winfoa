@@ -57,7 +57,7 @@ export default async function CenterLayout({
   }
 
   return (
-    <MainLayout user={userData} stats={stats}>
+    <MainLayout user={userData}>
       {children}
     </MainLayout>
   );

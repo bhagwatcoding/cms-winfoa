@@ -13,7 +13,7 @@ export class UserManagementService {
     }) {
         await connectDB()
 
-        const query: any = {}
+        const query: Record<string, unknown> = {}
 
         if (filters?.role) query.role = filters.role
         if (filters?.status) query.status = filters.status
@@ -92,7 +92,7 @@ export class UserManagementService {
     /**
      * Update user
      */
-    static async update(id: string, data: any) {
+    static async update(id: string, data: Partial<Record<string, unknown>>) {
         await connectDB()
 
         // If password provided, hash it
@@ -147,8 +147,8 @@ export class UserManagementService {
             ])
         ])
 
-        const byRole: any = {}
-        roles.forEach((r: any) => {
+        const byRole: Record<string, number> = {}
+        roles.forEach((r: { _id: string; count: number }) => {
             byRole[r._id] = r.count
         })
 

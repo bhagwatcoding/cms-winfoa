@@ -5,7 +5,7 @@ import { Button, Input, Label } from '@/ui'
 import { Loader2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
-async function forgotPasswordAction(prevState: any, formData: FormData) {
+async function forgotPasswordAction(prevState: unknown, formData: FormData) {
     'use server'
 
     try {
@@ -23,8 +23,9 @@ async function forgotPasswordAction(prevState: any, formData: FormData) {
             success: true,
             message: 'If an account exists with this email, you will receive password reset instructions.'
         }
-    } catch (error: any) {
-        return { error: error.message || 'Something went wrong. Please try again.' }
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+        return { error: errorMessage }
     }
 }
 
@@ -38,7 +39,7 @@ export function ForgotPasswordForm() {
                     Reset Password
                 </h1>
                 <p className="text-muted-foreground mt-2">
-                    Enter your email and we'll send you reset instructions
+                    Enter your email and we&apos;ll send you reset instructions
                 </p>
             </div>
 
@@ -56,7 +57,7 @@ export function ForgotPasswordForm() {
                         autoFocus
                     />
                     <p className="text-xs text-muted-foreground">
-                        We'll send password reset instructions to this email
+                        We&apos;ll send password reset instructions to this email
                     </p>
                 </div>
 

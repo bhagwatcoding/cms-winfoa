@@ -148,7 +148,7 @@ export default function LoginPage() {
                     className="text-center text-sm text-slate-500 mt-6"
                 >
                     By signing in, you agree to our{' '}
-                    <Link href="/terms" className="text-blue-600 hover:text-blue-700 font-semibold underline">
+                    <Link href="#" className="text-blue-600 hover:text-blue-700 font-semibold underline">
                         Terms of Service
                     </Link>
                 </motion.p>

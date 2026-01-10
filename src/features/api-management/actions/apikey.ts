@@ -3,8 +3,11 @@
 import { revalidatePath } from 'next/cache'
 import { ApiKeyService } from '../services'
 import { SessionService } from '@/auth/services/session.service'
+import { getErrorMessage } from '@/lib/utils'
+import { createApiKeySchema } from '@/lib/validations'
+import { validateSchema } from '@/lib/validations/utils'
 
-export async function createApiKey(prevState: any, formData: FormData) {
+export async function createApiKey(prevState: unknown, formData: FormData) {
     try {
         const session = await SessionService.getCurrentSession()
 
@@ -12,25 +15,24 @@ export async function createApiKey(prevState: any, formData: FormData) {
             return { error: 'Not authenticated' }
         }
 
-        const name = formData.get('name') as string
-        const permissions = formData.get('permissions')
-            ? JSON.parse(formData.get('permissions') as string)
-            : ['read']
-        const rateLimit = formData.get('rateLimit')
-            ? parseInt(formData.get('rateLimit') as string)
-            : 1000
+        const rawData = {
+            name: formData.get('name'),
+            permissions: formData.get('permissions')
+                ? JSON.parse(formData.get('permissions') as string)
+                : ['read'],
+            rateLimit: formData.get('rateLimit')
+                ? parseInt(formData.get('rateLimit') as string)
+                : 1000
+        }
 
-        if (!name) {
-            return { error: 'API key name is required' }
+        const validation = validateSchema(createApiKeySchema, rawData);
+        if (!validation.success) {
+            return { error: validation.errors?.[0]?.message || 'Invalid input' }
         }
 
         const apiKey = await ApiKeyService.createApiKey(
             session.userId._id.toString(),
-            {
-                name,
-                permissions,
-                rateLimit
-            }
+            validation.data!
         )
 
         revalidatePath('/api/keys')
@@ -40,8 +42,8 @@ export async function createApiKey(prevState: any, formData: FormData) {
             data: apiKey,
             message: 'API key created successfully. Save this key - you won\'t see it again!'
         }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }
 
@@ -56,8 +58,8 @@ export async function getApiKeys() {
         const keys = await ApiKeyService.getUserApiKeys(session.userId._id.toString())
 
         return { success: true, data: keys }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }
 
@@ -74,8 +76,8 @@ export async function revokeApiKey(keyId: string) {
         revalidatePath('/api/keys')
 
         return { success: true, message: 'API key revoked successfully' }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }
 
@@ -92,8 +94,8 @@ export async function deleteApiKey(keyId: string) {
         revalidatePath('/api/keys')
 
         return { success: true, message: 'API key deleted successfully' }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }
 
@@ -111,7 +113,7 @@ export async function getApiKeyStats(keyId: string) {
         )
 
         return { success: true, data: stats }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }

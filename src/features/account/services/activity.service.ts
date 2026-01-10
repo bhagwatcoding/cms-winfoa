@@ -19,7 +19,7 @@ export class ActivityService {
         const skip = (page - 1) * limit
 
         // Build filter
-        const filter: any = { userId }
+        const filter: Record<string, unknown> = { userId }
         if (action) {
             filter.action = action
         }
@@ -127,7 +127,7 @@ export class ActivityService {
     static async logActivity(
         userId: string,
         action: string,
-        details?: any,
+        details?: Record<string, unknown>,
         metadata?: {
             ipAddress?: string
             userAgent?: string

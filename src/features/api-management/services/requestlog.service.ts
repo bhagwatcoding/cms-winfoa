@@ -14,8 +14,8 @@ export class RequestLogService {
         responseTime: number
         ipAddress?: string
         userAgent?: string
-        requestBody?: any
-        responseBody?: any
+        requestBody?: Record<string, unknown>
+        responseBody?: Record<string, unknown>
         error?: string
     }) {
         await connectDB()
@@ -43,7 +43,7 @@ export class RequestLogService {
         const { page = 1, limit = 50, startDate, endDate } = options
         const skip = (page - 1) * limit
 
-        const filter: any = { apiKeyId }
+        const filter: Record<string, unknown> = { apiKeyId }
 
         if (startDate || endDate) {
             filter.timestamp = {}

@@ -7,7 +7,7 @@ import { ArrowUpRight, ArrowDownLeft, Plus, Wallet, Clock, CreditCard } from 'lu
 
 export default function WalletDashboard() {
     const [balance, setBalance] = useState<number | null>(null);
-    const [transactions, setTransactions] = useState<any[]>([]);
+    const [transactions, setTransactions] = useState<Record<string, unknown>[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -90,7 +90,7 @@ export default function WalletDashboard() {
                         <div className="p-8 text-center text-slate-500">No recent transactions.</div>
                     ) : (
                         transactions.map((tx) => (
-                            <div key={tx._id} className="p-4 sm:p-6 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <div key={tx._id.toString()} className="p-4 sm:p-6 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                 <div className="flex items-center gap-4">
                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${tx.type === 'credit'
                                         ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30'

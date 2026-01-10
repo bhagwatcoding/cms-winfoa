@@ -3,6 +3,8 @@
 import connectDB from '@/lib/db';
 import { User } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { Transaction } from "@/models"
 
 // Get wallet balance
 export async function getWalletBalance(userId: string) {
@@ -14,17 +16,17 @@ export async function getWalletBalance(userId: string) {
             success: true,
             balance: user?.walletBalance || 0
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error fetching wallet balance:', error);
         return {
             success: false,
-            error: error.message || 'Failed to fetch balance'
+            error: getErrorMessage(error) || 'Failed to fetch balance'
         };
     }
 }
 
 // Add funds to wallet
-export async function addFunds(userId: string, amount: number, paymentMethod: string) {
+export async function addFunds(userId: string, amount: number, _paymentMethod: string) {
     try {
         await connectDB();
 
@@ -58,17 +60,17 @@ export async function addFunds(userId: string, amount: number, paymentMethod: st
             balance: user.walletBalance,
             message: `₹${amount} added successfully`
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error adding funds:', error);
         return {
             success: false,
-            error: error.message || 'Failed to add funds'
+            error: getErrorMessage(error) || 'Failed to add funds'
         };
     }
 }
 
 // Deduct funds from wallet
-export async function deductFunds(userId: string, amount: number, description: string) {
+export async function deductFunds(userId: string, amount: number, _description: string) {
     try {
         await connectDB();
 
@@ -109,25 +111,38 @@ export async function deductFunds(userId: string, amount: number, description: s
             balance: user.walletBalance,
             message: `₹${amount} deducted successfully`
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error deducting funds:', error);
         return {
             success: false,
-            error: error.message || 'Failed to deduct funds'
+            error: getErrorMessage(error) || 'Failed to deduct funds'
         };
     }
 }
 
 // Get wallet transaction history
-export async function getWalletTransactions(userId: string) {
+export async function getWalletTransactions(_userId: string) {
     try {
         await connectDB();
 
         // TODO: Implement actual transaction model and fetch
-        // For now returning empty array
-        return [];
+        const transactions = await Transaction.find({ userId: _userId });
+        if (!transactions) {
+            return {
+                success: false,
+                error: 'No transactions found'
+            };
+        }
+
+        return {
+            success: true,
+            transactions
+        };
     } catch (error) {
         console.error('Error fetching transactions:', error);
-        return [];
+        return {
+            success: false,
+            error: getErrorMessage(error) || 'Failed to fetch transactions'
+        };
     }
 }

@@ -1,4 +1,4 @@
-import { Student, Course } from '@/models'
+import { Student } from '@/models'
 import connectDB from '@/lib/db'
 
 export class StudentService {
@@ -12,14 +12,13 @@ export class StudentService {
     }) {
         await connectDB()
 
-        const query: any = {}
+        const query: Record<string, unknown> = {}
         if (filters?.centerId) query.centerId = filters.centerId
         if (filters?.courseId) query.courseId = filters.courseId
         if (filters?.status) query.status = filters.status
 
         const students = await Student.find(query)
             .populate('courseId', 'name code')
-            .populate('centerId', 'name code')
             .sort({ createdAt: -1 })
             .lean()
 
@@ -47,7 +46,7 @@ export class StudentService {
     /**
      * Create new student
      */
-    static async create(data: any) {
+    static async create(data: Record<string, unknown>) {
         await connectDB()
 
         const student = await Student.create(data)
@@ -57,7 +56,7 @@ export class StudentService {
     /**
      * Update student
      */
-    static async update(id: string, data: any) {
+    static async update(id: string, data: Partial<Record<string, unknown>>) {
         await connectDB()
 
         const student = await Student.findByIdAndUpdate(
@@ -112,7 +111,7 @@ export class StudentService {
     static async search(searchTerm: string, centerId?: string) {
         await connectDB()
 
-        const query: any = {
+        const query: Record<string, unknown> = {
             $or: [
                 { name: { $regex: searchTerm, $options: 'i' } },
                 { fatherName: { $regex: searchTerm, $options: 'i' } },

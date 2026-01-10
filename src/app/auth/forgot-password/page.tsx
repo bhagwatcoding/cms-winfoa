@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
                     description: data.error || 'Failed to send reset email. Please try again.',
                 });
             }
-        } catch (error) {
+        } catch (e) {
             toast({
                 variant: 'destructive',
                 title: 'Error',

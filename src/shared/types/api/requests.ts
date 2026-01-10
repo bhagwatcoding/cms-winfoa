@@ -84,7 +84,7 @@ export interface BulkDeleteParams {
     ids: string[];
 }
 
-export interface BulkUpdateParams<T = any> {
+export interface BulkUpdateParams<T = unknown> {
     ids: string[];
     updates: Partial<T>;
 }

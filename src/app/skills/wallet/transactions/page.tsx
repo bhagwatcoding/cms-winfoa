@@ -7,12 +7,10 @@ import {
     Download,
     Search,
     TrendingUp,
-    TrendingDown,
     Calendar,
     ArrowUpCircle,
     ArrowDownCircle,
     Wallet,
-    Filter
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -276,8 +274,8 @@ export default function WalletTransactionsPage() {
                                 <div className="flex items-center justify-between gap-4">
                                     <div className="flex items-center gap-4 flex-1">
                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${txn.type === 'credit'
-                                                ? 'bg-emerald-100 dark:bg-emerald-950/20'
-                                                : 'bg-red-100 dark:bg-red-950/20'
+                                            ? 'bg-emerald-100 dark:bg-emerald-950/20'
+                                            : 'bg-red-100 dark:bg-red-950/20'
                                             }`}>
                                             {txn.type === 'credit' ? (
                                                 <ArrowDownCircle className="w-6 h-6 text-emerald-600" />

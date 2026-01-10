@@ -14,14 +14,9 @@ interface MainLayoutProps {
         centerName?: string
         walletBalance?: number
     } | null
-    stats?: {
-        total: number
-        active: number
-        completed: number
-    } | null
 }
 
-export function MainLayout({ children, user, stats }: MainLayoutProps) {
+export function MainLayout({ children, user }: MainLayoutProps) {
     const menuItems = [
         { icon: Home, label: 'Dashboard', href: '/skills' },
         { icon: Users, label: 'Students', href: '/skills/students' },

@@ -21,7 +21,8 @@ export default async function UsersPage({
     // Check if user has permission to view users
     try {
         requirePermission(currentUser, 'users:view');
-    } catch (error) {
+    } catch (e) {
+        console.log(e)
         redirect('/ump');
     }
 

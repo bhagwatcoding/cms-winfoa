@@ -4,7 +4,7 @@ export interface IActivityLog extends Document {
     userId: mongoose.Types.ObjectId
     action: string
     resource: string
-    details: any
+    details: unknown
     ipAddress: string
     userAgent: string
     location?: string

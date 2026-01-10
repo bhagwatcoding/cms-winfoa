@@ -19,7 +19,7 @@ export interface IUserRegistry {
     userId: string
     registeredBy: string
     source: string
-    metadata?: any
+    metadata?: Record<string, unknown>
     createdAt: Date
 }
 

@@ -12,7 +12,7 @@ export class ResultService {
     }) {
         await connectDB()
 
-        const query: any = {}
+        const query: Record<string, unknown> = {}
         if (filters?.studentId) query.studentId = filters.studentId
         if (filters?.courseId) query.courseId = filters.courseId
 
@@ -46,7 +46,7 @@ export class ResultService {
     /**
      * Create result
      */
-    static async create(data: any) {
+    static async create(data: Record<string, unknown> & { studentId: string; courseId: string }) {
         await connectDB()
 
         // Validate student exists
@@ -68,7 +68,7 @@ export class ResultService {
     /**
      * Update result
      */
-    static async update(id: string, data: any) {
+    static async update(id: string, data: Partial<Record<string, unknown>>) {
         await connectDB()
 
         const result = await Result.findByIdAndUpdate(
@@ -110,10 +110,10 @@ export class ResultService {
         const results = await Result.find(query).lean()
 
         const total = results.length
-        const passed = results.filter((r: any) => r.grade !== 'F').length
-        const failed = results.filter((r: any) => r.grade === 'F').length
+        const passed = results.filter((r: Record<string, unknown>) => r.grade !== 'F').length
+        const failed = results.filter((r: Record<string, unknown>) => r.grade === 'F').length
         const avgMarks = results.length > 0
-            ? results.reduce((sum: number, r: any) => sum + (r.obtainedMarks || 0), 0) / results.length
+            ? results.reduce((sum: number, r: Record<string, unknown>) => sum + (Number(r.obtainedMarks) || 0), 0) / results.length
             : 0
 
         return {

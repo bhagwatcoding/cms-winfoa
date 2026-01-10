@@ -4,9 +4,20 @@ import { useEffect, useState } from 'react';
 import { getRecentTransactions } from '../actions'; // We can reuse or create a more specific 'getAllTransactions' if needed with pagination
 import { ArrowDownLeft, ArrowUpRight, Search, Download } from 'lucide-react';
 
+interface Transaction {
+    _id: string;
+    type: 'credit' | 'debit';
+    description: string;
+    amount: number;
+    status: string;
+    paymentMethod?: string;
+    transactionId?: string;
+    createdAt: string;
+}
+
 // Reusing the same action for this demo, in real app add pagination/filtering params to action
 export default function HistoryPage() {
-    const [transactions, setTransactions] = useState<any[]>([]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -67,8 +78,8 @@ export default function HistoryPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.type === 'credit'
-                                                        ? 'bg-emerald-100 text-emerald-600'
-                                                        : 'bg-rose-100 text-rose-600'
+                                                    ? 'bg-emerald-100 text-emerald-600'
+                                                    : 'bg-rose-100 text-rose-600'
                                                     }`}>
                                                     {tx.type === 'credit' ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
                                                 </div>
@@ -85,8 +96,8 @@ export default function HistoryPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${tx.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
-                                                    tx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                        'bg-rose-100 text-rose-800'
+                                                tx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                    'bg-rose-100 text-rose-800'
                                                 }`}>
                                                 {tx.status}
                                             </span>

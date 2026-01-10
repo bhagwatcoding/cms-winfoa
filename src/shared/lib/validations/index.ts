@@ -32,12 +32,14 @@ export {
     createUserSchema,
     updateUserSchema,
     updateProfileSchema,
+    updateUserPreferencesSchema,
     bulkDeleteUsersSchema,
     bulkUpdateUsersSchema,
     userFilterSchema,
     type CreateUserInput,
     type UpdateUserInput,
     type UpdateProfileInput,
+    type UpdateUserPreferencesInput,
     type BulkDeleteUsersInput,
     type BulkUpdateUsersInput,
     type UserFilterInput,
@@ -97,9 +99,80 @@ export {
     type UpdateCertificateInput,
     type CertificateFilterInput,
     type IssueCertificateInput,
-    type RevokeCertificateInput,
     type VerifyCertificateInput,
 } from './schemas/certificate';
+
+// ==========================================
+// EMPLOYEE SCHEMAS
+// ==========================================
+
+export {
+    employeeStatusSchema,
+    createEmployeeSchema,
+    updateEmployeeSchema,
+    type CreateEmployeeInput,
+    type UpdateEmployeeInput,
+} from './schemas/employee';
+
+// ==========================================
+// RESULT SCHEMAS
+// ==========================================
+
+export {
+    resultStatusSchema,
+    createResultSchema,
+    updateResultSchema,
+    type CreateResultInput,
+    type UpdateResultInput,
+} from './schemas/result';
+
+// ==========================================
+// ADMIT CARD SCHEMAS
+// ==========================================
+
+export {
+    admitCardStatusSchema,
+    createAdmitCardSchema,
+    updateAdmitCardSchema,
+    type CreateAdmitCardInput,
+    type UpdateAdmitCardInput,
+} from './schemas/admit-card';
+
+// ==========================================
+// NOTIFICATION SCHEMAS
+// ==========================================
+
+export {
+    notificationTypeSchema,
+    createNotificationSchema,
+    updateNotificationSchema,
+    type CreateNotificationInput,
+    type UpdateNotificationInput,
+} from './schemas/notification';
+
+// ==========================================
+// TRANSACTION SCHEMAS
+// ==========================================
+
+export {
+    transactionTypeSchema,
+    transactionStatusSchema,
+    createTransactionSchema,
+    updateTransactionSchema,
+    type CreateTransactionInput,
+    type UpdateTransactionInput,
+} from './schemas/transaction';
+
+// ==========================================
+// API KEY SCHEMAS
+// ==========================================
+
+export {
+    createApiKeySchema,
+    updateApiKeySchema,
+    type CreateApiKeyInput,
+    type UpdateApiKeyInput,
+} from './schemas/api-key';
 
 // ==========================================
 // VALIDATION UTILITIES

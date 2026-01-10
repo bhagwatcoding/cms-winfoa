@@ -10,7 +10,8 @@ import { User } from '@/models';
 import { getCurrentUser } from '@/lib/session';
 import { requirePermission } from '@/lib/permissions';
 import type { Permission } from '@/lib/permissions';
-import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
+import { ERROR_MESSAGES } from '@/lib/constants';
+import { getErrorMessage } from '@/lib/utils';
 import type { UpdateResponse } from '@/types/api';
 import type { IUser } from '@/types/models';
 
@@ -67,11 +68,11 @@ export async function addUserPermissionAction(
             message: 'Permission added successfully',
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Add permission error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -120,11 +121,11 @@ export async function removeUserPermissionAction(
             message: 'Permission removed successfully',
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Remove permission error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -168,11 +169,11 @@ export async function setUserPermissionsAction(
             message: 'Permissions updated successfully',
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Set permissions error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -211,11 +212,11 @@ export async function getUserPermissionsAction(
             success: true,
             data: permissions,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Get permissions error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -259,11 +260,11 @@ export async function resetUserPermissionsAction(
             message: 'Permissions reset to role defaults',
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Reset permissions error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -312,11 +313,11 @@ export async function copyUserPermissionsAction(
             message: 'Permissions copied successfully',
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Copy permissions error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }

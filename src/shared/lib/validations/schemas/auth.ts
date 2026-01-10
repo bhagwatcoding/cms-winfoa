@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod';
-
+import { USER_ROLES } from '@/lib/constants';
 // ==========================================
 // LOGIN SCHEMA
 // ==========================================
@@ -60,7 +60,7 @@ export const signupSchema = z.object({
         .optional()
         .or(z.literal('')),
     role: z
-        .enum(['super-admin', 'admin', 'staff', 'student', 'user', 'center'])
+        .enum(USER_ROLES)
         .default('user')
         .optional(),
 }).refine((data) => data.password === data.confirmPassword, {

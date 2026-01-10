@@ -6,17 +6,13 @@ import {
     Users,
     Search,
     Plus,
-    Mail,
     Phone,
-    Shield,
     Edit,
     Trash2,
     Eye,
     UserCheck,
-    UserX,
     Crown,
     Building2,
-    Filter
 } from 'lucide-react';
 
 interface User {

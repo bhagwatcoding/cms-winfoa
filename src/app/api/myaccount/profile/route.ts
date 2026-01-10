@@ -3,7 +3,7 @@ import connectDB from '@/lib/db';
 import { User } from '@/models';
 import { getSession } from '@/lib/auth';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     try {
         const { user } = await getSession();
         if (!user) {

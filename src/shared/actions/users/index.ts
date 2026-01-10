@@ -6,15 +6,15 @@
 'use server';
 
 import connectDB from '@/lib/db';
-import { User } from '@/models';
 import { getCurrentUser } from '@/lib/session';
 import { requirePermission } from '@/lib/permissions';
-import { createUserSchema, updateUserSchema, type CreateUserInput, type UpdateUserInput } from '@/lib/validations';
+import { createUserSchema, updateUserSchema } from '@/lib/validations';
 import { validateSchema } from '@/lib/validations/utils';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
-import type { CreateResponse, UpdateResponse, DeleteResponse, FetchManyResponse, PaginatedResponse } from '@/types/api';
+import { getErrorMessage } from '@/lib/utils';
+import { UserService } from '@/lib/services/user.service';
+import type { CreateResponse, UpdateResponse, DeleteResponse, PaginatedResponse } from '@/types/api';
 import type { IUser, UserRole } from '@/types/models';
-import bcrypt from 'bcryptjs';
 
 // ==========================================
 // CREATE USER
@@ -42,45 +42,24 @@ export async function createUserAction(data: unknown): Promise<CreateResponse<IU
 
         await connectDB();
 
-        // Check if email already exists
-        const existingUser = await User.findOne({ email: userData.email });
-        if (existingUser) {
-            return {
-                success: false,
-                error: ERROR_MESSAGES.EMAIL_ALREADY_EXISTS
-            };
-        }
-
-        // Hash password if provided
-        let hashedPassword: string | undefined;
-        if (userData.password) {
-            hashedPassword = await bcrypt.hash(userData.password, 10);
-        }
-
-        // Create user
-        const user = await User.create({
-            ...userData,
-            password: hashedPassword,
-            status: userData.status || 'active',
-            joinedAt: new Date(),
-            emailVerified: userData.emailVerified || false,
-            isActive: userData.isActive !== false,
-        });
-
-        // Remove password from response
-        const userObject = user.toObject();
-        delete userObject.password;
+        const user = await UserService.createUser(userData);
+        const userObject = user; // UserService returns Object, but let's be sure about password removal if not done there. 
+        // UserService.createUser returns toObject() which usually keeps password unless selected out.
+        // My UserService implementation kept password in `toObject()` effectively unless schema has transform.
+        // I should probably manually remove it in Service or here.
+        // In Service I did: return user.toObject();
+        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
 
         return {
             success: true,
             message: SUCCESS_MESSAGES.USER_CREATED,
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Create user error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -110,12 +89,9 @@ export async function updateUserAction(
             };
         }
 
-        const updateData = validation.data!;
-
         await connectDB();
 
-        // Find user
-        const user = await User.findById(userId);
+        const user = await UserService.updateUser(userId, validation.data!);
         if (!user) {
             return {
                 success: false,
@@ -123,35 +99,19 @@ export async function updateUserAction(
             };
         }
 
-        // Check if email is being changed and already exists
-        if (updateData.email && updateData.email !== user.email) {
-            const existingUser = await User.findOne({ email: updateData.email });
-            if (existingUser) {
-                return {
-                    success: false,
-                    error: ERROR_MESSAGES.EMAIL_ALREADY_EXISTS
-                };
-            }
-        }
-
-        // Update user
-        Object.assign(user, updateData);
-        await user.save();
-
-        // Remove password from response
-        const userObject = user.toObject();
-        delete userObject.password;
+        const userObject = user;
+        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
 
         return {
             success: true,
             message: SUCCESS_MESSAGES.USER_UPDATED,
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Update user error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -167,38 +127,37 @@ export async function deleteUserAction(userId: string): Promise<DeleteResponse> 
         // Check permission
         requirePermission(currentUser, 'users:delete');
 
-        await connectDB();
-
-        // Check if user exists
-        const user = await User.findById(userId);
-        if (!user) {
-            return {
-                success: false,
-                error: ERROR_MESSAGES.USER_NOT_FOUND
-            };
-        }
-
         // Prevent deleting own account
-        if (user._id.toString() === currentUser?._id.toString()) {
+        if (userId === currentUser?._id.toString()) {
             return {
                 success: false,
                 error: 'Cannot delete your own account'
             };
         }
 
-        // Delete user
-        await User.findByIdAndDelete(userId);
+        await connectDB();
+
+        // Check if user exists first? UserService.deleteUser could handle it but for returning specific error "User not found" maybe.
+        // UserService.deleteUser uses findByIdAndDelete which returns null if not found.
+
+        const deleted = await UserService.deleteUser(userId);
+        if (!deleted) {
+            return {
+                success: false,
+                error: ERROR_MESSAGES.USER_NOT_FOUND
+            };
+        }
 
         return {
             success: true,
             message: SUCCESS_MESSAGES.USER_DELETED,
             deletedCount: 1,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Delete user error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -216,7 +175,7 @@ export async function getUserAction(userId: string): Promise<CreateResponse<IUse
 
         await connectDB();
 
-        const user = await User.findById(userId).select('-password').lean();
+        const user = await UserService.getUserById(userId);
 
         if (!user) {
             return {
@@ -225,15 +184,18 @@ export async function getUserAction(userId: string): Promise<CreateResponse<IUse
             };
         }
 
+        const userObject = user;
+        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
+
         return {
             success: true,
-            data: user as IUser,
+            data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Get user error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -257,58 +219,25 @@ export async function getUsersAction(params?: {
 
         await connectDB();
 
-        const page = params?.page || 1;
-        const limit = params?.limit || 10;
-        const skip = (page - 1) * limit;
-
-        // Build query
-        const query: any = {};
-
-        if (params?.search) {
-            query.$or = [
-                { name: { $regex: params.search, $options: 'i' } },
-                { email: { $regex: params.search, $options: 'i' } },
-            ];
-        }
-
-        if (params?.role) {
-            query.role = params.role;
-        }
-
-        if (params?.status) {
-            query.status = params.status;
-        }
-
-        // Get users
-        const [users, total] = await Promise.all([
-            User.find(query)
-                .select('-password')
-                .skip(skip)
-                .limit(limit)
-                .sort({ createdAt: -1 })
-                .lean(),
-            User.countDocuments(query),
-        ]);
-
-        const totalPages = Math.ceil(total / limit);
+        const result = await UserService.getUsers(params || {});
 
         return {
             success: true,
-            data: users as IUser[],
+            data: result.users,
             pagination: {
-                page,
-                limit,
-                total,
-                totalPages,
-                hasNextPage: page < totalPages,
-                hasPreviousPage: page > 1,
+                page: result.page,
+                limit: result.limit,
+                total: result.total,
+                totalPages: result.totalPages,
+                hasNextPage: result.page < result.totalPages,
+                hasPreviousPage: result.page > 1,
             },
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Get users error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
             data: [],
             pagination: {
                 page: 1,
@@ -336,9 +265,17 @@ export async function updateUserRoleAction(
         // Check permission (only super-admin can change roles)
         requirePermission(currentUser, 'system:manage');
 
+        // Prevent changing own role
+        if (userId === currentUser?._id.toString()) {
+            return {
+                success: false,
+                error: 'Cannot change your own role'
+            };
+        }
+
         await connectDB();
 
-        const user = await User.findById(userId);
+        const user = await UserService.changeRole(userId, role);
         if (!user) {
             return {
                 success: false,
@@ -346,31 +283,19 @@ export async function updateUserRoleAction(
             };
         }
 
-        // Prevent changing own role
-        if (user._id.toString() === currentUser?._id.toString()) {
-            return {
-                success: false,
-                error: 'Cannot change your own role'
-            };
-        }
-
-        // Update role
-        user.role = role;
-        await user.save();
-
-        const userObject = user.toObject();
-        delete userObject.password;
+        const userObject = user;
+        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
 
         return {
             success: true,
             message: 'User role updated successfully',
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Update role error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }
@@ -388,7 +313,7 @@ export async function toggleUserStatusAction(userId: string): Promise<UpdateResp
 
         await connectDB();
 
-        const user = await User.findById(userId);
+        const user = await UserService.toggleStatus(userId);
         if (!user) {
             return {
                 success: false,
@@ -396,23 +321,19 @@ export async function toggleUserStatusAction(userId: string): Promise<UpdateResp
             };
         }
 
-        // Toggle status
-        user.isActive = !user.isActive;
-        await user.save();
-
-        const userObject = user.toObject();
-        delete userObject.password;
+        const userObject = user;
+        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
 
         return {
             success: true,
             message: `User ${user.isActive ? 'activated' : 'deactivated'} successfully`,
             data: userObject as IUser,
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Toggle status error:', error);
         return {
             success: false,
-            error: error.message || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
+            error: getErrorMessage(error) || ERROR_MESSAGES.SOMETHING_WENT_WRONG,
         };
     }
 }

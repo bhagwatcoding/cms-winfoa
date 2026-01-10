@@ -15,6 +15,7 @@ import {
     STUDENT_PERMISSIONS,
     USER_PERMISSIONS,
 } from '@/lib/permissions/constants';
+import { getErrorMessage } from '@/lib/utils';
 
 export async function seedDefaultRoles() {
     try {
@@ -92,11 +93,11 @@ export async function seedDefaultRoles() {
             success: true,
             message: 'Default roles seeded successfully',
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Seed roles error:', error);
         return {
             success: false,
-            error: error.message,
+            error: getErrorMessage(error),
         };
     }
 }

@@ -3,6 +3,11 @@
 import connectDB from '@/lib/db';
 import { Transaction, User } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { createTransactionSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
+
+
 
 // Get all transactions for a user
 export async function getTransactions(userId: string) {
@@ -33,22 +38,33 @@ export async function getTransactionById(id: string) {
 }
 
 // Create transaction
-export async function createTransaction(data: any) {
+export async function createTransaction(data: unknown) {
     try {
         await connectDB();
 
-        const transaction = await Transaction.create(data);
+        // Validate input
+        const validation = validateSchema(createTransactionSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
+        const transactionData = validation.data!;
+        const transaction = await Transaction.create(transactionData);
 
         // Update user wallet balance
-        if (data.type === 'credit') {
+        if (transactionData.type === 'credit') {
             await User.findByIdAndUpdate(
-                data.userId,
-                { $inc: { walletBalance: data.amount } }
+                transactionData.userId,
+                { $inc: { walletBalance: transactionData.amount } }
             );
-        } else if (data.type === 'debit') {
+        } else if (transactionData.type === 'debit') {
             await User.findByIdAndUpdate(
-                data.userId,
-                { $inc: { walletBalance: -data.amount } }
+                transactionData.userId,
+                { $inc: { walletBalance: -transactionData.amount } }
             );
         }
 
@@ -59,11 +75,11 @@ export async function createTransaction(data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(transaction))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error creating transaction:', error);
         return {
             success: false,
-            error: error.message || 'Failed to create transaction'
+            error: getErrorMessage(error) || 'Failed to create transaction'
         };
     }
 }

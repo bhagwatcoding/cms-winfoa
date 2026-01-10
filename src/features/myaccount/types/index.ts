@@ -34,7 +34,7 @@ export interface IActivityLog {
     userId: string
     action: string
     resource: string
-    details?: any
+    details?: Record<string, unknown>
     timestamp: Date
 }
 

@@ -3,6 +3,9 @@
 import connectDB from '@/lib/db';
 import { User, UserPreferences } from '@/models';
 import { revalidatePath } from 'next/cache';
+import { getErrorMessage } from '@/lib/utils';
+import { updateProfileSchema, updateUserPreferencesSchema } from '@/lib/validations';
+import { validateSchema } from '@/lib/validations/utils';
 
 // Get user profile
 export async function getUserProfile(userId: string) {
@@ -20,13 +23,23 @@ export async function getUserProfile(userId: string) {
 }
 
 // Update user profile
-export async function updateUserProfile(userId: string, data: any) {
+export async function updateUserProfile(userId: string, data: unknown) {
     try {
         await connectDB();
 
+        // Validate input
+        const validation = validateSchema(updateProfileSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const user = await User.findByIdAndUpdate(
             userId,
-            { $set: data },
+            { $set: validation.data },
             { new: true, runValidators: true }
         ).select('-password');
 
@@ -39,11 +52,11 @@ export async function updateUserProfile(userId: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(user))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating profile:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update profile'
+            error: getErrorMessage(error) || 'Failed to update profile'
         };
     }
 }
@@ -76,13 +89,23 @@ export async function getUserPreferences(userId: string) {
 }
 
 // Update user preferences
-export async function updateUserPreferences(userId: string, data: any) {
+export async function updateUserPreferences(userId: string, data: unknown) {
     try {
         await connectDB();
 
+        // Validate input
+        const validation = validateSchema(updateUserPreferencesSchema, data);
+        if (!validation.success) {
+            return {
+                success: false,
+                error: validation.errors?.[0]?.message || 'Invalid input',
+                errors: validation.errors
+            };
+        }
+
         const preferences = await UserPreferences.findOneAndUpdate(
             { userId },
-            { $set: data },
+            { $set: validation.data },
             { new: true, upsert: true, runValidators: true }
         );
 
@@ -91,11 +114,11 @@ export async function updateUserPreferences(userId: string, data: any) {
             success: true,
             data: JSON.parse(JSON.stringify(preferences))
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Error updating preferences:', error);
         return {
             success: false,
-            error: error.message || 'Failed to update preferences'
+            error: getErrorMessage(error) || 'Failed to update preferences'
         };
     }
 }

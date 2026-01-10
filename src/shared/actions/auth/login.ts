@@ -7,6 +7,7 @@ import { loginSchema, type LoginInput } from '@/lib/validations';
 import { validateSchema } from '@/lib/validations/utils';
 import { createSession, setSessionCookie, logout as logoutSession } from '@/lib/session';
 import type { LoginResponse, LogoutResponse } from '@/types/api';
+import { getErrorMessage } from '@/lib/utils';
 
 export async function loginUser(credentials: LoginInput): Promise<LoginResponse> {
     // Validate input
@@ -82,11 +83,11 @@ export async function loginUser(credentials: LoginInput): Promise<LoginResponse>
                 image: user.image
             }
         };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Login error:', error);
         return {
             success: false,
-            error: error.message || 'Login failed'
+            error: getErrorMessage(error) || 'Login failed'
         };
     }
 }
@@ -95,11 +96,11 @@ export async function logoutUser(): Promise<LogoutResponse> {
     try {
         await logoutSession();
         return { success: true };
-    } catch (error: any) {
+    } catch (error) {
         console.error('Logout error:', error);
         return {
             success: false,
-            error: error.message || 'Logout failed'
+            error: getErrorMessage(error) || 'Logout failed'
         };
     }
 }

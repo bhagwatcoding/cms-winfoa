@@ -4,12 +4,10 @@ import { motion } from 'framer-motion';
 import {
     Activity,
     TrendingUp,
-    TrendingDown,
     Users,
     Building2,
     DollarSign,
     Award,
-    Calendar,
     ArrowUp,
     ArrowDown
 } from 'lucide-react';

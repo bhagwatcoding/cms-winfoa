@@ -1,7 +1,8 @@
 'use server'
 
 import { ActivityService } from '../services'
-import { SessionService } from '@/auth/services/session.service'
+import { SessionService } from '@/auth/services'
+import { getErrorMessage } from '@/lib/utils'
 
 export async function getActivityLogs(options: {
     page?: number
@@ -21,8 +22,8 @@ export async function getActivityLogs(options: {
         )
 
         return { success: true, data: result }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }
 
@@ -40,8 +41,8 @@ export async function getRecentActivity(limit: number = 10) {
         )
 
         return { success: true, data: logs }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }
 
@@ -58,8 +59,8 @@ export async function getActivityStats() {
         )
 
         return { success: true, data: stats }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }
 
@@ -77,7 +78,7 @@ export async function clearOldLogs(daysOld: number = 90) {
         )
 
         return { success: true, data: result }
-    } catch (error: any) {
-        return { error: error.message }
+    } catch (error) {
+        return { error: getErrorMessage(error) }
     }
 }

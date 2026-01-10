@@ -13,7 +13,7 @@ export interface IRole extends Document {
     isSystemRole: boolean; // true = built-in, false = custom
     isActive: boolean;
     priority: number; // Higher = more important
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }
