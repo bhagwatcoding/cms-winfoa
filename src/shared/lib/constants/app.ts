@@ -23,7 +23,7 @@ export const APP = {
     NAME: process.env.ROOT_DOMAIN || "localhost:3000",
     ROOT: process.env.ROOT_DOMAIN || "localhost:3000",
     SUB: {
-      API: ""
+      API: "api"
     },
   },
   SUBDOMAIN: "",
