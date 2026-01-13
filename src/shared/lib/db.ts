@@ -1,20 +1,28 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cms-app';
+const MONGODB_URI =
+  process.env.MONGODB_URI || "mongodb://localhost:27017/winfoa";
 
 if (!MONGODB_URI) {
-    throw new Error('Please define the MONGODB_URI environment variable');
+  throw new Error("Please define the MONGODB_URI environment variable");
 }
 
 const connectDB = async () => {
-    if (mongoose.connection.readyState === 1) return;
+  if (mongoose.connection.readyState === 1) {
+    console.log("Already connected to MongoDB");
+    return;
+  }
 
-    try {
-        await mongoose.connect(process.env.MONGODB_URI!, { dbName: process.env.DB_NAME });
-    } catch (err) {
-        console.log("Error connecting to MongoDB: ", err);
-    }
-}
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      dbName: process.env.MONGODB_NAME || "winfoa",
+    });
+    console.log("✅ MongoDB connected successfully");
+  } catch (err) {
+    console.log("❌ Error connecting to MongoDB: ", err);
+    throw err;
+  }
+};
 
 export default connectDB;
 

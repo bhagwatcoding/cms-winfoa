@@ -1,11 +1,11 @@
 'use server';
 
-import connectDB from '@/lib/db';
+import connectDB from '@/shared/lib/db';
 import { Certificate } from '@/models';
 import { revalidatePath } from 'next/cache';
-import { getErrorMessage } from '@/lib/utils';
-import { createCertificateSchema, updateCertificateSchema } from '@/lib/validations';
-import { validateSchema } from '@/lib/validations/utils';
+import { getErrorMessage } from '@/shared/lib/utils';
+import { createCertificateSchema, updateCertificateSchema } from '@/shared/lib/validations';
+import { validateSchema } from '@/shared/lib/validations/utils';
 
 // Get all certificates
 export async function getCertificates() {

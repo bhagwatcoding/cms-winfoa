@@ -8,6 +8,7 @@ import { z } from 'zod';
 // ==========================================
 // TYPES
 // ==========================================
+export const serialize = <T>(data: T): T => (data ? JSON.parse(JSON.stringify(data)) : data);
 
 export interface ValidationError {
     field: string;

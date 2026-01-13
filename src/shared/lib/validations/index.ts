@@ -64,7 +64,7 @@ export {
     type BulkDeleteStudentsInput,
     type BulkUpdateStudentsInput,
     type EnrollStudentInput,
-} from './schemas/student';
+} from './schemas/academy/student';
 
 // ==========================================
 // COURSE SCHEMAS
@@ -81,7 +81,7 @@ export {
     type CourseFilterInput,
     type BulkDeleteCoursesInput,
     type BulkUpdateCoursesInput,
-} from './schemas/course';
+} from './schemas/academy/course';
 
 // ==========================================
 // CERTIFICATE SCHEMAS
@@ -100,7 +100,7 @@ export {
     type CertificateFilterInput,
     type IssueCertificateInput,
     type VerifyCertificateInput,
-} from './schemas/certificate';
+} from './schemas/academy/certificate';
 
 // ==========================================
 // EMPLOYEE SCHEMAS
@@ -112,7 +112,7 @@ export {
     updateEmployeeSchema,
     type CreateEmployeeInput,
     type UpdateEmployeeInput,
-} from './schemas/employee';
+} from './schemas/academy/employee';
 
 // ==========================================
 // RESULT SCHEMAS
@@ -124,7 +124,7 @@ export {
     updateResultSchema,
     type CreateResultInput,
     type UpdateResultInput,
-} from './schemas/result';
+} from './schemas/academy/result';
 
 // ==========================================
 // ADMIT CARD SCHEMAS
@@ -136,7 +136,7 @@ export {
     updateAdmitCardSchema,
     type CreateAdmitCardInput,
     type UpdateAdmitCardInput,
-} from './schemas/admit-card';
+} from './schemas/academy/admit-card';
 
 // ==========================================
 // NOTIFICATION SCHEMAS
@@ -179,6 +179,7 @@ export {
 // ==========================================
 
 export {
+    serialize,
     validateSchema,
     validateSchemaAsync,
     type ValidationResult,

@@ -2,8 +2,9 @@
  * URL Helper Functions for Subdomain-Based Routing
  * Generates correct URLs for multi-tenant subdomain architecture
  */
+import type { SubDomainType } from "@/lib/constants";
 
-export type SubdomainType = 'auth' | 'god' | 'ump' | 'skills' | 'myaccount' | 'api' | 'www' | 'root';
+export type SubdomainType = SubDomainType;
 
 /**
  * Generate a full subdomain URL

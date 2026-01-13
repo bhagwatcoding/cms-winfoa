@@ -1,11 +1,11 @@
 'use server';
 
-import connectDB from '@/lib/db';
+import connectDB from '@/shared/lib/db';
 import { AdmitCard } from '@/models';
 import { revalidatePath } from 'next/cache';
-import { getErrorMessage } from '@/lib/utils';
-import { createAdmitCardSchema, updateAdmitCardSchema } from '@/lib/validations';
-import { validateSchema } from '@/lib/validations/utils';
+import { getErrorMessage } from '@/shared/lib/utils';
+import { createAdmitCardSchema, updateAdmitCardSchema } from '@/shared/lib/validations';
+import { validateSchema } from '@/shared/lib/validations/utils';
 
 // Get all admit cards
 export async function getAdmitCards() {

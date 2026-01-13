@@ -5,9 +5,11 @@
 
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { validateSession, SESSION_COOKIE_NAME } from './index';
+import { validateSession } from './index';
 import { getLoginRedirectUrl } from '@/lib/helpers/url';
 import type { UserRole } from '@/types/models';
+import { serialize } from '@/lib/validations';
+import { ESSION_COOKIE_NAME } from '@/lib/constants';
 
 // ==========================================
 // MIDDLEWARE TYPES
@@ -29,7 +31,7 @@ export interface SessionMiddlewareOptions {
  * @returns Session data or null
  */
 export async function getRequestSession(request: NextRequest) {
-    const sessionToken = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+    const sessionToken = request.cookies.get(constants.SESSION_COOKIE_NAME)?.value;
 
     if (!sessionToken) return null;
 

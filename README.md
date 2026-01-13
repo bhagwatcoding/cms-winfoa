@@ -1,368 +1,416 @@
-# WinfoA - Multi-Subdomain Education Portal
+# Winfoa Platform - Multi-Subdomain Full-Stack Web Application
 
-A comprehensive, enterprise-level education management platform built with **Next.js 16**, **TypeScript**, **MongoDB/Mongoose**, and **Tailwind CSS**. Features a robust subdomain-based architecture with session-based authentication, role-based access control, and comprehensive user management.
+A comprehensive full-stack web development platform featuring specialized subdomains for authentication, learning management, user administration, payments, and developer tools.
 
----
+![Platform Architecture](https://img.shields.io/badge/Architecture-Multi--Subdomain-blue?style=for-the-badge)
+![Next.js](https://img.shields.io/badge/Next.js-16.1.1-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.1-06B6D4?style=for-the-badge&logo=tailwindcss)
 
-## 🚀 Features
+## 🏗️ Platform Architecture
 
-### 🔐 Authentication System
-- **Session-Based Authentication** - Secure, cookie-based sessions with 7-day expiration
-- **Multi-Subdomain Support** - Single auth system accessible across all subdomains
-- **Token Validation** - Real-time session validation and refresh mechanism
-- **Secure Cookies** - HttpOnly, Secure (in production), with proper SameSite settings
-- **Auto Logout** - Sessions automatically invalidated when user is deactivated
+### Multi-Subdomain Structure
 
-### 👥 User Management Portal (UMP)
-- **Complete CRUD Operations** - Create, read, update, delete users
-- **Role Management** - 6 role types: super-admin, admin, staff, center, student, user
-- **Activation/Deactivation** - Toggle user status with automatic session invalidation
-- **Permission System** - Granular permissions with custom overrides
-- **Session Management** - View and invalidate user sessions
-- **Bulk Operations** - Activate/deactivate multiple users at once
+The Winfoa platform consists of **8 specialized subdomains**, each serving a specific purpose:
 
-### 🏗️ Subdomain Architecture
-| Subdomain | Purpose | Access |
-|-----------|---------|--------|
-| `auth.localhost:3000` | Login, Signup, Token validation | Public |
-| `ump.localhost:3000` | User Management Portal | Admin/Super-Admin |
-| `skills.localhost:3000` | Education Portal (Courses, Students, Certificates) | Staff/Center/Admin |
-| `myaccount.localhost:3000` | User Profile & Settings | Authenticated Users |
-| `wallet.localhost:3000` | Wallet & Transactions | Authenticated Users |
-| `provider.localhost:3000` | Service Provider Dashboard | Providers |
-| `api.localhost:3000` | API Gateway | Authenticated API Requests |
+| Subdomain | URL | Purpose | Key Features |
+|-----------|-----|---------|-------------|
+| **Main** | `localhost:3000` | Landing & Dashboard | Platform overview, subdomain navigation |
+| **Auth** | `auth.localhost:3000` | Authentication Portal | Login, Registration, Password Reset, OAuth |
+| **Academy** | `academy.localhost:3000` | Learning Platform | Course Management, Student Portal, Certificates |
+| **API** | `api.localhost:3000` | API Gateway | REST Endpoints, Documentation, Rate Limiting |
+| **UMP** | `ump.localhost:3000` | User Management | User Administration, Role Management, Permissions |
+| **Provider** | `provider.localhost:3000` | Provider Portal | Service Management, Client Relations, Analytics |
+| **MyAccount** | `myaccount.localhost:3000` | Account Management | Profile Settings, Privacy Controls, Security |
+| **Wallet** | `wallet.localhost:3000` | Digital Payments | Payment Processing, Transaction History, Billing |
+| **Developer** | `developer.localhost:3000` | Developer Tools | API Documentation, SDK Downloads, Testing Tools |
 
----
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** 18.x or higher
+- **npm** or **yarn**
+- **MongoDB** (for database)
+- Modern web browser with subdomain support
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd winfoa
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+4. **Configure environment variables**
+   ```env
+   # Database
+   MONGODB_URI=mongodb://localhost:27017/winfoa
+   
+   # Authentication
+   NEXTAUTH_SECRET=your-secret-key
+   NEXTAUTH_URL=http://localhost:3000
+   
+   # API Configuration
+   API_BASE_URL=http://api.localhost:3000
+   
+   # Payment Gateway
+   PAYMENT_GATEWAY_KEY=your-payment-key
+   ```
+
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Access the platform**
+   - Main Platform: http://localhost:3000
+   - All subdomains will be accessible automatically
+
+### Subdomain Configuration
+
+The platform uses advanced middleware for subdomain routing. Each subdomain automatically routes to its respective application section.
 
 ## 📁 Project Structure
 
 ```
-src/
-├── app/                          # Next.js App Router
-│   ├── api/                      # API Routes
-│   │   └── auth/
-│   │       ├── login/           # POST - User login
-│   │       ├── signup/          # POST - User registration
-│   │       ├── logout/          # POST - Session logout
-│   │       ├── token/           # GET/POST/DELETE - Token operations
-│   │       ├── me/              # GET - Current user info
-│   │       └── forgot-password/ # POST - Password reset
-│   ├── auth/                    # Auth subdomain pages
-│   │   ├── login/
-│   │   ├── signup/
-│   │   ├── token/               # Session validation page
-│   │   └── forgot-password/
-│   ├── ump/                     # User Management Portal
-│   │   ├── users/               # User management
-│   │   └── page.tsx             # UMP dashboard
-│   ├── skills/                  # Education Portal
-│   ├── myaccount/              # User account management
-│   └── wallet/                 # Wallet & transactions
-├── features/                   # Feature-specific modules
-│   ├── auth/
-│   │   ├── actions/            # Server actions (login, signup, logout)
-│   │   ├── components/         # Auth UI components
-│   │   └── services/           # Auth business logic
-│   ├── ump/
-│   │   └── users/
-│   │       └── components/     # User management components
-│   └── skills/
-├── shared/
-│   ├── actions/                # Global server actions
-│   │   ├── auth/              # Auth actions
-│   │   ├── ump/               # UMP actions (user-management.ts)
-│   │   ├── users/             # User CRUD actions
-│   │   └── skills/            # Skills portal actions
-│   ├── lib/
-│   │   ├── db/
-│   │   │   └── models/        # Mongoose models
-│   │   │       ├── core/      # User, Session, Role
-│   │   │       ├── account/   # UserPreferences, ActivityLog
-│   │   │       └── skills/    # Course, Student, Certificate
-│   │   ├── session/           # Session management
-│   │   ├── permissions/       # RBAC system
-│   │   ├── proxy/             # Subdomain routing
-│   │   └── validations/       # Zod schemas
-│   ├── components/            # Shared UI components
-│   └── types/                 # TypeScript type definitions
-└── proxy.ts                   # Next.js 16 proxy entry point
+winfoa/
+├── src/
+│   ├── app/                     # Next.js App Router
+│   │   ├── (public)/           # Main platform pages
+│   │   ├── auth/               # Authentication subdomain
+│   │   ├── academy/            # Learning management subdomain
+│   │   ├── api/                # API gateway subdomain
+│   │   ├── ump/                # User management subdomain
+│   │   ├── provider/           # Provider portal subdomain
+│   │   ├── myaccount/          # Account management subdomain
+│   │   ├── wallet/             # Digital wallet subdomain
+│   │   ├── developer/          # Developer tools subdomain
+│   │   ├── layout.tsx          # Root layout
+│   │   └── globals.css         # Global styles
+│   ├── features/               # Feature-specific components and logic
+│   ├── shared/                 # Shared components and utilities
+│   │   ├── components/         # Reusable UI components
+│   │   │   └── ui/            # Base UI components (shadcn/ui)
+│   │   ├── lib/               # Core utilities and configurations
+│   │   ├── hooks/             # Custom React hooks
+│   │   ├── types/             # TypeScript type definitions
+│   │   └── actions/           # Server actions
+│   └── middleware.ts           # Subdomain routing middleware
+├── public/                     # Static assets
+├── docs/                       # Documentation
+├── scripts/                    # Build and deployment scripts
+├── package.json
+├── next.config.ts
+├── tailwind.config.ts
+└── tsconfig.json
 ```
 
----
+## 🔧 Technology Stack
 
-## 🔑 Authentication Flow
+### Frontend
+- **Next.js 16.1.1** - React framework with App Router
+- **React 19.2.3** - UI library with latest features
+- **TypeScript 5.0** - Type-safe development
+- **Tailwind CSS 3.4.1** - Utility-first styling
+- **Framer Motion** - Animation library
+- **Radix UI** - Accessible component primitives
 
-### Login Flow
-```
-1. User visits auth.localhost:3000/login
-2. Enters email and password
-3. Server validates credentials
-4. Creates session in MongoDB
-5. Sets auth_session cookie
-6. Redirects to role-appropriate subdomain
-```
+### Backend
+- **Next.js API Routes** - Serverless API endpoints
+- **MongoDB** - Document database
+- **Mongoose** - MongoDB object modeling
+- **bcryptjs** - Password hashing
+- **JWT** - Authentication tokens
 
-### Token Validation Flow
-```
-1. User visits auth.localhost:3000/token
-2. Client calls GET /api/auth/token
-3. Server validates session cookie
-4. Returns user info if valid
-5. Redirects to appropriate subdomain
-```
+### Development Tools
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **Turbopack** - Fast bundler
+- **TypeScript** - Static type checking
 
-### Session Management
+## 🛠️ Key Features
+
+### 🔐 Multi-Domain Authentication
+- Centralized authentication across all subdomains
+- JWT-based session management
+- OAuth integration support
+- Role-based access control (RBAC)
+
+### 📚 Learning Management System
+- Course creation and management
+- Student enrollment and tracking
+- Certificate generation and verification
+- Exam and assessment system
+
+### 👥 User Administration
+- Comprehensive user management
+- Role and permission system
+- Employee management
+- Activity logging and audit trails
+
+### 💳 Digital Wallet System
+- Secure payment processing
+- Transaction history and tracking
+- Multi-currency support
+- Refund and dispute management
+
+### 🔌 Developer API Gateway
+- RESTful API endpoints
+- Rate limiting and throttling
+- API key management
+- Interactive documentation
+- SDK generation and downloads
+
+### 🏢 Provider Management
+- Service provider onboarding
+- Client relationship management
+- Business analytics and reporting
+- Contract and billing management
+
+## 🚦 API Endpoints
+
+### Core API Structure
+
 ```typescript
-// Session Cookie Configuration
-{
-    name: 'auth_session',
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-}
+// Main API Information
+GET /api                        # Platform overview and endpoints
+GET /api/health                 # System health check
+GET /api/status                 # Operational status
+
+// Authentication APIs
+POST /api/auth/login            # User login
+POST /api/auth/register         # User registration
+POST /api/auth/logout           # User logout
+POST /api/auth/refresh          # Token refresh
+
+// Academy APIs
+GET /api/courses                # List courses
+POST /api/courses               # Create course
+GET /api/students               # List students
+POST /api/certificates/generate # Generate certificate
+
+// User Management APIs
+GET /api/users                  # List users
+POST /api/users                 # Create user
+PUT /api/users/:id              # Update user
+DELETE /api/users/:id           # Delete user
+
+// Wallet APIs
+GET /api/wallet/balance         # Get balance
+POST /api/wallet/recharge       # Add funds
+POST /api/wallet/transfer       # Transfer funds
+GET /api/wallet/transactions    # Transaction history
+
+// Developer APIs
+GET /api/dev/keys               # List API keys
+POST /api/dev/keys/generate     # Generate API key
+GET /api/dev/usage              # Usage statistics
+GET /api/dev/docs               # API documentation
 ```
 
----
+## 🎨 UI Components
 
-## 👤 User Roles & Permissions
+The platform uses a comprehensive design system built with:
 
-### Role Hierarchy
-```
-super-admin → Full system access (*:*)
-    admin → User & employee management
-        staff → View & manage students/courses
-            center → Center-specific operations
-                student → View own data
-                    user → Basic access
-```
+- **shadcn/ui** - Modern, accessible components
+- **Radix UI** - Headless component primitives
+- **Tailwind CSS** - Utility-first styling
+- **Lucide React** - Beautiful icons
+- **Custom themes** - Consistent branding across subdomains
 
-### Permission Format
-```
-category:action
-Examples: users:view, students:create, certificates:manage
-Special: *:* (full access)
-```
-
-### Permission Categories
-- `users` - User management
-- `students` - Student management
-- `courses` - Course management
-- `certificates` - Certificate operations
-- `centers` - Center management
-- `employees` - Employee management
-- `transactions` - Financial operations
-- `reports` - Analytics & reports
-- `settings` - System settings
-- `api` - API access
-- `system` - System administration
-
----
-
-## 🔧 API Endpoints
-
-### Authentication Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/login` | User login |
-| POST | `/api/auth/signup` | User registration |
-| POST | `/api/auth/logout` | Session logout |
-| GET | `/api/auth/token` | Validate session |
-| POST | `/api/auth/token` | Refresh session |
-| DELETE | `/api/auth/token` | Invalidate session |
-| GET | `/api/auth/me` | Get current user |
-| POST | `/api/auth/forgot-password` | Request password reset |
-
-### UMP Endpoints (via Server Actions)
-```typescript
-// User Management
-getUsersAction({ page, limit, search, role, status })
-createUserAction(data)
-updateUserAction(userId, data)
-deleteUserAction(userId)
-
-// Activation/Deactivation
-activateUserAction(userId)
-deactivateUserAction(userId)
-toggleUserStatusAction(userId)
-
-// Role & Permissions
-changeUserRoleAction(userId, newRole)
-updateUserPermissionsAction(userId, permissions)
-
-// Session Management
-getUserSessionsAction(userId)
-invalidateUserSessionAction(userId, sessionId)
-invalidateAllUserSessionsAction(userId)
-
-// Bulk Operations
-bulkActivateUsersAction(userIds)
-bulkDeactivateUsersAction(userIds)
-
-// Statistics
-getAllSubdomainStatsAction()
-getUserActivitySummaryAction(userId)
-```
-
----
-
-## 🛠️ Installation
-
-### Prerequisites
-- Node.js 18+
-- MongoDB 5.0+
-- npm or yarn
-
-### Setup
-
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd winfoa
-```
-
-2. **Install dependencies**
-```bash
-npm install
-```
-
-3. **Configure environment**
-```bash
-cp .env.example .env.local
-```
-
-4. **Update `.env.local`**
-```env
-# MongoDB Connection
-MONGODB_URI=mongodb://localhost:27017/winfoa
-
-# Domain Configuration
-NEXT_PUBLIC_ROOT_DOMAIN=localhost:3000
-NEXT_PUBLIC_API_URL=http://localhost:3000
-
-# Session Security (REQUIRED - Generate with: node -e "console.log(require('crypto').randomBytes(64).toString('hex'))")
-SESSION_SECRET=your-64-char-minimum-secret-key
-SESSION_MAX_AGE=604800000
-```
-
-5. **Run development server**
-```bash
-npm run dev
-```
-
-6. **Access the application**
-- Auth: http://auth.localhost:3000
-- UMP: http://ump.localhost:3000
-- Skills: http://skills.localhost:3000
-- My Account: http://myaccount.localhost:3000
-
----
-
-## 🗄️ Database Models
-
-### User Model
-```typescript
-interface IUser {
-    _id: ObjectId;
-    umpUserId?: string;          // WIN-YYYY-XXXXXX format
-    name: string;
-    email: string;
-    password?: string;           // Hashed, select: false
-    role: 'super-admin' | 'admin' | 'staff' | 'student' | 'user' | 'center';
-    status: 'active' | 'inactive' | 'on-leave';
-    isActive: boolean;
-    emailVerified: boolean;
-    phone?: string;
-    customPermissions?: string[];
-    permissionOverrides?: string[];
-    walletBalance?: number;
-    lastLogin?: Date;
-    createdAt: Date;
-    updatedAt: Date;
-}
-```
-
-### Session Model
-```typescript
-interface ISession {
-    _id: ObjectId;
-    userId: ObjectId;
-    token: string;               // 32-byte hex token
-    expiresAt: Date;
-    userAgent?: string;
-    ipAddress?: string;
-    createdAt: Date;
-}
-```
-
----
+### Component Categories
+- **Layout Components** - Headers, footers, navigation
+- **Form Components** - Inputs, buttons, validation
+- **Data Display** - Tables, cards, statistics
+- **Feedback** - Alerts, toasts, loading states
+- **Navigation** - Menus, breadcrumbs, pagination
 
 ## 🔒 Security Features
 
-### Proxy Security Layer
-- **Rate Limiting** - 100 requests per minute per IP
-- **Geo-blocking** - Configurable country restrictions
-- **Bot Detection** - Automatic bot identification
-- **Security Headers** - HSTS, X-Frame-Options, CSP, etc.
+### Authentication & Authorization
+- JWT-based authentication
+- Role-based access control (RBAC)
+- Permission-based route protection
+- Session management across subdomains
 
-### Session Security
-- **Cryptographic Tokens** - 32-byte random tokens
-- **HttpOnly Cookies** - Prevents XSS access
-- **Auto-expiration** - TTL index in MongoDB
-- **Deactivation Cascade** - Sessions deleted on user deactivation
+### Data Protection
+- Input validation and sanitization
+- SQL injection prevention
+- XSS protection
+- CSRF protection
+- Rate limiting and DDoS protection
 
-### Password Security
-- **bcrypt Hashing** - 12 salt rounds
-- **Minimum Length** - 6 characters minimum
-- **Hidden by Default** - `select: false` in schema
+### Payment Security
+- PCI DSS compliance
+- Encrypted payment processing
+- Secure tokenization
+- Fraud detection and prevention
 
----
+## 📊 Performance & Scalability
 
-## 📋 Development Workflow
+### Optimization Features
+- **Server-Side Rendering (SSR)** - Fast initial page loads
+- **Static Site Generation (SSG)** - Optimized static content
+- **Code Splitting** - Lazy loading of components
+- **Image Optimization** - Next.js Image component
+- **Caching Strategy** - Multi-layer caching system
 
-### Creating a New Feature
-1. Create actions in `src/shared/actions/<feature>/`
-2. Create components in `src/features/<subdomain>/<feature>/components/`
-3. Create pages in `src/app/<subdomain>/<feature>/`
-4. Export actions from `src/shared/actions/index.ts`
-5. Add permissions if needed in `src/shared/lib/permissions/constants.ts`
+### Monitoring & Analytics
+- Real-time performance monitoring
+- Error tracking and reporting
+- User behavior analytics
+- API usage statistics
+- System health metrics
 
-### Adding a New Subdomain
-1. Add to `VALID_SUBDOMAINS` in `src/shared/lib/proxy/config.ts`
-2. Create handler in `src/shared/lib/proxy/subdomain.ts`
-3. Add case in `ProxyHandler.execute()` in `src/shared/lib/proxy/index.ts`
-4. Create app directory `src/app/<subdomain>/`
+## 🚀 Deployment
 
----
-
-## 🧪 Testing
-
-### Test User Accounts
-```
-Super Admin: superadmin@example.com / password123
-Admin: admin@example.com / password123
-Staff: staff@example.com / password123
-Student: student@example.com / password123
-```
-
-### Health Check
+### Development
 ```bash
-curl http://localhost:3000/api/health
+npm run dev          # Start development server
+npm run build        # Build production bundle
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run type-check   # TypeScript checking
 ```
 
----
+### Production Deployment
+
+#### Vercel (Recommended)
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel --prod
+```
+
+#### Docker Deployment
+```dockerfile
+# Dockerfile included for containerized deployment
+docker build -t winfoa-platform .
+docker run -p 3000:3000 winfoa-platform
+```
+
+#### Traditional Hosting
+```bash
+# Build and export
+npm run build
+npm run export
+
+# Deploy static files to your hosting provider
+```
+
+## 🔧 Configuration
+
+### Subdomain Configuration
+The middleware automatically handles subdomain routing. To add new subdomains:
+
+1. Add subdomain configuration in `src/middleware.ts`
+2. Create corresponding app directory structure
+3. Implement subdomain-specific layout and pages
+4. Update API routes if needed
+
+### Database Configuration
+```javascript
+// MongoDB connection configuration
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/winfoa'
+
+// Database models are located in src/shared/lib/db/models/
+```
+
+### Environment Variables
+```env
+# Required Environment Variables
+NODE_ENV=development|production
+MONGODB_URI=your-mongodb-connection-string
+NEXTAUTH_SECRET=your-secret-key
+NEXTAUTH_URL=http://localhost:3000
+
+# Optional Environment Variables
+API_BASE_URL=http://api.localhost:3000
+PAYMENT_GATEWAY_KEY=your-payment-key
+EMAIL_SERVICE_KEY=your-email-service-key
+STORAGE_BUCKET=your-storage-bucket
+```
+
+## 📚 Documentation
+
+### API Documentation
+- Interactive API docs available at: `http://api.localhost:3000/docs`
+- Postman collection: `http://api.localhost:3000/postman`
+- SDK documentation: `http://developer.localhost:3000/sdk`
+
+### Development Guides
+- [Subdomain Development Guide](docs/subdomain-development.md)
+- [API Integration Guide](docs/api-integration.md)
+- [Component Library Guide](docs/component-library.md)
+- [Database Schema Guide](docs/database-schema.md)
+
+## 🤝 Contributing
+
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Commit your changes** (`git commit -m 'Add amazing feature'`)
+4. **Push to the branch** (`git push origin feature/amazing-feature`)
+5. **Open a Pull Request**
+
+### Development Guidelines
+- Follow TypeScript best practices
+- Use conventional commit messages
+- Add tests for new features
+- Update documentation for API changes
+- Ensure responsive design for all components
 
 ## 📄 License
 
-This project is proprietary software. All rights reserved.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+### Getting Help
+- **Documentation**: Comprehensive guides in `/docs`
+- **API Support**: `http://developer.localhost:3000/support`
+- **Community**: GitHub Discussions
+- **Issues**: GitHub Issues
+
+### Contact Information
+- **Email**: support@winfoa.com
+- **Website**: https://winfoa.com
+- **Developer Portal**: `http://developer.localhost:3000`
 
 ---
 
-## 🤝 Support
+## 🔥 Quick Start Commands
 
-For technical support, please contact the development team.
+```bash
+# Start development with all subdomains
+npm run dev
+
+# Access different subdomains
+open http://localhost:3000                    # Main platform
+open http://auth.localhost:3000               # Authentication
+open http://academy.localhost:3000            # Learning platform  
+open http://api.localhost:3000                # API gateway
+open http://ump.localhost:3000                # User management
+open http://provider.localhost:3000           # Provider portal
+open http://myaccount.localhost:3000          # Account management
+open http://wallet.localhost:3000             # Digital wallet
+open http://developer.localhost:3000          # Developer tools
+```
+
+**Built with ❤️ by the Winfoa Team**
 
 ---
 
-**Built with ❤️ using Next.js 16, TypeScript, and MongoDB**
+*This is a comprehensive full-stack web development platform showcasing modern web technologies, microservice architecture, and enterprise-grade features. Perfect for educational institutions, service providers, and multi-tenant applications.*

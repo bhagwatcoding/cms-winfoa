@@ -1,9 +1,9 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document, Types, Model, model, models } from 'mongoose'
 import bcrypt from 'bcryptjs'
 
 // User Interface - Globally accessible type
 export interface IUser extends Document {
-    _id: mongoose.Types.ObjectId
+    _id: Types.ObjectId
     umpUserId?: string // UMP-generated unique user ID (WIN-YYYY-XXXXXX)
     name: string
     firstName?: string
@@ -15,7 +15,7 @@ export interface IUser extends Document {
     role: 'super-admin' | 'admin' | 'staff' | 'student' | 'user' | 'center'
     phone?: string
     status: 'active' | 'inactive' | 'on-leave'
-    centerId?: mongoose.Types.ObjectId
+    centerId?: Types.ObjectId
     joinedAt: Date
     oauthProvider?: 'google' | 'github'
     oauthId?: string
@@ -75,7 +75,7 @@ const UserSchema = new Schema<IUser>(
             default: 'active'
         },
         centerId: {
-            type: Schema.Types.ObjectId,
+            type: Types.ObjectId,
             ref: 'Center'
         },
         joinedAt: {
@@ -172,6 +172,4 @@ UserSchema.statics.findActive = async function () {
 }
 
 // Export User Model - Globally accessible
-const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
-
-export default User
+export default models.User<IUser> || model<IUser>('User', UserSchema)

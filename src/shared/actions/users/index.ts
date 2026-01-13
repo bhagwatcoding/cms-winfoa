@@ -12,7 +12,7 @@ import { createUserSchema, updateUserSchema } from '@/lib/validations';
 import { validateSchema } from '@/lib/validations/utils';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
 import { getErrorMessage } from '@/lib/utils';
-import { UserService } from '@/lib/services/user.service';
+import { UserService } from '@/shared/services/user.service';
 import type { CreateResponse, UpdateResponse, DeleteResponse, PaginatedResponse } from '@/types/api';
 import type { IUser, UserRole } from '@/types/models';
 

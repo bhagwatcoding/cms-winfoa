@@ -1,23 +1,54 @@
-import { NextResponse } from 'next/server';
-import connectDB from '@/lib/db';
-import { Session } from '@/models';
-import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from "next/server";
+import { logout, getCurrentUser } from "@/shared/lib/session";
 
-export async function POST() {
-    try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('auth_session')?.value;
+export async function POST(request: NextRequest) {
+  try {
+    // Get current user (optional, for logging purposes)
+    const user = await getCurrentUser();
 
-        if (token) {
-            await connectDB();
-            await Session.deleteOne({ token });
-        }
+    // Destroy the session
+    await logout();
 
-        cookieStore.delete('auth_session');
+    console.log(
+      `🚪 User logged out: ${user?.email || "Unknown"} at ${new Date().toISOString()}`,
+    );
 
-        return NextResponse.json({ message: 'Logged out successfully' });
-    } catch (error: unknown) {
-        console.error('Logout error:', error);
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-    }
+    return NextResponse.json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+// Handle GET requests (for logout links)
+export async function GET(request: NextRequest) {
+  try {
+    await logout();
+
+    return NextResponse.json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}
+
+// Handle unsupported methods
+export async function PUT() {
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+}
+
+export async function DELETE() {
+  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
 }

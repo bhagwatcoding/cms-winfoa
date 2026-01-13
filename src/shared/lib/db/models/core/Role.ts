@@ -3,7 +3,7 @@
  * Professional role management with dynamic permissions
  */
 
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model, model, models } from 'mongoose';
 
 // Role Interface
 export interface IRole extends Document {
@@ -80,4 +80,4 @@ RoleSchema.pre('findOneAndDelete', async function () {
 });
 
 // Model
-export const Role: Model<IRole> = mongoose.models.Role || mongoose.model<IRole>('Role', RoleSchema);
+export const Role: Model<IRole> = models.Role || model<IRole>('Role', RoleSchema);

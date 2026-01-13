@@ -1,11 +1,11 @@
 'use server';
 
-import connectDB from '@/lib/db';
+import connectDB from '@/shared/lib/db';
 import { User, Session } from '@/models';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
-import { getDashboardUrlForRole } from '@/lib/helpers';
-import { getErrorMessage } from '@/lib/utils';
+import { getDashboardUrlForRole } from '@/shared/lib/helpers';
+import { getErrorMessage } from '@/shared/lib/utils';
 
 interface SignupData {
     name: string;

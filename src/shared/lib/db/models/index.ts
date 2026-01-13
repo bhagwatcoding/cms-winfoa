@@ -36,15 +36,6 @@ export type { IUserPreferences } from './account/UserPreferences'
 export { default as ActivityLog } from './account/ActivityLog'
 export type { IActivityLog } from './account/ActivityLog'
 
-// ==========================================
-// API MODELS (API Management subdomain)
-// ==========================================
-
-export { default as ApiKey } from './api/ApiKey'
-export type { IApiKey } from './api/ApiKey'
-
-export { default as ApiRequest } from './api/ApiRequest'
-export type { IApiRequest } from './api/ApiRequest'
 
 // ==========================================
 // ADMIN MODELS (UMP subdomain)
@@ -54,38 +45,42 @@ export { default as UserRegistry } from './admin/UserRegistry'
 export type { IUserRegistry } from './admin/UserRegistry'
 
 // ==========================================
-// SKILLS MODELS (Skills/Education subdomain)
+// ACADEMY MODELS (Skills/Education subdomain)
 // ==========================================
 
-export { default as Course } from './skills/Course'
-export type { ICourse } from './skills/Course'
+export { default as Course } from './academy/Course'
+export type { ICourse } from './academy/Course'
 
-export { default as Student } from './skills/Student'
-export type { IStudent } from './skills/Student'
+export { default as Student } from './academy/Student'
+export type { IStudent } from './academy/Student'
 
-export { default as Certificate } from './skills/Certificate'
-export type { ICertificate } from './skills/Certificate'
+export { default as Certificate } from './academy/Certificate'
+export type { ICertificate } from './academy/Certificate'
 
-export { default as Result } from './skills/Result'
-export type { IResult } from './skills/Result'
+export { default as Result } from './academy/Result'
+export type { IResult } from './academy/Result'
 
-export { default as AdmitCard } from './skills/AdmitCard'
-export type { IAdmitCard } from './skills/AdmitCard'
+export { default as AdmitCard } from './academy/AdmitCard'
+export type { IAdmitCard } from './academy/AdmitCard'
 
-export { default as Employee } from './skills/Employee'
-export type { IEmployee } from './skills/Employee'
+export { default as Employee } from './academy/Employee'
+export type { IEmployee } from './academy/Employee'
 
-export { default as Center } from './skills/Center'
-export type { ICenter } from './skills/Center'
+export { default as Center } from './academy/Center'
+export type { ICenter } from './academy/Center'
 
-export { default as Transaction } from './skills/Transaction'
-export type { ITransaction } from './skills/Transaction'
+export { default as Enrollment } from './academy/Enrollment';
+export type { IEnrollment } from './academy/Enrollment';
 
-export { default as Notification } from './skills/Notification'
-export type { INotification } from './skills/Notification'
 
-export { default as PasswordResetToken } from './skills/PasswordResetToken'
-export type { IPasswordResetToken } from './skills/PasswordResetToken'
+export { default as Transaction } from './academy/Transaction'
+export type { ITransaction } from './academy/Transaction'
+
+export { default as Notification } from './academy/Notification'
+export type { INotification } from './academy/Notification'
+
+export { default as PasswordResetToken } from './academy/PasswordResetToken'
+export type { IPasswordResetToken } from './academy/PasswordResetToken'
 
 // ==========================================
 // WALLET MODELS

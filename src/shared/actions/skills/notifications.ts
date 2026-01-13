@@ -1,11 +1,11 @@
 'use server';
 
-import connectDB from '@/lib/db';
+import connectDB from '@/shared/lib/db';
 import { Notification } from '@/models';
 import { revalidatePath } from 'next/cache';
-import { getErrorMessage } from '@/lib/utils';
-import { createNotificationSchema } from '@/lib/validations';
-import { validateSchema } from '@/lib/validations/utils';
+import { getErrorMessage } from '@/shared/lib/utils';
+import { createNotificationSchema } from '@/shared/lib/validations';
+import { validateSchema } from '@/shared/lib/validations/utils';
 
 // Get all notifications
 export async function getNotifications(userId?: string) {

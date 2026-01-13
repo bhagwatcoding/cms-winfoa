@@ -16,6 +16,12 @@ export * from './app';
 export * from './routes';
 
 // ==========================================
+// SUBDOMAINS
+// ==========================================
+
+export * from './subdomains';
+
+// ==========================================
 // DATABASE ENUMS & LABELS
 // ==========================================
 
@@ -33,6 +39,11 @@ export * from './messages';
 
 export { Constants } from './app';
 export { ROUTES } from './routes';
+export {
+    SUBDOMAIN_TYPES,
+    SUBDOMAIN_CONFIG,
+    type SubDomainType,
+} from './subdomains';
 export {
     USER_ROLES,
     USER_STATUS,

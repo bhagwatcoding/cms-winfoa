@@ -3,20 +3,23 @@
  * High-performance session handling with caching and validation
  */
 
-import { cookies } from 'next/headers';
-import { cache } from 'react';
-import connectDB from '@/lib/db';
-import { Session, User } from '@/models';
-import type { ISession, IUser } from '@/types/models';
-import { generateSignedSessionToken, verifySessionToken, validateSecretStrength } from '@/lib/crypto';
+import { cookies } from "next/headers";
+import { cache } from "react";
+import connectDB from "@/lib/db";
+import { Session, User } from "@/models";
+import type { ISession, IUser } from "@/models";
+import { SESSION_COOKIE_NAME, SESSION_MAX_AGE } from "../constants";
+
+import {
+  generateSignedSessionToken,
+  verifySessionToken,
+  validateSecretStrength,
+} from "@/lib/crypto";
 
 // ==========================================
 // CONSTANTS
 // ==========================================
 
-export const SESSION_COOKIE_NAME = 'auth_session';
-export const SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000; // 7 days
-export const SESSION_CLEANUP_INTERVAL = 60 * 60 * 1000; // 1 hour
 
 // Validate secret strength on module load
 validateSecretStrength();
@@ -34,25 +37,25 @@ validateSecretStrength();
  * @returns Created session
  */
 export async function createSession(
-    userId: string,
-    userAgent?: string,
-    ipAddress?: string
+  userId: string,
+  userAgent?: string,
+  ipAddress?: string,
 ): Promise<ISession> {
-    await connectDB();
+  await connectDB();
 
-    // Generate signed session token
-    const token = generateSignedSessionToken();
-    const expiresAt = new Date(Date.now() + SESSION_MAX_AGE);
+  // Generate signed session token
+  const token = generateSignedSessionToken();
+  const expiresAt = new Date(Date.now() + SESSION_MAX_AGE);
 
-    const session = await Session.create({
-        userId,
-        token,
-        expiresAt,
-        userAgent,
-        ipAddress,
-    });
+  const session = await Session.create({
+    userId,
+    token,
+    expiresAt,
+    userAgent,
+    ipAddress,
+  });
 
-    return session;
+  return session;
 }
 
 /**
@@ -61,21 +64,22 @@ export async function createSession(
  * @param expiresAt - Expiration date
  */
 export async function setSessionCookie(
-    token: string,
-    expiresAt: Date
+  token: string,
+  expiresAt: Date,
 ): Promise<void> {
-    const cookieStore = await cookies();
+  const cookieStore = await cookies();
 
-    cookieStore.set(SESSION_COOKIE_NAME, token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        // sameSite: 'lax',
-        expires: expiresAt,
-        path: '/',
-        domain: process.env.NODE_ENV === 'production'
-            ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-            : undefined,
-    });
+  cookieStore.set(SESSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    // sameSite: 'lax',
+    expires: expiresAt,
+    path: "/",
+    domain:
+      process.env.NODE_ENV === "production"
+        ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
+        : undefined,
+  });
 }
 
 // ==========================================
@@ -87,9 +91,9 @@ export async function setSessionCookie(
  * @returns Session token or null
  */
 export async function getSessionToken(): Promise<string | null> {
-    const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
-    return sessionCookie?.value || null;
+  const cookieStore = await cookies();
+  const sessionCookie = cookieStore.get(SESSION_COOKIE_NAME);
+  return sessionCookie?.value || null;
 }
 
 /**
@@ -99,39 +103,39 @@ export async function getSessionToken(): Promise<string | null> {
  * @param token - Signed session token
  * @returns Session or null
  */
-export const validateSession = cache(async (
-    token: string
-): Promise<ISession | null> => {
+export const validateSession = cache(
+  async (token: string): Promise<ISession | null> => {
     if (!token) return null;
 
     // Verify token signature first (fast check before DB)
     const unsignedToken = verifySessionToken(token);
     if (!unsignedToken) {
-        console.warn('Invalid session token signature');
-        return null;
+      console.warn("Invalid session token signature");
+      return null;
     }
 
     await connectDB();
 
     const session = await Session.findOne({
-        token,
-        expiresAt: { $gt: new Date() },
+      token,
+      expiresAt: { $gt: new Date() },
     }).lean();
 
     if (!session) return null;
 
     return session as ISession;
-});
+  },
+);
 
 /**
  * Get current session (cached)
  * @returns Current session or null
  */
 export const getCurrentSession = cache(async (): Promise<ISession | null> => {
-    const token = await getSessionToken();
-    if (!token) return null;
+  const token = await getSessionToken();
+  if (!token) return null;
 
-    return validateSession(token);
+  return validateSession(token);
 });
 
 // ==========================================
@@ -144,18 +148,16 @@ export const getCurrentSession = cache(async (): Promise<ISession | null> => {
  * @returns Current user or null
  */
 export const getCurrentUser = cache(async (): Promise<IUser | null> => {
-    const session = await getCurrentSession();
-    if (!session) return null;
+  const session = await getCurrentSession();
+  if (!session) return null;
 
-    await connectDB();
+  await connectDB();
 
-    const user = await User.findById(session.userId)
-        .select('-password')
-        .lean();
+  const user = await User.findById(session.userId).select("-password").lean();
 
-    if (!user) return null;
+  if (!user) return null;
 
-    return user as IUser;
+  return user as IUser;
 });
 
 /**
@@ -164,13 +166,13 @@ export const getCurrentUser = cache(async (): Promise<IUser | null> => {
  * @throws Error if not authenticated
  */
 export async function requireAuth(): Promise<IUser> {
-    const user = await getCurrentUser();
+  const user = await getCurrentUser();
 
-    if (!user) {
-        throw new Error('Unauthorized - Please login');
-    }
+  if (!user) {
+    throw new Error("Unauthorized - Please login");
+  }
 
-    return user;
+  return user;
 }
 
 /**
@@ -179,16 +181,14 @@ export async function requireAuth(): Promise<IUser> {
  * @returns Current user
  * @throws Error if not authorized
  */
-export async function requireRole(
-    allowedRoles: string[]
-): Promise<IUser> {
-    const user = await requireAuth();
+export async function requireRole(allowedRoles: string[]): Promise<IUser> {
+  const user = await requireAuth();
 
-    if (!allowedRoles.includes(user.role)) {
-        throw new Error('Forbidden - Insufficient permissions');
-    }
+  if (!allowedRoles.includes(user.role)) {
+    throw new Error("Forbidden - Insufficient permissions");
+  }
 
-    return user;
+  return user;
 }
 
 // ==========================================
@@ -200,23 +200,23 @@ export async function requireRole(
  * @param token - Session token
  */
 export async function deleteSession(token: string): Promise<void> {
-    await connectDB();
+  await connectDB();
 
-    await Session.findOneAndDelete({ token });
+  await Session.findOneAndDelete({ token });
 
-    const cookieStore = await cookies();
-    cookieStore.delete(SESSION_COOKIE_NAME);
+  const cookieStore = await cookies();
+  cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
 /**
  * Logout current user
  */
 export async function logout(): Promise<void> {
-    const token = await getSessionToken();
+  const token = await getSessionToken();
 
-    if (token) {
-        await deleteSession(token);
-    }
+  if (token) {
+    await deleteSession(token);
+  }
 }
 
 // ==========================================
@@ -228,13 +228,13 @@ export async function logout(): Promise<void> {
  * Should be run periodically
  */
 export async function cleanupExpiredSessions(): Promise<number> {
-    await connectDB();
+  await connectDB();
 
-    const result = await Session.deleteMany({
-        expiresAt: { $lt: new Date() },
-    });
+  const result = await Session.deleteMany({
+    expiresAt: { $lt: new Date() },
+  });
 
-    return result.deletedCount || 0;
+  return result.deletedCount || 0;
 }
 
 /**
@@ -242,24 +242,22 @@ export async function cleanupExpiredSessions(): Promise<number> {
  * @param token - Session token
  * @returns Updated session
  */
-export async function extendSession(
-    token: string
-): Promise<ISession | null> {
-    await connectDB();
+export async function extendSession(token: string): Promise<ISession | null> {
+  await connectDB();
 
-    const expiresAt = new Date(Date.now() + SESSION_MAX_AGE);
+  const expiresAt = new Date(Date.now() + SESSION_MAX_AGE);
 
-    const session = await Session.findOneAndUpdate(
-        { token },
-        { expiresAt },
-        { new: true }
-    );
+  const session = await Session.findOneAndUpdate(
+    { token },
+    { expiresAt },
+    { new: true },
+  );
 
-    if (session) {
-        await setSessionCookie(token, expiresAt);
-    }
+  if (session) {
+    await setSessionCookie(token, expiresAt);
+  }
 
-    return session;
+  return session;
 }
 
 // ==========================================
@@ -271,8 +269,8 @@ export async function extendSession(
  * @returns User ID or null
  */
 export async function getCurrentUserId(): Promise<string | null> {
-    const session = await getCurrentSession();
-    return session?.userId.toString() || null;
+  const session = await getCurrentSession();
+  return session?.userId.toString() || null;
 }
 
 /**
@@ -280,8 +278,8 @@ export async function getCurrentUserId(): Promise<string | null> {
  * @returns True if authenticated
  */
 export async function isAuthenticated(): Promise<boolean> {
-    const session = await getCurrentSession();
-    return !!session;
+  const session = await getCurrentSession();
+  return !!session;
 }
 
 /**
@@ -290,8 +288,8 @@ export async function isAuthenticated(): Promise<boolean> {
  * @returns True if user has role
  */
 export async function hasRole(role: string): Promise<boolean> {
-    const user = await getCurrentUser();
-    return user?.role === role;
+  const user = await getCurrentUser();
+  return user?.role === role;
 }
 
 /**
@@ -300,6 +298,6 @@ export async function hasRole(role: string): Promise<boolean> {
  * @returns True if user has any role
  */
 export async function hasAnyRole(roles: string[]): Promise<boolean> {
-    const user = await getCurrentUser();
-    return !!user && roles.includes(user.role);
+  const user = await getCurrentUser();
+  return !!user && roles.includes(user.role);
 }

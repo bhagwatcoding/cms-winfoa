@@ -1,9 +1,9 @@
 'use server';
 
-import connectDB from '@/lib/db';
+import connectDB from '@/shared/lib/db';
 import { User } from '@/models';
 import bcrypt from 'bcryptjs';
-import { getErrorMessage } from '@/lib/utils';
+import { getErrorMessage } from '@/shared/lib/utils';
 
 // Request password reset
 export async function requestPasswordReset(email: string) {
