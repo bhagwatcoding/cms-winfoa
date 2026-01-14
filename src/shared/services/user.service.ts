@@ -2,7 +2,7 @@ import { User } from '@/models';
 import type { IUser, UserRole } from '@/types/models';
 import type { CreateUserInput, UpdateUserInput } from '@/lib/validations';
 import bcrypt from 'bcryptjs';
-import { FilterQuery } from 'mongoose';
+import { QueryFilter } from 'mongoose';
 
 export class UserService {
     /**
@@ -87,7 +87,7 @@ export class UserService {
         const limit = params.limit || 10;
         const skip = (page - 1) * limit;
 
-        const query: FilterQuery<IUser> = {};
+        const query: QueryFilter<IUser> = {};
 
         if (params.search) {
             query.$or = [

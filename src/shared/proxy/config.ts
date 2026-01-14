@@ -3,12 +3,8 @@
  * Subdomain routing and security configuration for the proxy server
  */
 
-import {
-  SESSION_COOKIE_NAME,
-  SUBDOMAIN_CONFIG,
-  ROOT_DOMAIN,
-  IS_PRODUCTION,
-} from '@/lib/constants';
+import { SESSION, TENANCY, RATE_LIMIT, env } from '@/config';
+import { SUBDOMAIN_CONFIG } from '@/lib/constants';
 
 // ==========================================
 // HELPER FUNCTIONS
@@ -25,9 +21,9 @@ const getEnv = (key: string, defaultVal?: string): string => {
 // ==========================================
 
 export const PROXY_CONFIG = {
-  ENV: process.env.NODE_ENV || 'development',
-  ROOT_DOMAIN: ROOT_DOMAIN,
-  AUTH_COOKIE: SESSION_COOKIE_NAME,
+  ENV: env.NODE_ENV,
+  ROOT_DOMAIN: TENANCY.ROOT_DOMAIN,
+  AUTH_COOKIE: SESSION.COOKIE_NAME,
 
   // Enterprise Security Flags
   ENABLE_WAF: true, // Web Application Firewall
@@ -35,8 +31,8 @@ export const PROXY_CONFIG = {
 
   // Rate Limiting Rules
   RATE_LIMIT: {
-    WINDOW_SECONDS: 60,
-    MAX_REQUESTS: 150, // High traffic capacity
+    WINDOW_SECONDS: RATE_LIMIT.API.WINDOW_MS / 1000, // Convert ms to seconds
+    MAX_REQUESTS: RATE_LIMIT.API.REQUESTS,
   },
 
   // Bank-Grade Security Headers

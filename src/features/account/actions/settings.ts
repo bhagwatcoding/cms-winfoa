@@ -1,40 +1,18 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { SettingsService } from '../services'
 import { SessionService } from '@/auth/services/session.service'
 import { getErrorMessage } from '@/lib/utils'
 import { updateUserPreferencesSchema } from '@/lib/validations'
 import { validateSchema } from '@/lib/validations/utils'
-import { z } from 'zod'
-
-// Local schemas
-const changePasswordSchema = z.object({
-    currentPassword: z.string().min(1, 'Current password is required'),
-    newPassword: z.string().min(1, 'New password is required'),
-    confirmPassword: z.string().min(1, 'Confirm password is required')
-});
-
-// Define granular schemas
-const emailNotifSchema = z.object({
-    marketing: z.boolean().optional(),
-    updates: z.boolean().optional(),
-    security: z.boolean().optional(),
-    newsletter: z.boolean().optional()
-});
-
-const pushNotifSchema = z.object({
-    enabled: z.boolean().optional(),
-    browser: z.boolean().optional(),
-    mobile: z.boolean().optional()
-});
-
-const privacySchema = z.object({
-    profileVisibility: z.enum(['public', 'private', 'friends']).optional(),
-    showEmail: z.boolean().optional(),
-    showActivity: z.boolean().optional()
-});
-
-const themeSchema = z.enum(['light', 'dark', 'system']);
+import {
+    settingsChangePasswordSchema,
+    emailNotifSchema,
+    pushNotifSchema,
+    privacySchema,
+    themeSchema
+} from '@/lib/validations/settings.validation'
 
 export async function getPreferences() {
     try {
@@ -59,7 +37,6 @@ export async function updatePreferences(prevState: unknown, formData: FormData) 
             return { error: 'Not authenticated' }
         }
 
-        // Parse JSON data from form
         // Parse JSON data from form
         const prefsData = formData.get('preferences')
         const rawData = prefsData ? JSON.parse(prefsData as string) : {}
@@ -94,7 +71,7 @@ export async function changePassword(prevState: unknown, formData: FormData) {
         const newPassword = formData.get('newPassword') as string
         const confirmPassword = formData.get('confirmPassword') as string
 
-        const validation = validateSchema(changePasswordSchema, {
+        const validation = validateSchema(settingsChangePasswordSchema, {
             currentPassword,
             newPassword,
             confirmPassword

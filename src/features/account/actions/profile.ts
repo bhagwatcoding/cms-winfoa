@@ -6,19 +6,7 @@ import { SessionService } from '@/auth/services/session.service'
 import { getErrorMessage } from '@/lib/utils'
 import { updateProfileSchema } from '@/lib/validations'
 import { validateSchema } from '@/lib/validations/utils'
-import { z } from 'zod'
-
-// Define local schemas if not in shared
-const changeEmailSchema = z.object({
-    email: z.string().email('Invalid email address')
-});
-
-const accountDeletionSchema = z.object({
-    confirmation: z.string()
-}).refine((data) => data.confirmation === 'DELETE', {
-    message: 'Please type DELETE to confirm',
-    path: ['confirmation']
-});
+import { changeEmailSchema, accountDeletionSchema } from '@/lib/validations/account.validation'
 
 export async function getProfile() {
     try {

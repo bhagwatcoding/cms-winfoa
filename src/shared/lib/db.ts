@@ -1,25 +1,24 @@
 import mongoose from "mongoose";
+import { DB } from "@/config";
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb://localhost:27017/winfoa";
-
-if (!MONGODB_URI) {
+if (!DB.URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
 }
 
 const connectDB = async () => {
   if (mongoose.connection.readyState === 1) {
-    console.log("Already connected to MongoDB");
+    console.log("✅ Already connected to MongoDB");
     return;
   }
 
   try {
-    await mongoose.connect(MONGODB_URI, {
-      dbName: process.env.MONGODB_NAME || "winfoa",
+    await mongoose.connect(DB.URI, {
+      dbName: DB.NAME,
+      ...DB.OPTIONS,
     });
     console.log("✅ MongoDB connected successfully");
   } catch (err) {
-    console.log("❌ Error connecting to MongoDB: ", err);
+    console.error("❌ Error connecting to MongoDB:", err);
     throw err;
   }
 };

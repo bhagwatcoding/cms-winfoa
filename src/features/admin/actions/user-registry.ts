@@ -4,13 +4,7 @@ import { UserIdService } from '../services/userid.service'
 import { SessionService } from '@/auth/services/session.service'
 import { getErrorMessage } from '@/lib/utils'
 import { validateSchema } from '@/lib/validations/utils'
-import { z } from 'zod'
-
-const registerUserSchema = z.object({
-    email: z.string().email(),
-    role: z.string().min(1),
-    metadata: z.unknown().optional()
-});
+import { registerUserSchema } from '@/lib/validations/admin.validation'
 
 export async function registerUserInUMP(data: {
     email: string

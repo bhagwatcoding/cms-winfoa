@@ -4,12 +4,11 @@ import crypto from "crypto";
 import connectDB from "@/lib/db";
 import { User, Session } from "@/models";
 import type { IUser, ISession } from "@/models";
+import { SESSION, TENANCY } from "@/config";
 
-// Session configuration
-const SESSION_COOKIE_NAME = process.env.SESSION_COOKIE_NAME || "winfoa_session";
-const SESSION_MAX_AGE = typeof process.env.SESSION_MAX_AGE === 'string'
-  ? parseInt(process.env.SESSION_MAX_AGE, 10)
-  : (process.env.SESSION_MAX_AGE || 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+// Session configuration from centralized config
+const SESSION_COOKIE_NAME = SESSION.COOKIE_NAME;
+const SESSION_MAX_AGE = SESSION.DURATION * 1000; // Convert seconds to milliseconds
 
 export interface SessionUser {
   id: string;
@@ -95,8 +94,8 @@ export async function createSession(
   // Create session in database
   await Session.create({
     userId,
-    sessionToken: hashedToken,
-    expires,
+    token: hashedToken,
+    expiresAt: expires,
     userAgent,
     ipAddress,
     deviceInfo: parseUserAgent(userAgent),
@@ -137,9 +136,9 @@ export async function getSession(
 
     // Find session in database
     const session = await Session.findOne({
-      sessionToken: hashedToken,
+      token: hashedToken,
       isActive: true,
-      expires: { $gt: new Date() },
+      expiresAt: { $gt: new Date() },
     }).populate("userId");
 
     if (!session || !session.userId) {
@@ -168,7 +167,7 @@ export async function getSession(
     return {
       user: sessionUser,
       sessionToken: sessionToken,
-      expires: session.expires,
+      expires: session.expiresAt,
       isValid: true,
     };
   } catch (error) {
@@ -195,13 +194,8 @@ export async function setSessionCookie(
   const cookieStore = await cookies();
 
   cookieStore.set(SESSION_COOKIE_NAME, sessionToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    ...SESSION.COOKIE_OPTIONS,
     expires: expires,
-    path: "/",
-    domain:
-      process.env.NODE_ENV === "production" ? ".yourdomain.com" : "localhost",
   });
 }
 
@@ -236,7 +230,7 @@ export async function destroySession(sessionToken?: string): Promise<void> {
 
     // Deactivate session in database
     await Session.findOneAndUpdate(
-      { sessionToken: hashedToken },
+      { token: hashedToken },
       { isActive: false },
     );
 
@@ -278,12 +272,12 @@ export async function extendSession(sessionToken: string): Promise<boolean> {
 
     const result = await Session.findOneAndUpdate(
       {
-        sessionToken: hashedToken,
+        token: hashedToken,
         isActive: true,
-        expires: { $gt: new Date() },
+        expiresAt: { $gt: new Date() },
       },
       {
-        expires: newExpires,
+        expiresAt: newExpires,
         lastAccessedAt: new Date(),
       },
     );
@@ -311,7 +305,7 @@ export async function getUserSessions(userId: string): Promise<ISession[]> {
     return await Session.find({
       userId,
       isActive: true,
-      expires: { $gt: new Date() },
+      expiresAt: { $gt: new Date() },
     }).sort({ lastAccessedAt: -1 });
   } catch (error) {
     console.error("Error getting user sessions:", error);
@@ -439,9 +433,8 @@ export async function requireRole(
  * Session configuration for development/production
  */
 export const SESSION_CONFIG = {
-  cookieName: SESSION_COOKIE_NAME,
-  maxAge: SESSION_MAX_AGE,
-  secure: process.env.NODE_ENV === "production",
-  domain:
-    process.env.NODE_ENV === "production" ? ".yourdomain.com" : "localhost",
+  cookieName: SESSION.COOKIE_NAME,
+  maxAge: SESSION.DURATION,
+  secure: SESSION.COOKIE_OPTIONS.secure,
+  domain: TENANCY.COOKIE_DOMAIN,
 };

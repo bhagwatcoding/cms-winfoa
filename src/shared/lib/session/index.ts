@@ -8,7 +8,7 @@ import { cache } from "react";
 import connectDB from "@/lib/db";
 import { Session, User } from "@/models";
 import type { ISession, IUser } from "@/models";
-import { SESSION_COOKIE_NAME, SESSION_MAX_AGE } from "../constants";
+import { SESSION } from "@/config";
 
 import {
   generateSignedSessionToken,
@@ -20,6 +20,9 @@ import {
 // CONSTANTS
 // ==========================================
 
+// Session configuration from centralized config
+const SESSION_COOKIE_NAME = SESSION.COOKIE_NAME;
+const SESSION_MAX_AGE = SESSION.DURATION * 1000; // Convert seconds to milliseconds
 
 // Validate secret strength on module load
 validateSecretStrength();
@@ -70,15 +73,8 @@ export async function setSessionCookie(
   const cookieStore = await cookies();
 
   cookieStore.set(SESSION_COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    // sameSite: 'lax',
+    ...SESSION.COOKIE_OPTIONS,
     expires: expiresAt,
-    path: "/",
-    domain:
-      process.env.NODE_ENV === "production"
-        ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`
-        : undefined,
   });
 }
 

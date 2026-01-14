@@ -2,12 +2,12 @@
  * Application Constants
  * Core application-level constants and configuration
  */
+// ==========================================
+// ENVIRONMENT
+// ==========================================
 
-// ==========================================
-// NODE ENV VARIABLES
-// ==========================================
-export const IS_PROCUCTION = process.env.NODE_ENV === "production";
-export const IS_DEVELOPMENT = process.env.NODE_ENV === "development"
+export const IS_PRODUCTION = process.env.NODE_ENV === "production";
+export const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
 export const IS_TEST = process.env.NODE_ENV === "test";
 
 // ==========================================
@@ -27,20 +27,11 @@ export const APP = {
     },
   },
   SUBDOMAIN: "",
-  IS_PROCUCTION: process.env.NODE_ENV === "production",
+  IS_PRODUCTION: process.env.NODE_ENV === "production",
   IS_DEVELOPMENT: process.env.NODE_ENV === "development",
   IS_TEST: process.env.NODE_ENV === "test",
-  PROTOCOL: IS_PROCUCTION ? "https" : "http"
+  PROTOCOL: IS_PRODUCTION ? "https" : "http"
 }
-
-// ==========================================
-// ENVIRONMENT
-// ==========================================
-
-
-// export const IS_PRODUCTION = process.env.NODE_ENV === "production";
-// export const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
-// export const IS_TEST = process.env.NODE_ENV === "test";
 
 // ==========================================
 // URLS & DOMAINS
@@ -96,18 +87,14 @@ export const ALLOW_TYPES = {
 // ==========================================
 // DATE & TIME
 // ==========================================
-export const TIMEZONE = {
+export const CLOCK = Object.freeze({
   ASIA: process.env.TIMEZONE || "Asia/Kolkata",
-  FORMAT: {
+  FORMAT: Object.freeze({
     DATE: "YYYY-MM-DD",
     TIME: "HH:mm:ss",
     DATETIME: "YYYY-MM-DD HH:mm:ss"
-  }
-}
-// export const DATE_FORMAT = "YYYY-MM-DD";
-// export const TIME_FORMAT = "HH:mm:ss";
-// export const DATETIME_FORMAT = "YYYY-MM-DD HH:mm:ss";
-// export const TIMEZONE = process.env.TIMEZONE || "Asia/Kolkata";
+  })
+});
 
 // ==========================================
 // VALIDATION
@@ -178,21 +165,6 @@ export const NOTIFICATION_TYPES = {
 // EXPORTS
 // ==========================================
 
-export const Constants = {
-  APP_NAME,
-  APP_DESCRIPTION,
-  APP_VERSION,
-  IS_PRODUCTION,
-  IS_DEVELOPMENT,
-  ROOT_DOMAIN,
-  API_URL,
-  SESSION_COOKIE_NAME,
-  SESSION_MAX_AGE,
-  DEFAULT_PAGE_SIZE,
-  MAX_PAGE_SIZE,
-  DATE_FORMAT,
-  DATETIME_FORMAT,
-  TIMEZONE,
-  CURRENCY,
-  CURRENCY_SYMBOL,
-} as const;
+// All constants are already exported above.
+// Use them directly: APP, SESSION, MONGODB, etc.
+

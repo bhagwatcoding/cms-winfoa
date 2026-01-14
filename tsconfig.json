@@ -31,6 +31,15 @@
         "./src/*"
       ],
       // ==========================================
+      // CONFIG PATHS
+      // ==========================================
+      "@/config": [
+        "./src/config"
+      ],
+      "@/config/*": [
+        "./src/config/*"
+      ],
+      // ==========================================
       // FEATURE PATHS (Multi-Subdomain Features)
       // ==========================================
       "@/features/*": [
@@ -86,9 +95,6 @@
       ],
       "@/lib/db": [
         "./src/shared/lib/db"
-      ],
-      "@/lib/session": [
-        "./src/shared/lib/session"
       ],
       "@/lib/permissions": [
         "./src/shared/lib/permissions"

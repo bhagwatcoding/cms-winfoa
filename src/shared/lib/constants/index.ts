@@ -37,7 +37,6 @@ export * from './messages';
 // RE-EXPORTS FOR CONVENIENCE
 // ==========================================
 
-export { Constants } from './app';
 export { ROUTES } from './routes';
 export {
     SUBDOMAIN_TYPES,
