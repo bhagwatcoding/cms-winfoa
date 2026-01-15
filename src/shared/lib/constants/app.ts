@@ -23,7 +23,8 @@ export const APP = {
     NAME: process.env.ROOT_DOMAIN || "localhost:3000",
     ROOT: process.env.ROOT_DOMAIN || "localhost:3000",
     SUB: {
-      API: "api"
+      API: "api",
+      WALLET: "wallet"
     },
   },
   SUBDOMAIN: "",
@@ -38,6 +39,7 @@ export const APP = {
 // ==========================================
 
 export const ROOT_DOMAIN = process.env.ROOT_DOMAIN || "localhost:3000";
+export const ROOT_URL = process.env.ROOT_URL || "http://localhost:3000";
 export const API_URL = process.env.API_URL || "http://localhost:3000";
 // export const PROTOCOL = IS_PRODUCTION ? "https" : "http";
 

@@ -67,10 +67,10 @@ export const Login = {
 // ==========================================
 
 export enum DeviceType {
-  DESKTOP = 0,
-  MOBILE = 1,
-  TABLET = 2,
-  UNKNOWN = 3,
+  DESKTOP = 1,
+  MOBILE = 2,
+  TABLET = 3,
+  UNKNOWN = 4,
 }
 
 export const Device = {
@@ -90,12 +90,12 @@ export const Device = {
 // ==========================================
 
 export enum OsType {
-  WINDOWS = 0,
-  MAC = 1,
-  LINUX = 2,
-  ANDROID = 3,
-  IOS = 4,
-  UNKNOWN = 5,
+  WINDOWS = 1,
+  MAC = 2,
+  LINUX = 3,
+  ANDROID = 4,
+  IOS = 5,
+  UNKNOWN = 6,
 }
 
 export const OS = {
@@ -117,15 +117,14 @@ export const OS = {
 // ==========================================
 
 export enum RiskLevel {
-  LOW = 0,
-  MEDIUM = 1,
-  HIGH = 2,
-  CRITICAL = 3,
+  LOW = 1,
+  MEDIUM = 2,
+  HIGH = 3,
+  CRITICAL = 4,
 }
 
 export const Risk = {
   Level: RiskLevel,
-  
   Label: {
     [RiskLevel.LOW]: "Low",
     [RiskLevel.MEDIUM]: "Medium",
@@ -154,7 +153,6 @@ export enum SessionStatus {
 
 export const Session = {
   Status: SessionStatus,
-  
   Label: {
     [SessionStatus.ACTIVE]: "Active",
     [SessionStatus.EXPIRED]: "Expired",

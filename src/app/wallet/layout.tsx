@@ -1,9 +1,15 @@
 import { ReactNode } from "react";
 import Link from "next/link";
-import { Wallet, ArrowLeft, CreditCard, TrendingUp, Shield, DollarSign, } from "lucide-react";
 import { Button } from "@/ui/button";
+import type { Metadata } from "next";
+import {
+  Wallet, ArrowLeft, Home, Plus, Send, Banknote, Receipt, Clock,
+} from "lucide-react";
+import { ROOT_URL } from "@/lib/constants";
 
-export const metadata = {
+export const metadata: Metadata = {
+  // 1. Override the base specifically for the wallet section
+  metadataBase: new URL('http://localhost:3000/wallet'),
   title: {
     template: "%s - Digital Wallet",
     default: "Digital Wallet - Winfoa Platform",
@@ -11,134 +17,86 @@ export const metadata = {
   description: "Digital wallet and payment management system",
 };
 
+const navItems = [
+  { href: "", label: "Dashboard", icon: Home },
+  { href: "recharge", label: "Add", icon: Plus },
+  // { href: "transfer", label: "Send", icon: Send },
+  // { href: "withdraw", label: "Withdraw", icon: Banknote },
+  // { href: "bills", label: "Bills", icon: Receipt },
+  { href: "history", label: "History", icon: Clock },
+];
+
 export default function WalletLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-white to-amber-50">
-      {/* Header */}
-      <header className="border-b border-white/20 bg-white/80 backdrop-blur-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-yellow-600 to-amber-600 rounded-xl p-2">
-                <Wallet className="h-6 w-6 text-white" />
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-purple-50/50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+        {/* Header */}
+        <header className="sticky top-0 z-50 border-b border-white/20 bg-white/80 backdrop-blur-xl dark:bg-slate-900/80">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-16 items-center justify-between">
+              {/* Logo */}
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="absolute inset-0 animate-pulse rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 blur-lg opacity-50" />
+                  <div className="relative rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 p-2.5">
+                    <Wallet className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
+                    Wallet
+                  </h1>
+                  <p className="text-xs text-muted-foreground hidden sm:block">
+                    Secure Digital Payments
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-lg font-bold bg-gradient-to-r from-yellow-600 to-amber-600 bg-clip-text text-transparent">
-                  Digital Wallet
-                </h1>
-                <p className="text-xs text-slate-500">wallet.localhost:3000</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <nav className="hidden md:flex items-center space-x-4">
-                <Link
-                  href="/dashboard"
-                  className="text-sm font-medium text-slate-600 hover:text-yellow-600 transition-colors"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/transactions"
-                  className="text-sm font-medium text-slate-600 hover:text-yellow-600 transition-colors"
-                >
-                  Transactions
-                </Link>
-                <Link
-                  href="/recharge"
-                  className="text-sm font-medium text-slate-600 hover:text-yellow-600 transition-colors"
-                >
-                  Recharge
-                </Link>
-                <Link
-                  href="/bills"
-                  className="text-sm font-medium text-slate-600 hover:text-yellow-600 transition-colors"
-                >
-                  Pay Bills
-                </Link>
+
+              {/* Desktop Navigation */}
+              <nav className="hidden items-center gap-1 md:flex">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </Link>
+                ))}
               </nav>
-              <Link href="http://localhost:3000" target="_blank">
-                <Button variant="outline" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back to Main
+
+              {/* Back Button */}
+              <Link href="">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">Exit Wallet</span>
                 </Button>
               </Link>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* Wallet Stats Bar */}
-      <div className="bg-white/50 backdrop-blur-sm border-b border-slate-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2 text-sm">
-                <DollarSign className="h-4 w-4 text-green-600" />
-                <span className="text-slate-600">Balance:</span>
-                <span className="font-semibold text-slate-900">$0.00</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <CreditCard className="h-4 w-4 text-blue-600" />
-                <span className="text-slate-600">Cards:</span>
-                <span className="font-semibold text-slate-900">0</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <TrendingUp className="h-4 w-4 text-purple-600" />
-                <span className="text-slate-600">Monthly Spending:</span>
-                <span className="font-semibold text-slate-900">$0.00</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <Shield className="h-4 w-4 text-emerald-600" />
-                <span className="text-slate-600">Security:</span>
-                <span className="font-semibold text-emerald-600">
-                  Protected
-                </span>
-              </div>
-            </div>
-            <div className="text-xs text-slate-500">
-              Digital Payments • Secure Transactions • Wallet Management
-            </div>
+        {/* Main Content */}
+        <main className="flex-1 pb-20 md:pb-6">{children}</main>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="fixed bottom-0 inset-x-0 z-50 border-t bg-white/90 backdrop-blur-xl dark:bg-slate-900/90 md:hidden">
+          <div className="flex items-center justify-around py-2">
+            {navItems.slice(0, 5).map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex flex-col items-center gap-1 rounded-lg px-3 py-2 text-muted-foreground transition-colors hover:text-primary"
+              >
+                <item.icon className="h-5 w-5" />
+                <span className="text-[10px] font-medium">{item.label}</span>
+              </Link>
+            ))}
           </div>
-        </div>
+        </nav>
       </div>
+    </>
 
-      {/* Main Content */}
-      <main className="flex-1 py-6">{children}</main>
-
-      {/* Footer */}
-      <footer className="bg-white/50 backdrop-blur-sm border-t border-slate-200/50 py-6 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center text-sm text-slate-600">
-            <p>© 2024 Winfoa Platform - Digital Wallet Portal</p>
-            <div className="mt-2 flex justify-center space-x-4">
-              <Link
-                href="/payment-methods"
-                className="hover:text-yellow-600 transition-colors"
-              >
-                Payment Methods
-              </Link>
-              <Link
-                href="/transaction-history"
-                className="hover:text-yellow-600 transition-colors"
-              >
-                Transaction History
-              </Link>
-              <Link
-                href="/security"
-                className="hover:text-yellow-600 transition-colors"
-              >
-                Security Settings
-              </Link>
-              <Link
-                href="/support"
-                className="hover:text-yellow-600 transition-colors"
-              >
-                Payment Support
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
   );
 }

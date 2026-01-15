@@ -1,11 +1,11 @@
 'use server'
 
-import dbConnect from '@/shared/lib/db'
+import connectDB from '@/shared/lib/db'
 import { revalidatePath } from 'next/cache'
 import { getCurrentUser } from '@/shared/lib/auth/session'
-import { User, Notification, WalletTransaction } from '@/models'
+import { User, WalletTransaction } from '@/models'
 import { getErrorMessage } from '@/shared/lib/utils'
-import { validateSchema } from '@/shared/lib/utils/validations'
+import { validateSchema } from '@/lib/utils/validations'
 import {
     rechargeSchema,
     transferSchema,
@@ -16,11 +16,11 @@ import {
 
 export async function getWalletBalance() {
     try {
-        await dbConnect();
+        await connectDB();
         const user = await getCurrentUser();
         if (!user) return { error: 'Unauthorized' };
 
-        const dbUser = await User.findById(user._id).select('walletBalance');
+        const dbUser = await User.findById(user._id.toString()).select('walletBalance');
         return { balance: dbUser?.walletBalance || 0 };
     } catch (error) {
         console.error('Error fetching balance:', error);
@@ -30,7 +30,7 @@ export async function getWalletBalance() {
 
 export async function getRecentTransactions(limit = 5) {
     try {
-        await dbConnect();
+        await connectDB();
         const user = await getCurrentUser();
         if (!user) return { error: 'Unauthorized' };
 
@@ -65,7 +65,7 @@ async function createNotification(userId: string, title: string, message: string
 
 export async function rechargeWallet(amount: number, paymentMethod: string = 'upi') {
     try {
-        await dbConnect();
+        await connectDB();
         const user = await getCurrentUser();
         if (!user) return { error: 'Unauthorized' };
 
@@ -103,7 +103,7 @@ export async function rechargeWallet(amount: number, paymentMethod: string = 'up
 
 export async function transferMoney(recipientEmail: string, amount: number) {
     try {
-        await dbConnect();
+        await connectDB();
         const currentUser = await getCurrentUser();
         if (!currentUser) return { error: 'Unauthorized' };
 
@@ -176,7 +176,7 @@ export async function transferMoney(recipientEmail: string, amount: number) {
 
 export async function withdrawMoney(amount: number, bankDetails: unknown) {
     try {
-        await dbConnect();
+        await connectDB();
         const user = await getCurrentUser();
         if (!user) return { error: 'Unauthorized' };
 
@@ -221,7 +221,7 @@ export async function withdrawMoney(amount: number, bankDetails: unknown) {
 
 export async function payBill(amount: number, billDetails: unknown) {
     try {
-        await dbConnect();
+        await connectDB();
         const user = await getCurrentUser();
         if (!user) return { error: 'Unauthorized' };
 

@@ -48,3 +48,9 @@ export type {
   TransactionStatus,
   NotificationType,
 } from "./academy.interface";
+
+// ==========================================
+// WALLET MODEL TYPES
+// ==========================================
+
+export type { IWalletTransaction } from "./wallet.interface";

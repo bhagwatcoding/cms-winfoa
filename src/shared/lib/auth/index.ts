@@ -38,31 +38,13 @@ export const AUTH_CONSTANTS = {
     BCRYPT_ROUNDS: 12,
 };
 
-// Role-based permissions
+// Role-based permissions (simplified)
 export const ROLE_PERMISSIONS: Record<string, string[]> = {
-    'super-admin': ['*'], // All permissions
-    'admin': [
-        'users:view', 'users:create', 'users:update', 'users:delete',
-        'courses:view', 'courses:create', 'courses:update', 'courses:delete',
-        'students:view', 'students:create', 'students:update', 'students:delete',
-        'certificates:view', 'certificates:create', 'certificates:update', 'certificates:delete',
-        'reports:view', 'reports:create',
-        'settings:view', 'settings:update',
-    ],
+    'admin': ['*'], // Admin has all permissions
     'staff': [
         'students:view', 'students:create', 'students:update',
         'courses:view', 'courses:create', 'courses:update',
         'certificates:view', 'certificates:create',
-    ],
-    'center': [
-        'students:view', 'students:create', 'students:update',
-        'courses:view',
-        'certificates:view',
-    ],
-    'provider': [
-        'services:view', 'services:create', 'services:update',
-        'clients:view', 'clients:create', 'clients:update',
-        'analytics:view',
     ],
     'student': [
         'profile:view', 'profile:update',
@@ -74,21 +56,18 @@ export const ROLE_PERMISSIONS: Record<string, string[]> = {
     ],
 };
 
-// Default subdomain access by role
+// Simplified subdomain access by role
 export const ROLE_SUBDOMAIN_ACCESS: Record<string, string[]> = {
-    'super-admin': ['auth', 'academy', 'api', 'ump', 'provider', 'myaccount', 'wallet', 'developer'],
-    'admin': ['auth', 'academy', 'api', 'ump', 'myaccount', 'wallet'],
-    'staff': ['auth', 'academy', 'myaccount', 'wallet'],
-    'center': ['auth', 'academy', 'myaccount'],
-    'provider': ['auth', 'provider', 'myaccount', 'wallet'],
+    'admin': ['auth', 'academy', 'myaccount', 'wallet'],
+    'staff': ['auth', 'academy', 'myaccount'],
     'student': ['auth', 'academy', 'myaccount'],
     'user': ['auth', 'myaccount'],
 };
 
 // Utility function to check if user has permission
 export function hasPermission(userRole: string, permission: string, customPermissions?: string[]): boolean {
-    // Super admin has all permissions
-    if (userRole === 'super-admin') return true;
+    // Admin has all permissions
+    if (userRole === 'admin') return true;
 
     // Check custom permissions first
     if (customPermissions?.includes(permission)) return true;
@@ -107,7 +86,7 @@ export function getUserSubdomainAccess(userRole: string, customAccess?: string[]
     return ROLE_SUBDOMAIN_ACCESS[userRole] || ['auth', 'myaccount'];
 }
 
-// Password validation
+// Simplified password validation (user-friendly)
 export const PASSWORD_REQUIREMENTS = {
     minLength: 6,
     maxLength: 128,

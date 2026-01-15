@@ -53,8 +53,8 @@ export type OAuthProvider = 'google' | 'github';
 
 export interface ISession extends Document {
     _id: Types.ObjectId;
-    token: string;
     userId: Types.ObjectId;
+    token: string;
     expiresAt: Date;
     userAgent?: string;
     ipAddress?: string;

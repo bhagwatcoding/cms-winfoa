@@ -31,9 +31,9 @@ export * from './notification';
 export * from './api-key';
 
 // Academy Schemas
-export * from './academy/student';
-export * from './academy/course';
-export * from './academy/employee';
-export * from './academy/result';
-export * from './academy/certificate';
-export * from './academy/admit-card';
+export * from './academy/student.schema';
+export * from './academy/course.schema';
+export * from './academy/employee.schema';
+export * from './academy/result.schema';
+// export * from './academy/certificate.schema';
+export * from './academy/admit-card.schema';

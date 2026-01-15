@@ -1,120 +1,196 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { getRecentTransactions } from '../actions'; // We can reuse or create a more specific 'getAllTransactions' if needed with pagination
-import { ArrowDownLeft, ArrowUpRight, Search, Download } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { getRecentTransactions } from "../actions";
+import {
+    TransactionList,
+    StatsCard,
+    type Transaction,
+} from "@/features/wallet";
+import { Button, Input } from "@/ui";
+import {
+    ArrowLeft,
+    Search,
+    Filter,
+    TrendingUp,
+    TrendingDown,
+    Clock,
+    Download,
+} from "lucide-react";
+import Link from "next/link";
+import { cn } from "@/utils";
 
-interface Transaction {
-    _id: string;
-    type: 'credit' | 'debit';
-    description: string;
-    amount: number;
-    status: string;
-    paymentMethod?: string;
-    transactionId?: string;
-    createdAt: string;
-}
+type FilterType = "all" | "credit" | "debit";
+type TimeFilter = "all" | "today" | "week" | "month";
 
-// Reusing the same action for this demo, in real app add pagination/filtering params to action
 export default function HistoryPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [typeFilter, setTypeFilter] = useState<FilterType>("all");
+    const [timeFilter, setTimeFilter] = useState<TimeFilter>("all");
 
     useEffect(() => {
         async function loadData() {
-            // Fetching more for history page
-            const txData = await getRecentTransactions(50);
+            const txData = await getRecentTransactions(100); // Fetch more for history
 
             if (txData && !txData.error) {
-                setTransactions(txData.transactions || []);
+                const formattedTx = (txData.transactions || []).map((tx: any) => ({
+                    id: tx._id?.toString() || Math.random().toString(),
+                    type: tx.type as "credit" | "debit",
+                    amount: tx.amount || 0,
+                    description: tx.description || "Transaction",
+                    category: tx.metadata?.type || "other",
+                    status: tx.status || "completed",
+                    createdAt: tx.createdAt,
+                }));
+                setTransactions(formattedTx);
             }
             setLoading(false);
         }
         loadData();
     }, []);
 
+    // Apply filters
+    const filteredTransactions = transactions.filter((tx) => {
+        // Type filter
+        if (typeFilter !== "all" && tx.type !== typeFilter) return false;
+
+        // Search filter
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            if (!tx.description.toLowerCase().includes(query)) return false;
+        }
+
+        // Time filter
+        if (timeFilter !== "all") {
+            const txDate = new Date(tx.createdAt);
+            const now = new Date();
+
+            if (timeFilter === "today") {
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                if (txDate < today) return false;
+            } else if (timeFilter === "week") {
+                const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                if (txDate < weekAgo) return false;
+            } else if (timeFilter === "month") {
+                const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+                if (txDate < monthAgo) return false;
+            }
+        }
+
+        return true;
+    });
+
+    // Stats
+    const totalCredit = transactions
+        .filter((tx) => tx.type === "credit")
+        .reduce((sum, tx) => sum + tx.amount, 0);
+
+    const totalDebit = transactions
+        .filter((tx) => tx.type === "debit")
+        .reduce((sum, tx) => sum + tx.amount, 0);
+
     return (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Transaction History</h2>
-                    <p className="text-slate-500 dark:text-slate-400">View your past deposits and expenses.</p>
-                </div>
-                <div className="flex gap-3">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                        <input
-                            type="text"
-                            placeholder="Search transactions..."
-                            className="pl-10 pr-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                        />
+        <div className="mx-auto max-w-4xl space-y-6 px-4 py-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Header */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4">
+                    <Link href="/wallet">
+                        <Button variant="ghost" size="icon">
+                            <ArrowLeft className="h-5 w-5" />
+                        </Button>
+                    </Link>
+                    <div>
+                        <h1 className="text-xl font-bold">Transaction History</h1>
+                        <p className="text-sm text-muted-foreground">
+                            View all your past transactions
+                        </p>
                     </div>
-                    <button className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-50 flex items-center gap-2">
-                        <Download size={18} /> Export
-                    </button>
+                </div>
+                <Button variant="outline" className="gap-2">
+                    <Download className="h-4 w-4" />
+                    Export
+                </Button>
+            </div>
+
+            {/* Stats */}
+            <div className="grid gap-4 sm:grid-cols-3">
+                <StatsCard
+                    title="Total Received"
+                    value={`₹${totalCredit.toLocaleString("en-IN")}`}
+                    icon={TrendingUp}
+                    variant="success"
+                />
+                <StatsCard
+                    title="Total Spent"
+                    value={`₹${totalDebit.toLocaleString("en-IN")}`}
+                    icon={TrendingDown}
+                    variant="danger"
+                />
+                <StatsCard
+                    title="Transactions"
+                    value={transactions.length}
+                    icon={Clock}
+                    variant="default"
+                />
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-col gap-4 sm:flex-row">
+                {/* Search */}
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        placeholder="Search transactions..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                    />
+                </div>
+
+                {/* Type Filter */}
+                <div className="flex gap-2">
+                    {(["all", "credit", "debit"] as FilterType[]).map((filter) => (
+                        <Button
+                            key={filter}
+                            variant={typeFilter === filter ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => setTypeFilter(filter)}
+                            className="capitalize"
+                        >
+                            {filter === "all" ? "All" : filter === "credit" ? "Received" : "Spent"}
+                        </Button>
+                    ))}
+                </div>
+
+                {/* Time Filter */}
+                <div className="flex gap-2">
+                    {(["all", "today", "week", "month"] as TimeFilter[]).map((filter) => (
+                        <Button
+                            key={filter}
+                            variant={timeFilter === filter ? "secondary" : "ghost"}
+                            size="sm"
+                            onClick={() => setTimeFilter(filter)}
+                            className="capitalize"
+                        >
+                            {filter === "all" ? "All Time" : filter}
+                        </Button>
+                    ))}
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
-                        <thead className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 font-medium text-sm">
-                            <tr>
-                                <th className="px-6 py-4">Transaction Details</th>
-                                <th className="px-6 py-4">Ref ID</th>
-                                <th className="px-6 py-4">Date & Time</th>
-                                <th className="px-6 py-4">Status</th>
-                                <th className="px-6 py-4 text-right">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50">
-                            {loading ? (
-                                <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">Loading...</td></tr>
-                            ) : transactions.length === 0 ? (
-                                <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">No transactions found.</td></tr>
-                            ) : (
-                                transactions.map((tx) => (
-                                    <tr key={tx._id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.type === 'credit'
-                                                    ? 'bg-emerald-100 text-emerald-600'
-                                                    : 'bg-rose-100 text-rose-600'
-                                                    }`}>
-                                                    {tx.type === 'credit' ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
-                                                </div>
-                                                <div>
-                                                    <p className="font-semibold text-slate-900 dark:text-white text-sm">{tx.description}</p>
-                                                    <p className="text-xs text-slate-500">{tx.paymentMethod || 'Wallet'}</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-slate-500 font-mono">{tx.transactionId}</td>
-                                        <td className="px-6 py-4 text-sm text-slate-500">
-                                            {new Date(tx.createdAt).toLocaleDateString()} <br />
-                                            <span className="text-xs opacity-70">{new Date(tx.createdAt).toLocaleTimeString()}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${tx.status === 'completed' ? 'bg-emerald-100 text-emerald-800' :
-                                                tx.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-rose-100 text-rose-800'
-                                                }`}>
-                                                {tx.status}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <p className={`font-bold text-sm ${tx.type === 'credit' ? 'text-emerald-600' : 'text-rose-600'
-                                                }`}>
-                                                {tx.type === 'credit' ? '+' : '-'}₹{tx.amount.toLocaleString('en-IN')}
-                                            </p>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Transactions List */}
+            <TransactionList
+                transactions={filteredTransactions}
+                loading={loading}
+                showViewAll={false}
+                emptyMessage={
+                    searchQuery || typeFilter !== "all" || timeFilter !== "all"
+                        ? "No transactions match your filters"
+                        : "No transactions yet"
+                }
+            />
         </div>
     );
 }

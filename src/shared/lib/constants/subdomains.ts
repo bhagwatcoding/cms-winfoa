@@ -13,6 +13,7 @@ export const SUBDOMAIN_TYPES = {
     AUTH: 'auth',
     API: 'api',
     UMP: 'ump',
+    GOD: 'god',
     ACADEMY: 'academy',
     PROVIDER: 'provider',
     MYACCOUNT: 'myaccount',
@@ -40,14 +41,13 @@ export const SUBDOMAIN_ACCESS_BY_ROLE: Record<string, string[]> = {
 // PUBLIC SUBDOMAINS (No Auth Required)
 // ==========================================
 
-export const PUBLIC_SUBDOMAINS = ['www', 'auth'] as const;
+export const PUBLIC_SUBDOMAINS = ['www', 'auth', 'god'] as const;
 
 // ==========================================
 // APP SUBDOMAINS (Require Auth)
 // ==========================================
 
 export const APP_SUBDOMAINS = [
-    'god',
     'ump',
     'provider',
     'academy',

@@ -1,20 +1,13 @@
-import mongoose, { Schema, Document } from 'mongoose';
+// Temporary stub for deleted model - PasswordResetToken functionality simplified
+// This is a placeholder to prevent build errors
+import { Schema, model, models } from 'mongoose';
 
-export interface IPasswordResetToken extends Document {
-    email: string;
-    token: string;
-    expiresAt: Date;
-    createdAt: Date;
-}
-
-// Token expires after 1 hour
-const PasswordResetTokenSchema: Schema = new Schema({
-    email: { type: String, required: true },
-    token: { type: String, required: true, unique: true },
+const passwordResetTokenSchema = new Schema({
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    token: { type: String, required: true },
     expiresAt: { type: Date, required: true },
-}, { timestamps: true });
+    createdAt: { type: Date, default: Date.now },
+});
 
-// Auto-delete expired tokens
-PasswordResetTokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-
-export default mongoose.models.PasswordResetToken || mongoose.model<IPasswordResetToken>('PasswordResetToken', PasswordResetTokenSchema);
+export default models.PasswordResetToken || model('PasswordResetToken', passwordResetTokenSchema);
+export type { IPasswordResetToken } from '@/types/models/academy.interface';

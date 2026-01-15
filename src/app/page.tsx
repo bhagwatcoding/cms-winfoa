@@ -28,12 +28,12 @@ const subdomains = [
     subdomain: "auth",
     url: "http://auth.localhost:3000",
     icon: Shield,
-    description: "User authentication and authorization system",
+    description: "Simple session-based authentication system",
     features: [
-      "Login/Signup",
+      "Login/Register",
       "Password Reset",
       "Session Management",
-      "OAuth Integration",
+      "User Profiles",
     ],
     color: "bg-red-500",
   },
@@ -47,41 +47,9 @@ const subdomains = [
       "Course Management",
       "Student Portal",
       "Certificates",
-      "Exam System",
+      "Results",
     ],
     color: "bg-blue-500",
-  },
-  {
-    name: "API Gateway",
-    subdomain: "api",
-    url: "http://api.localhost:3000",
-    icon: Code,
-    description: "REST API endpoints and services",
-    features: [
-      "API Documentation",
-      "Rate Limiting",
-      "Authentication",
-      "Monitoring",
-    ],
-    color: "bg-green-500",
-  },
-  {
-    name: "User Management Platform",
-    subdomain: "ump",
-    url: "http://ump.localhost:3000",
-    icon: Users,
-    description: "User administration and management system",
-    features: ["User Profiles", "Role Management", "Permissions", "Analytics"],
-    color: "bg-purple-500",
-  },
-  {
-    name: "Provider Portal",
-    subdomain: "provider",
-    url: "http://provider.localhost:3000",
-    icon: Building2,
-    description: "Service provider management and portal",
-    features: ["Provider Dashboard", "Service Catalog", "Billing", "Support"],
-    color: "bg-orange-500",
   },
   {
     name: "My Account",
@@ -92,7 +60,7 @@ const subdomains = [
     features: [
       "Profile Settings",
       "Privacy Controls",
-      "Notifications",
+      "Preferences",
       "Account Security",
     ],
     color: "bg-teal-500",
@@ -102,23 +70,14 @@ const subdomains = [
     subdomain: "wallet",
     url: "http://wallet.localhost:3000",
     icon: Wallet,
-    description: "Digital wallet and payment management",
+    description: "Transaction management and history",
     features: [
-      "Payment Processing",
       "Transaction History",
-      "Balance Management",
-      "Refunds",
+      "Balance Overview",
+      "Payment Records",
+      "Reports",
     ],
     color: "bg-yellow-500",
-  },
-  {
-    name: "Developer Portal",
-    subdomain: "developer",
-    url: "http://developer.localhost:3000",
-    icon: Settings,
-    description: "Developer tools and API documentation",
-    features: ["API Keys", "SDK Downloads", "Documentation", "Testing Tools"],
-    color: "bg-indigo-500",
   },
 ];
 
@@ -167,9 +126,9 @@ export default function MainDashboard() {
             </span>
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            A comprehensive web application architecture featuring specialized
-            subdomains for authentication, learning management, user
-            administration, payments, and developer tools.
+            A streamlined education management system featuring specialized
+            subdomains for authentication, learning academy, account management,
+            and transaction tracking.
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm text-slate-500">
             <span className="px-3 py-1 bg-white rounded-full border">

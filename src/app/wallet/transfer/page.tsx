@@ -1,113 +1,152 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { transferMoney } from '../actions';
-import { Send, UserCheck, ShieldCheck, Mail } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { transferMoney } from "../actions";
+import { AmountInput, ActionButton, FormCard } from "@/features/wallet";
+import { Button, Input, Label } from "@/ui";
+import {
+    Send,
+    ArrowLeft,
+    CheckCircle,
+    User,
+    AtSign,
+} from "lucide-react";
+import Link from "next/link";
 
 export default function TransferPage() {
-    const [email, setEmail] = useState('');
-    const [amount, setAmount] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
     const router = useRouter();
+    const [amount, setAmount] = useState(0);
+    const [recipientEmail, setRecipientEmail] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    async function handleTransfer(e: React.FormEvent) {
-        e.preventDefault();
-        setMessage(null);
-        setLoading(true);
-
-        const val = parseFloat(amount);
-        if (!val || val <= 0) {
-            setMessage({ type: 'error', text: 'Invalid amount' });
-            setLoading(false);
+    const handleTransfer = async () => {
+        if (amount < 1) {
+            setError("Minimum amount is ₹1");
+            return;
+        }
+        if (!recipientEmail.trim()) {
+            setError("Please enter recipient email");
             return;
         }
 
-        const res = await transferMoney(email, val);
+        setLoading(true);
+        setError(null);
 
-        if (res.success) {
-            setMessage({ type: 'success', text: 'Transfer successful!' });
-            setAmount('');
-            setEmail('');
-            router.refresh();
-        } else {
-            setMessage({ type: 'error', text: res.error || 'Transfer failed' });
+        try {
+            const result = await transferMoney(recipientEmail.trim(), amount);
+            if (result.error) {
+                setError(result.error);
+            } else {
+                setSuccess(true);
+                setTimeout(() => router.push("/wallet"), 2000);
+            }
+        } catch (err) {
+            setError("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
+    };
+
+    if (success) {
+        return (
+            <div className="mx-auto max-w-md px-4 py-12 text-center animate-in fade-in zoom-in duration-500">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-500/10">
+                    <CheckCircle className="h-10 w-10 text-emerald-500" />
+                </div>
+                <h1 className="text-2xl font-bold">Transfer Successful!</h1>
+                <p className="mt-2 text-muted-foreground">
+                    ₹{amount.toLocaleString("en-IN")} has been sent to {recipientEmail}.
+                </p>
+                <p className="mt-4 text-sm text-muted-foreground">
+                    Redirecting to wallet...
+                </p>
+            </div>
+        );
     }
 
     return (
-        <div className="max-w-xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Transfer Money</h2>
-                <p className="text-slate-500 dark:text-slate-400">Send money instantly to other users.</p>
-            </div>
-
-            <form onSubmit={handleTransfer} className="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm space-y-6">
-
-                {message && (
-                    <div className={`p-4 rounded-xl text-sm font-medium flex items-center gap-2 ${message.type === 'success'
-                            ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400'
-                            : 'bg-rose-50 text-rose-600 dark:bg-rose-900/20 dark:text-rose-400'
-                        }`}>
-                        {message.type === 'success' ? <ShieldCheck size={18} /> : <UserCheck size={18} />}
-                        {message.text}
-                    </div>
-                )}
-
-                <div className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Recipient Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                            <input
-                                type="email"
-                                required
-                                className="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
-                                placeholder="john@example.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Amount</label>
-                        <div className="relative">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg font-bold">₹</span>
-                            <input
-                                type="number"
-                                required
-                                min="1"
-                                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all font-bold text-lg"
-                                placeholder="0.00"
-                                value={amount}
-                                onChange={(e) => setAmount(e.target.value)}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="pt-2">
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white py-4 rounded-xl font-bold text-lg shadow-lg shadow-indigo-500/30 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-                    >
-                        {loading ? (
-                            <span className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></span>
-                        ) : (
-                            <>
-                                Send Money <Send size={20} />
-                            </>
-                        )}
-                    </button>
-                    <p className="text-xs text-center text-slate-400 mt-4 flex items-center justify-center gap-1">
-                        <ShieldCheck size={14} /> Secure Transfer
+        <div className="mx-auto max-w-lg space-y-6 px-4 py-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* Header */}
+            <div className="flex items-center gap-4">
+                <Link href="/wallet">
+                    <Button variant="ghost" size="icon">
+                        <ArrowLeft className="h-5 w-5" />
+                    </Button>
+                </Link>
+                <div>
+                    <h1 className="text-xl font-bold">Transfer Money</h1>
+                    <p className="text-sm text-muted-foreground">
+                        Send money to another user
                     </p>
                 </div>
-            </form>
+            </div>
+
+            {/* Transfer Form */}
+            <FormCard
+                title="Recipient Details"
+                description="Enter the recipient's email address"
+                icon={User}
+            >
+                <div className="space-y-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Recipient Email</Label>
+                        <div className="relative">
+                            <AtSign className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="user@example.com"
+                                value={recipientEmail}
+                                onChange={(e) => setRecipientEmail(e.target.value)}
+                                className="pl-10"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </FormCard>
+
+            <FormCard
+                title="Transfer Amount"
+                description="Choose or enter the amount to send"
+                icon={Send}
+            >
+                <div className="space-y-6">
+                    <AmountInput
+                        value={amount}
+                        onChange={setAmount}
+                        quickAmounts={[100, 500, 1000, 2000, 5000]}
+                        min={1}
+                        max={50000}
+                    />
+
+                    {error && (
+                        <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                            {error}
+                        </div>
+                    )}
+
+                    <ActionButton
+                        label={`Send ₹${amount.toLocaleString("en-IN")}`}
+                        loadingLabel="Sending..."
+                        loading={loading}
+                        disabled={amount < 1 || !recipientEmail.trim()}
+                        icon={Send}
+                        onClick={handleTransfer}
+                    />
+                </div>
+            </FormCard>
+
+            {/* Info */}
+            <div className="rounded-xl border bg-muted/30 p-4 text-sm text-muted-foreground">
+                <p className="font-medium text-foreground">Instant Transfer</p>
+                <p className="mt-1">
+                    Money will be credited to the recipient's wallet instantly. This
+                    action cannot be undone.
+                </p>
+            </div>
         </div>
     );
 }

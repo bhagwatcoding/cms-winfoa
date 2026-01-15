@@ -91,6 +91,8 @@ export interface SessionStats {
     byDevice?: {
         mobile: number;
         desktop: number;
+        tablet: number;
+        unknown: number;
     };
 }
 
@@ -101,8 +103,12 @@ export interface SessionStats {
 export interface RequestMetadata {
     userAgent?: string;
     ipAddress?: string;
+    os?: string;
+    device?: string;
+    browser?: string;
     referer?: string;
     origin?: string;
+    location?: string;
 }
 
 export interface SessionSignature {
@@ -139,11 +145,7 @@ export interface AuthActionResult<T = any> {
 
 export interface LoginResult {
     user: UserSafeData;
-    session: {
-        sessionId: string;
-        signature: string;
-        expiresAt: Date;
-    };
+    session: SessionSignature;
 }
 
 export interface SessionListItem {
@@ -152,5 +154,5 @@ export interface SessionListItem {
     location: string;
     lastActive: string;
     isCurrent: boolean;
-    signature: string;
+    signature: SessionSignature;
 }

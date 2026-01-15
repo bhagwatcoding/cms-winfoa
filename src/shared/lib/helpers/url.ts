@@ -85,8 +85,8 @@ export function getUmpUrl(path: string = '/'): string {
  * @param path - Path to append
  * @returns Skills subdomain URL
  */
-export function getSkillsUrl(path: string = '/'): string {
-    return getSubdomainUrl('skills', path);
+export function getAcademyUrl(path: string = '/'): string {
+    return getSubdomainUrl('academy', path);
 }
 
 /**
@@ -149,7 +149,7 @@ export function getCurrentSubdomain(hostname: string): SubdomainType | null {
         const subdomain = cleanHost.replace(`.${cleanRoot}`, '');
 
         // Validate subdomain
-        const validSubdomains: SubdomainType[] = ['auth', 'god', 'ump', 'skills', 'myaccount', 'api', 'www'];
+        const validSubdomains: SubdomainType[] = ['auth', 'god', 'ump', 'academy', 'provider', 'myaccount', 'api', 'www'];
         if (validSubdomains.includes(subdomain as SubdomainType)) {
             return subdomain as SubdomainType;
         }
@@ -189,9 +189,9 @@ export function getDashboardUrlForRole(
         case 'staff':
             return getUmpUrl('/');
         case 'student':
-            return getSkillsUrl('/');
+            return getAcademyUrl('/');
         case 'center':
-            return getSkillsUrl('/center');
+            return getAcademyUrl('/center');
         case 'user':
         default:
             return getMyAccountUrl('/');
