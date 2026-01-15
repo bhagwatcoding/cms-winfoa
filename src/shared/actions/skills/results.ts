@@ -4,8 +4,8 @@ import connectDB from '@/shared/lib/db';
 import { Result } from '@/models';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/shared/lib/utils';
-import { createResultSchema, updateResultSchema } from '@/shared/lib/validations';
-import { validateSchema } from '@/shared/lib/validations/utils';
+import { createResultSchema, updateResultSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get all results
 export async function getResults() {

@@ -4,8 +4,8 @@ import connectDB from '@/shared/lib/db';
 import { User, UserPreferences } from '@/models';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/shared/lib/utils';
-import { updateProfileSchema, updateUserPreferencesSchema } from '@/shared/lib/validations';
-import { validateSchema } from '@/shared/lib/validations/utils';
+import { updateProfileSchema, updateUserPreferencesSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get user profile
 export async function getUserProfile(userId: string) {

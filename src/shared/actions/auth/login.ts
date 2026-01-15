@@ -3,8 +3,8 @@
 import connectDB from '@/shared/lib/db';
 import { User } from '@/models';
 import { getDashboardUrlForRole } from '@/shared/lib/helpers';
-import { loginSchema, type LoginInput } from '@/shared/lib/validations';
-import { validateSchema } from '@/shared/lib/validations/utils';
+import { loginSchema, type LoginInput } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 import { createSession, setSessionCookie, logout as logoutSession } from '@/shared/lib/session';
 import type { LoginResponse, LogoutResponse } from '@/types/api';
 import { getErrorMessage } from '@/shared/lib/utils';

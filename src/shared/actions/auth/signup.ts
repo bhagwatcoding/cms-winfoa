@@ -6,14 +6,7 @@ import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { getDashboardUrlForRole } from '@/shared/lib/helpers';
 import { getErrorMessage } from '@/shared/lib/utils';
-
-interface SignupData {
-    name: string;
-    email: string;
-    password: string;
-    phone?: string;
-    role?: string;
-}
+import type { SignupData } from '@/shared/lib/utils/interface';
 
 export async function signupUser(data: SignupData) {
     try {

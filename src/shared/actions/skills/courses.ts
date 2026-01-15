@@ -4,8 +4,8 @@ import connectDB from '@/shared/lib/db';
 import { Course } from '@/models';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/shared/lib/utils';
-import { createCourseSchema, updateCourseSchema } from '@/shared/lib/validations';
-import { validateSchema } from '@/shared/lib/validations/utils';
+import { createCourseSchema, updateCourseSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get all courses
 export async function getCourses() {

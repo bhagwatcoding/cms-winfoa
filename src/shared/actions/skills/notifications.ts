@@ -4,8 +4,8 @@ import connectDB from '@/shared/lib/db';
 import { Notification } from '@/models';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/shared/lib/utils';
-import { createNotificationSchema } from '@/shared/lib/validations';
-import { validateSchema } from '@/shared/lib/validations/utils';
+import { createNotificationSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get all notifications
 export async function getNotifications(userId?: string) {

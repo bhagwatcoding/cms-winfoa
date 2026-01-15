@@ -4,8 +4,8 @@ import connectDB from '@/shared/lib/db';
 import { Student } from '@/models';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/shared/lib/utils';
-import { createStudentSchema, updateStudentSchema } from '@/shared/lib/validations';
-import { validateSchema } from '@/shared/lib/validations/utils';
+import { createStudentSchema, updateStudentSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get all students
 export async function getStudents() {

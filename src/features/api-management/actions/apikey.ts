@@ -4,8 +4,8 @@ import { revalidatePath } from 'next/cache'
 import { ApiKeyService } from '../services'
 import { SessionService } from '@/auth/services/session.service'
 import { getErrorMessage } from '@/lib/utils'
-import { createApiKeySchema } from '@/lib/validations'
-import { validateSchema } from '@/lib/validations/utils'
+import { createApiKeySchema } from '@/shared/lib/utils/validations'
+import { validateSchema } from '@/shared/lib/utils/validations/utils'
 
 export async function createApiKey(prevState: unknown, formData: FormData) {
     try {

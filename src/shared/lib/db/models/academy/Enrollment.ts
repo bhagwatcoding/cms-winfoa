@@ -69,7 +69,7 @@ const enrollmentSchema = new Schema<IEnrollment>(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Prevent a student from enrolling in the same course twice

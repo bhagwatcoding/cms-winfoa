@@ -1,6 +1,6 @@
 import { User } from '@/models';
 import type { IUser, UserRole } from '@/types/models';
-import type { CreateUserInput, UpdateUserInput } from '@/lib/validations';
+import type { CreateUserInput, UpdateUserInput } from '@/shared/lib/utils/validations';
 import bcrypt from 'bcryptjs';
 import { QueryFilter } from 'mongoose';
 

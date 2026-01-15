@@ -5,8 +5,8 @@ import { User, UserRegistry } from '@/models';
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/lib/utils';
-import { createUserSchema, updateUserSchema } from '@/lib/validations';
-import { validateSchema } from '@/lib/validations/utils';
+import { createUserSchema, updateUserSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get all users (admin only)
 export async function getAllUsers() {

@@ -4,15 +4,15 @@ import { revalidatePath } from 'next/cache'
 import { SettingsService } from '../services'
 import { SessionService } from '@/auth/services/session.service'
 import { getErrorMessage } from '@/lib/utils'
-import { updateUserPreferencesSchema } from '@/lib/validations'
-import { validateSchema } from '@/lib/validations/utils'
+import { updateUserPreferencesSchema } from '@/shared/lib/utils/validations'
+import { validateSchema } from '@/shared/lib/utils/validations/utils'
 import {
     settingsChangePasswordSchema,
     emailNotifSchema,
     pushNotifSchema,
     privacySchema,
     themeSchema
-} from '@/lib/validations/settings.validation'
+} from '@/shared/lib/utils/validations/settings.validation'
 
 export async function getPreferences() {
     try {

@@ -12,10 +12,8 @@ export const SUBDOMAIN_TYPES = {
     WWW: 'www',
     AUTH: 'auth',
     API: 'api',
-    GOD: 'god',
     UMP: 'ump',
     ACADEMY: 'academy',
-    SKILLS: 'skills', // Alias for academy
     PROVIDER: 'provider',
     MYACCOUNT: 'myaccount',
     WALLET: 'wallet',
@@ -29,12 +27,12 @@ export type SubDomainType = typeof SUBDOMAIN_TYPES[keyof typeof SUBDOMAIN_TYPES]
 // ==========================================
 
 export const SUBDOMAIN_ACCESS_BY_ROLE: Record<string, string[]> = {
-    'super-admin': ['auth', 'god', 'academy', 'skills', 'api', 'ump', 'provider', 'myaccount', 'wallet', 'developer'],
-    'admin': ['auth', 'academy', 'skills', 'api', 'ump', 'myaccount', 'wallet'],
-    'staff': ['auth', 'academy', 'skills', 'myaccount', 'wallet'],
-    'center': ['auth', 'academy', 'skills', 'myaccount'],
+    'super-admin': ['auth', 'god', 'academy', 'api', 'ump', 'provider', 'myaccount', 'wallet', 'developer'],
+    'admin': ['auth', 'academy', 'api', 'ump', 'myaccount', 'wallet'],
+    'staff': ['auth', 'academy', 'myaccount', 'wallet'],
+    'center': ['auth', 'academy', 'myaccount'],
     'provider': ['auth', 'provider', 'myaccount', 'wallet'],
-    'student': ['auth', 'academy', 'skills', 'myaccount'],
+    'student': ['auth', 'academy', 'myaccount'],
     'user': ['auth', 'myaccount'],
 };
 

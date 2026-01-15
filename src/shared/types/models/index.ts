@@ -8,43 +8,43 @@
 // ==========================================
 
 export type {
-    IUser,
-    ISession,
-    IUserPreferences,
-    IActivityLog,
-    IApiKey,
-    IApiRequest,
-    IUserRegistry,
-    UserRole,
-    UserStatus,
-    OAuthProvider,
-    ThemeMode,
-    NotificationSettings,
-} from './core';
+  IUser,
+  ISession,
+  IUserPreferences,
+  IActivityLog,
+  IApiKey,
+  IApiRequest,
+  IUserRegistry,
+  UserRole,
+  UserStatus,
+  OAuthProvider,
+  ThemeMode,
+  NotificationSettings,
+} from "./core.interface";
 
 // ==========================================
-// SKILLS MODEL TYPES
+// ACADEMY MODEL TYPES
 // ==========================================
 
 export type {
-    IStudent,
-    ICourse,
-    ICertificate,
-    IResult,
-    IAdmitCard,
-    IEmployee,
-    ICenter,
-    ITransaction,
-    INotification,
-    IPasswordResetToken,
-    Gender,
-    StudentStatus,
-    CourseLevel,
-    CertificateStatus,
-    ResultStatus,
-    AdmitCardStatus,
-    EmployeeStatus,
-    TransactionType,
-    TransactionStatus,
-    NotificationType,
-} from './skills';
+  IStudent,
+  ICourse,
+  ICertificate,
+  IResult,
+  IAdmitCard,
+  IEmployee,
+  ICenter,
+  ITransaction,
+  INotification,
+  IPasswordResetToken,
+  Gender,
+  StudentStatus,
+  CourseLevel,
+  CertificateStatus,
+  ResultStatus,
+  AdmitCardStatus,
+  EmployeeStatus,
+  TransactionType,
+  TransactionStatus,
+  NotificationType,
+} from "./academy.interface";

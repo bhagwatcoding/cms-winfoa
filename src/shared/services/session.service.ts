@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { cookies } from "next/headers";
 import { cache } from "react";
-import connectDB from "@/lib/db";
+import connectDB from "@/shared/lib/db";
 import { Session, User } from "@/models";
 import type { ISession, IUser } from "@/models";
 import { SESSION } from "@/config";
@@ -17,17 +17,9 @@ import { DeviceType, LoginMethod } from "@/types/enums";
 import { parseUserAgent } from "@/lib/helpers/auth.helpers";
 
 // Use centralized types
-import type {
-    SessionCreateOptions,
-    SessionMiddlewareOptions,
-    SessionStats
-} from "@/types/auth";
+import type { SessionCreateOptions, SessionMiddlewareOptions, SessionStats } from "@/types/auth";
 
-import {
-    generateSignedSessionToken,
-    verifySessionToken,
-    validateSecretStrength,
-} from "@/lib/crypto";
+import { generateSignedSessionToken, verifySessionToken, validateSecretStrength } from "@/shared/lib/crypto";
 
 // ==========================================
 // SESSION SERVICE CLASS
@@ -35,14 +27,12 @@ import {
 
 export class SessionService {
     // Session configuration from centralized config
-    private static readonly COOKIE_NAME = SESSION.COOKIE_NAME;
-    private static readonly MAX_AGE = SESSION.DURATION * 1000; // Convert seconds to milliseconds
-    private static readonly REMEMBER_ME_DURATION = 90 * 24 * 60 * 60 * 1000; // 90 days
+    private static readonly COOKIE_NAME = SESSION.COOKIE.NAME;
+    private static readonly MAX_AGE = SESSION.DURATION.MAX_AGE * 1000; // Convert seconds to milliseconds
+    private static readonly REMEMBER_ME_DURATION = SESSION.DURATION.REMEMBER_ME;
 
     // Validate secret strength on class load
-    static {
-        validateSecretStrength();
-    }
+    static { validateSecretStrength(); }
 
     // ==========================================
     // SESSION CREATION & MANAGEMENT
@@ -110,7 +100,7 @@ export class SessionService {
         const cookieStore = await cookies();
 
         cookieStore.set(this.COOKIE_NAME, token, {
-            ...SESSION.COOKIE_OPTIONS,
+            ...SESSION.COOKIE.OPTIONS,
             expires: expiresAt,
         });
     }

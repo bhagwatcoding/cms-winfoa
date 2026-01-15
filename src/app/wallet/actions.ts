@@ -1,39 +1,17 @@
 'use server'
 
-import dbConnect from '@/lib/db'
+import dbConnect from '@/shared/lib/db'
 import { revalidatePath } from 'next/cache'
-import { getCurrentUser } from '@/lib/session'
+import { getCurrentUser } from '@/shared/lib/auth/session'
 import { User, Notification, WalletTransaction } from '@/models'
-import { getErrorMessage } from '@/lib/utils'
-import { validateSchema } from '@/lib/validations/utils'
-import { z } from 'zod'
-
-// Validation schemas
-const rechargeSchema = z.object({
-    amount: z.number().positive('Amount must be positive'),
-    paymentMethod: z.string().min(1, 'Payment method required')
-});
-
-const transferSchema = z.object({
-    recipientEmail: z.string().email('Invalid email address'),
-    amount: z.number().positive('Amount must be positive')
-});
-
-const withdrawalSchema = z.object({
-    amount: z.number().positive('Amount must be positive'),
-    bankDetails: z.record(z.string(), z.unknown()).refine(
-        (data) => Object.keys(data).length > 0,
-        'Bank details required'
-    )
-});
-
-const billPaymentSchema = z.object({
-    amount: z.number().positive('Amount must be positive'),
-    billDetails: z.record(z.string(), z.unknown()).refine(
-        (data) => Object.keys(data).length > 0,
-        'Bill details required'
-    )
-});
+import { getErrorMessage } from '@/shared/lib/utils'
+import { validateSchema } from '@/shared/lib/utils/validations'
+import {
+    rechargeSchema,
+    transferSchema,
+    withdrawalSchema,
+    billPaymentSchema
+} from '@/shared/lib/utils/schemas';
 
 
 export async function getWalletBalance() {

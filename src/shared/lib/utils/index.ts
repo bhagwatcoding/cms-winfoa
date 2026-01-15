@@ -11,3 +11,5 @@ export function getErrorMessage(error: unknown): string {
     if (typeof error === 'object' && error !== null && 'message' in error) return String((error as Record<string, unknown>).message)
     return 'An unknown error occurred'
 }
+
+export const serialize = <T>(data: T): T => (data ? JSON.parse(JSON.stringify(data)) : data);

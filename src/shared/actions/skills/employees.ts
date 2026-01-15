@@ -4,8 +4,8 @@ import connectDB from '@/shared/lib/db';
 import { Employee } from '@/models';
 import { revalidatePath } from 'next/cache';
 import { getErrorMessage } from '@/shared/lib/utils';
-import { createEmployeeSchema, updateEmployeeSchema } from '@/shared/lib/validations';
-import { validateSchema } from '@/shared/lib/validations/utils';
+import { createEmployeeSchema, updateEmployeeSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get all employees
 export async function getEmployees() {

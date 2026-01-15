@@ -4,9 +4,9 @@ import { revalidatePath } from 'next/cache'
 import { ProfileService } from '../services'
 import { SessionService } from '@/auth/services/session.service'
 import { getErrorMessage } from '@/lib/utils'
-import { updateProfileSchema } from '@/lib/validations'
-import { validateSchema } from '@/lib/validations/utils'
-import { changeEmailSchema, accountDeletionSchema } from '@/lib/validations/account.validation'
+import { updateProfileSchema } from '@/shared/lib/utils/validations'
+import { validateSchema } from '@/shared/lib/utils/validations/utils'
+import { changeEmailSchema, accountDeletionSchema } from '@/shared/lib/utils/validations/account.validation'
 
 export async function getProfile() {
     try {

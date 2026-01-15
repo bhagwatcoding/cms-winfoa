@@ -5,7 +5,7 @@ if (!DB.URI) {
   throw new Error("Please define the MONGODB_URI environment variable");
 }
 
-const connectDB = async () => {
+export default connectDB = async () => {
   if (mongoose.connection.readyState === 1) {
     console.log("✅ Already connected to MongoDB");
     return;
@@ -23,7 +23,6 @@ const connectDB = async () => {
   }
 };
 
-export default connectDB;
 
 // interface CachedConnection {
 //     conn: typeof mongoose | null;

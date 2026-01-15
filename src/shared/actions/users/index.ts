@@ -8,8 +8,8 @@
 import connectDB from '@/lib/db';
 import { getCurrentUser } from '@/lib/session';
 import { requirePermission } from '@/lib/permissions';
-import { createUserSchema, updateUserSchema } from '@/lib/validations';
-import { validateSchema } from '@/lib/validations/utils';
+import { createUserSchema, updateUserSchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
 import { getErrorMessage } from '@/lib/utils';
 import { UserService } from '@/shared/services/user.service';

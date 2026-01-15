@@ -5,6 +5,7 @@
 
 'use server';
 
+
 import { redirect } from 'next/navigation';
 import connectDB from '@/lib/db';
 import { User } from '@/models';
@@ -19,7 +20,7 @@ import {
     type LoginInput,
     type SignupInput,
     type ChangePasswordInput,
-} from '@/lib/validations/auth.validation';
+} from '@/shared/lib/utils/schemas';
 
 // Security
 import {
@@ -123,6 +124,7 @@ export class AuthService {
             ...event,
             ipAddress: metadata.ipAddress,
             userAgent: metadata.userAgent,
+            timestamp: new Date(),
         });
     }
 
@@ -139,7 +141,7 @@ export class AuthService {
             const validation = loginSchema.safeParse(input);
             if (!validation.success) {
                 return createErrorResponse(
-                    validation.error.errors[0].message,
+                    validation.error.issues[0].message,
                     'VALIDATION_ERROR'
                 );
             }
@@ -279,7 +281,7 @@ export class AuthService {
             const validation = signupSchema.safeParse(input);
             if (!validation.success) {
                 return createErrorResponse(
-                    validation.error.errors[0].message,
+                    validation.error.issues[0].message,
                     'VALIDATION_ERROR'
                 );
             }
@@ -421,7 +423,7 @@ export class AuthService {
             const validation = changePasswordSchema.safeParse(input);
             if (!validation.success) {
                 return createErrorResponse(
-                    validation.error.errors[0].message,
+                    validation.error.issues[0].message,
                     'VALIDATION_ERROR'
                 );
             }

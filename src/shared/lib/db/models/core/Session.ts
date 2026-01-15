@@ -408,5 +408,4 @@ interface ISessionModel extends mongoose.Model<ISession> {
   }>;
 }
 
-export default (models.Session as ISessionModel) ||
-  model<ISession, ISessionModel>("Session", SessionSchema);
+export default (models.Session as ISessionModel) || model<ISession, ISessionModel>("Session", SessionSchema);

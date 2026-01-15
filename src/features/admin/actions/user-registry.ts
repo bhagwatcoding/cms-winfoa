@@ -3,8 +3,8 @@
 import { UserIdService } from '../services/userid.service'
 import { SessionService } from '@/auth/services/session.service'
 import { getErrorMessage } from '@/lib/utils'
-import { validateSchema } from '@/lib/validations/utils'
-import { registerUserSchema } from '@/lib/validations/admin.validation'
+import { validateSchema } from '@/shared/lib/utils/validations/utils'
+import { registerUserSchema } from '@/shared/lib/utils/validations/admin.validation'
 
 export async function registerUserInUMP(data: {
     email: string

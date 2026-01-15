@@ -5,8 +5,8 @@ import { ApiKey } from '@/models';
 import { revalidatePath } from 'next/cache';
 import crypto from 'crypto';
 import { getErrorMessage } from '@/lib/utils';
-import { updateApiKeySchema, createApiKeySchema } from '@/lib/validations';
-import { validateSchema } from '@/lib/validations/utils';
+import { updateApiKeySchema, createApiKeySchema } from '@/shared/lib/utils/validations';
+import { validateSchema } from '@/shared/lib/utils/validations/utils';
 
 // Get all API keys for a user
 export async function getApiKeys(userId: string) {

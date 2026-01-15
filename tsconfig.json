@@ -103,7 +103,7 @@
         "./src/shared/lib/constants"
       ],
       "@/lib/validations": [
-        "./src/shared/lib/validations"
+        "src/shared/lib/utils/validations"
       ],
       "@/lib/crypto": [
         "./src/shared/lib/crypto"

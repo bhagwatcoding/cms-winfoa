@@ -1,14 +1,14 @@
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import crypto from "crypto";
-import connectDB from "@/lib/db";
+import connectDB from "@/shared/lib/db";
 import { User, Session } from "@/models";
 import type { IUser, ISession } from "@/models";
 import { SESSION, TENANCY } from "@/config";
 
 // Session configuration from centralized config
-const SESSION_COOKIE_NAME = SESSION.COOKIE_NAME;
-const SESSION_MAX_AGE = SESSION.DURATION * 1000; // Convert seconds to milliseconds
+const SESSION_COOKIE_NAME = SESSION.COOKIE.NAME;
+const SESSION_MAX_AGE = SESSION.DURATION.MAX_AGE;
 
 export interface SessionUser {
   id: string;
@@ -194,7 +194,7 @@ export async function setSessionCookie(
   const cookieStore = await cookies();
 
   cookieStore.set(SESSION_COOKIE_NAME, sessionToken, {
-    ...SESSION.COOKIE_OPTIONS,
+    ...SESSION.COOKIE.OPTIONS,
     expires: expires,
   });
 }
@@ -433,8 +433,8 @@ export async function requireRole(
  * Session configuration for development/production
  */
 export const SESSION_CONFIG = {
-  cookieName: SESSION.COOKIE_NAME,
-  maxAge: SESSION.DURATION,
-  secure: SESSION.COOKIE_OPTIONS.secure,
+  cookieName: SESSION.COOKIE.NAME,
+  maxAge: SESSION.DURATION.MAX_AGE,
+  secure: SESSION.COOKIE.OPTIONS.secure,
   domain: TENANCY.COOKIE_DOMAIN,
 };
