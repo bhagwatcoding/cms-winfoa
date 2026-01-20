@@ -1,159 +1,90 @@
-import { User } from '@/models';
-import type { IUser, UserRole } from '@/types/models';
-import type { CreateUserInput, UpdateUserInput } from '@/shared/lib/utils/validations';
-import bcrypt from 'bcryptjs';
-import { QueryFilter } from 'mongoose';
+import "server-only";
+import { headers } from "next/headers";
+import { User, IUser, ActivityLog } from "@/models";
+import { ActionType, ResourceType } from "@/types";
+import connectDB from "@/lib/db"; // Your DB connector
+
+// Configuration
+const GOD_SUBDOMAIN = "god"; // e.g., god.example.com
 
 export class UserService {
-    /**
-     * Create a new user
-     */
-    static async createUser(data: CreateUserInput): Promise<IUser> {
-        // Check if email already exists
-        const existingUser = await User.findOne({ email: data.email });
-        if (existingUser) {
-            throw new Error('Email already registered');
-        }
+  /**
+   * Helper: Checks if current request is from God Subdomain
+   */
+  private static async isGodMode(): Promise<boolean> {
+    const headerStore = await headers();
+    const host = headerStore.get("host") || ""; // e.g. "god.myapp.com"
+    return host.startsWith(`${GOD_SUBDOMAIN}.`);
+  }
 
-        // Hash password if provided
-        let hashedPassword: string | undefined;
-        if (data.password) {
-            hashedPassword = await bcrypt.hash(data.password, 10);
-        }
+  /**
+   * 1. GET ALL USERS
+   * Logic:
+   * - Normal Domain: Returns only { isDeleted: false }
+   * - God Domain: Returns ALL users (Active + Deleted)
+   */
+  static async getAllUsers() {
+    await connectDB();
+    const isGod = await this.isGodMode();
 
-        // Create user
-        const user = await User.create({
-            ...data,
-            password: hashedPassword,
-            status: data.status || 'active',
-            joinedAt: new Date(),
-            emailVerified: data.emailVerified || false,
-            isActive: data.isActive !== false,
-        });
+    // Query Filter
+    const query = isGod ? {} : { isDeleted: false };
 
-        return user.toObject();
+    return User.find(query).select("-password").lean();
+  }
+
+  /**
+   * 2. DELETE USER (Soft Delete)
+   * Logic: Sets isDeleted = true. Does NOT remove from DB.
+   */
+  static async deleteUser(actorId: string, targetUserId: string) {
+    await connectDB();
+
+    // Prevent deleting the God User himself
+    const target = await User.findById(targetUserId);
+    if (target?.isGod) throw new Error("Cannot delete a God user");
+
+    // Perform Soft Delete
+    const updatedUser = await User.findByIdAndUpdate(targetUserId, {
+      isDeleted: true,
+      deletedAt: new Date(),
+      deletedBy: actorId,
+    });
+
+    // Log Activity
+    await ActivityLog.create({
+      actorId,
+      action: ActionType.SOFT_DELETE,
+      resource: ResourceType.USER,
+      resourceId: targetUserId,
+      details: "User deleted their account (Soft Delete)",
+    });
+
+    return updatedUser;
+  }
+
+  /**
+   * 3. RESTORE USER (God Mode Only)
+   * Logic: Only accessible via God Subdomain
+   */
+  static async restoreUser(actorId: string, targetUserId: string) {
+    await connectDB();
+
+    if (!(await this.isGodMode())) {
+      throw new Error("Unauthorized: Only God Subdomain can restore users");
     }
 
-    /**
-     * Find user by ID
-     */
-    static async getUserById(userId: string): Promise<IUser | null> {
-        const user = await User.findById(userId).lean();
-        return user as IUser | null;
-    }
+    await User.findByIdAndUpdate(targetUserId, {
+      isDeleted: false,
+      $unset: { deletedAt: 1, deletedBy: 1 }, // Remove fields
+    });
 
-    /**
-     * Update user
-     */
-    static async updateUser(userId: string, data: UpdateUserInput): Promise<IUser | null> {
-        const user = await User.findById(userId);
-        if (!user) {
-            return null;
-        }
-
-        // Check if email is being changed and already exists
-        if (data.email && data.email !== user.email) {
-            const existingUser = await User.findOne({ email: data.email });
-            if (existingUser) {
-                throw new Error('Email already registered');
-            }
-        }
-
-        Object.assign(user, data);
-        await user.save();
-
-        return user.toObject();
-    }
-
-    /**
-     * Delete user
-     */
-    static async deleteUser(userId: string): Promise<boolean> {
-        const result = await User.findByIdAndDelete(userId);
-        return !!result;
-    }
-
-    /**
-     * Get paginated users
-     */
-    static async getUsers(params: {
-        page?: number;
-        limit?: number;
-        search?: string;
-        role?: UserRole;
-        status?: string;
-    }) {
-        const page = params.page || 1;
-        const limit = params.limit || 10;
-        const skip = (page - 1) * limit;
-
-        const query: QueryFilter<IUser> = {};
-
-        if (params.search) {
-            query.$or = [
-                { name: { $regex: params.search, $options: 'i' } },
-                { email: { $regex: params.search, $options: 'i' } },
-            ];
-        }
-
-        if (params.role) {
-            query.role = params.role;
-        }
-
-        if (params.status) {
-            query.status = params.status;
-        }
-
-        const [users, total] = await Promise.all([
-            User.find(query)
-                .select('-password')
-                .skip(skip)
-                .limit(limit)
-                .sort({ createdAt: -1 })
-                .lean(),
-            User.countDocuments(query),
-        ]);
-
-        return {
-            users: users as IUser[],
-            total,
-            totalPages: Math.ceil(total / limit),
-            page,
-            limit
-        };
-    }
-
-    /**
-     * Change user role
-     */
-    static async changeRole(userId: string, role: UserRole): Promise<IUser | null> {
-        const user = await User.findById(userId);
-        if (!user) return null;
-
-        user.role = role;
-        await user.save();
-
-        return user.toObject();
-    }
-
-    /**
-     * Toggle user status
-     */
-    static async toggleStatus(userId: string): Promise<IUser | null> {
-        const user = await User.findById(userId);
-        if (!user) return null;
-
-        user.isActive = !user.isActive;
-        // Sync status string with boolean
-        if (user.isActive) {
-            user.status = 'active';
-        } else {
-            // Check if we strictly map isActive=false to 'inactive'
-            user.status = 'inactive';
-        }
-
-        await user.save();
-
-        return user.toObject();
-    }
+    await ActivityLog.create({
+      actorId,
+      action: ActionType.RESTORE,
+      resource: ResourceType.USER,
+      resourceId: targetUserId,
+      details: "God restored this user",
+    });
+  }
 }

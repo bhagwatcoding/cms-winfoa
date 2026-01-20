@@ -10,18 +10,14 @@ import {
 import {
   GraduationCap,
   Shield,
-  Code,
-  Users,
-  Building2,
   UserCog,
   Wallet,
-  Settings,
   ArrowRight,
   Globe,
   Zap,
   Lock,
 } from "lucide-react";
-
+import HomePage from "@/features/god/user-deleted";
 const subdomains = [
   {
     name: "Authentication Portal",
@@ -114,7 +110,7 @@ export default function MainDashboard() {
           </div>
         </div>
       </header>
-
+      <HomePage />
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}

@@ -115,7 +115,7 @@
         "./src/shared/lib/utils"
       ],
       "@/lib/types": [
-        "./src/shared/lib/types"
+        "src/shared/lib/typesss"
       ],
       // ==========================================
       // ALIASES (Shortcuts)

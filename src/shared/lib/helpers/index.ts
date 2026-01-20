@@ -1,5 +1,5 @@
 export { path } from './path';
-export { AppProxy } from './AppProxy';
+export * from './auth.helpers';
 
 // URL helpers for subdomain-aware routing
 export * from './url';

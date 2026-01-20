@@ -20,7 +20,7 @@ export class ProxyUtils {
   }
 
   static isAuthenticated(req: NextRequest): boolean {
-    return !!req.cookies.get(CONFIG.AUTH_COOKIE);
+    return !!req.cookies.get(CONFIG.COOKIE.);
   }
 
   // URL Factory

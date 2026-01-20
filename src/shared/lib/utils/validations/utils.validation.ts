@@ -7,6 +7,8 @@
  * Check if password is strong enough
  * Returns detailed feedback and score
  */
+import { z } from 'zod';
+
 export function isStrongPassword(password: string): {
     isStrong: boolean;
     score: number;
@@ -16,6 +18,7 @@ export function isStrongPassword(password: string): {
     let score = 0;
 
     // Length check
+    
     if (password.length >= 8) score += 1;
     else feedback.push('At least 8 characters');
 

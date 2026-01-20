@@ -5,21 +5,17 @@
 
 import { headers } from 'next/headers';
 import type { IUser } from '@/models';
-import { DeviceType } from '@/types/enums';
+import { DeviceType, IDeviceInfo } from '@/types';
 
 // Import interfaces from centralized types
 import type {
     RequestMetadata,
-    DeviceInfo,
     SessionSignature,
     UserSafeData
 } from '@/types/auth';
 
 // Import and re-export validation utilities
-import {
-    isStrongPassword,
-    validateEmail
-} from '@/shared/lib/utils/validations/utils.validation';
+import { isStrongPassword, validateEmail } from '@/lib/utils/validations/utils.validation';
 
 export { isStrongPassword, validateEmail };
 
@@ -48,7 +44,7 @@ export async function getRequestMetadata(): Promise<RequestMetadata> {
 /**
  * Parse user agent to extract device info
  */
-export function parseUserAgent(userAgent?: string): DeviceInfo {
+export function parseUserAgent(userAgent?: string): IDeviceInfo {
     if (!userAgent) {
         return {
             browser: 'Unknown',
@@ -62,28 +58,28 @@ export function parseUserAgent(userAgent?: string): DeviceInfo {
     const isMobile = /Mobile|Android|iPhone|iPad|iPod/.test(userAgent);
     const isTablet = /iPad|Tablet/.test(userAgent);
 
-  let browser = 'Unknown';
-  switch (browser) {
-    case 'Chrome': browser = 'Chrome'; break;
-    case 'Firefox': browser = 'Firefox'; break;
-    case 'Safari': browser = 'Safari'; break;
-    case 'Edge': browser = 'Edge'; break;
-    case 'Opera': browser = 'Opera'; break;
-    default: browser = 'Unknown'; break;
-  }
+    let browser = 'Unknown';
+    switch (browser) {
+        case 'Chrome': browser = 'Chrome'; break;
+        case 'Firefox': browser = 'Firefox'; break;
+        case 'Safari': browser = 'Safari'; break;
+        case 'Edge': browser = 'Edge'; break;
+        case 'Opera': browser = 'Opera'; break;
+        default: browser = 'Unknown'; break;
+    }
 
-  let os = 'Unknown';
-  
-  switch (os) {
-    case 'Windows': os = 'Windows'; break;
-    case 'Mac OS': os = 'macOS'; break;
-    case 'Linux': os = 'Linux'; break;
-    case 'Android': os = 'Android'; break;
-    case 'iOS': os = 'iOS'; break;
-  }
+    let os = 'Unknown';
+
+    switch (os) {
+        case 'Windows': os = 'Windows'; break;
+        case 'Mac OS': os = 'macOS'; break;
+        case 'Linux': os = 'Linux'; break;
+        case 'Android': os = 'Android'; break;
+        case 'iOS': os = 'iOS'; break;
+    }
 
     const device = isMobile ? (isTablet ? 'Tablet' : 'Mobile') : 'Desktop';
-    
+
     let type = DeviceType.DESKTOP;
     if (isTablet) type = DeviceType.TABLET;
     else if (isMobile) type = DeviceType.MOBILE;

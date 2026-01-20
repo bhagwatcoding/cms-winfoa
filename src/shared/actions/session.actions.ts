@@ -12,6 +12,5 @@ export async function loginUserAction(userId: string) {
   // Creates DB entry + Sets Cookie
   await SessionService.createSession(userId, ua, ip);
   
-  
   redirect('/dashboard');
 }

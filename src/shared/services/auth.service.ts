@@ -1,15 +1,12 @@
+'use server';
 /**
  * AuthService - Professional Authentication Service
  * Organized class-based authentication with modular architecture
  */
-
-'use server';
-
-
 import { redirect } from 'next/navigation';
 import connectDB from '@/lib/db';
 import { User } from '@/models';
-import { SessionService } from '@/services/session.service';
+import SessionService from '@/services/session.service';
 import type { IUser } from '@/models';
 
 // Validation
@@ -36,22 +33,11 @@ import {
 
 // Helpers
 import {
-    getRequestMetadata,
-    toSafeUserData,
-    getRoleBasedRedirect,
-    createErrorResponse,
-    createSuccessResponse,
-    parseUserAgent,
+    getRequestMetadata, toSafeUserData, getRoleBasedRedirect, createErrorResponse, createSuccessResponse, parseUserAgent,
 } from '@/lib/helpers/auth.helpers';
 
 // Use centralized types
-import type {
-    AuthActionResult,
-    LoginResult,
-    SessionListItem,
-    SessionSignature,
-    UserSafeData,
-} from '@/types/auth';
+import type { AuthActionResult, LoginResult, SessionListItem, SessionSignature, UserSafeData, } from '@/types/auth';
 
 // Re-export type for consumers who used to import from here
 export type { AuthActionResult };
@@ -77,13 +63,15 @@ export class AuthService {
         const deviceInfo = parseUserAgent(metadata.userAgent);
 
         // Create session
-        const session = await SessionService.create({
+        const payload = {
             userId: user._id.toString(),
-            userAgent: metadata.userAgent,
-            ipAddress: metadata.ipAddress,
-            deviceInfo, // Pass parsed device info
+            ipAddress: metadata.ipAddress || '',
+            isRememberMe?: rememberMe,
+            loginMethod?: 'PASSWORD',
+            deviceInfo?: Partial<IDeviceInfo>,
             rememberMe,
-        });
+        }
+        const session = await SessionService.create(payload);
 
         // Create signature for additional security
         const signature = createSessionSignature(

@@ -4,7 +4,7 @@
  */
 
 import { Document } from 'mongoose';
-import { DeviceType, LoginMethod, RiskLevel, SessionStatus } from './enums';
+import { DeviceType, LoginMethod, RiskLevel, SessionStatus } from './session.types';
 import { IUser } from './models'; // Assuming IUser is defined in models type file
 
 // ==========================================

@@ -3,8 +3,8 @@
  * Subdomain routing and security configuration for the proxy server
  */
 
-import { SESSION, TENANCY, RATE_LIMIT, env } from '@/config';
-import { SUBDOMAIN_CONFIG } from '@/lib/constants';
+import { SESSION, TENANCY, VALIDATION, env, SUBDOMAIN_CONFIG } from "@/config";
+// import { SUBDOMAIN_CONFIG } from "@/lib/constants";
 
 // ==========================================
 // HELPER FUNCTIONS
@@ -23,7 +23,7 @@ const getEnv = (key: string, defaultVal?: string): string => {
 export const PROXY_CONFIG = {
   ENV: env.NODE_ENV,
   ROOT_DOMAIN: TENANCY.ROOT_DOMAIN,
-  AUTH_COOKIE: SESSION.COOKIE_NAME,
+  COOKIE_NAME: SESSION.COOKIE.NAME,
 
   // Enterprise Security Flags
   ENABLE_WAF: true, // Web Application Firewall
@@ -31,19 +31,19 @@ export const PROXY_CONFIG = {
 
   // Rate Limiting Rules
   RATE_LIMIT: {
-    WINDOW_SECONDS: RATE_LIMIT.API.WINDOW_MS / 1000, // Convert ms to seconds
-    MAX_REQUESTS: RATE_LIMIT.API.REQUESTS,
+    WINDOW_SECONDS: VALIDATION.RATE_LIMIT.API_WINDOW / 1000, // Convert ms to seconds
+    MAX_REQUESTS: VALIDATION.RATE_LIMIT.API_REQUESTS,
   },
 
   // Bank-Grade Security Headers
   HEADERS: {
-    'X-Frame-Options': 'DENY',
-    'X-Content-Type-Options': 'nosniff',
-    'Referrer-Policy': 'strict-origin-when-cross-origin',
-    'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
-    'X-XSS-Protection': '1; mode=block',
-    'Permissions-Policy':
-      'camera=(), microphone=(), geolocation=(), payment=()',
+    "X-Frame-Options": "DENY",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
+    "X-XSS-Protection": "1; mode=block",
+    "Permissions-Policy":
+      "camera=(), microphone=(), geolocation=(), payment=()",
   },
 
   // Routing Map - Using centralized subdomain config
@@ -56,15 +56,15 @@ export const PROXY_CONFIG = {
 
   // Public Access Lists
   PUBLIC_PATHS: new Set([
-    '/',
-    '/login',
-    '/signup',
-    '/register',
-    '/verify-email',
-    '/forgot-password',
-    '/reset-password',
+    "/",
+    "/login",
+    "/signup",
+    "/register",
+    "/verify-email",
+    "/forgot-password",
+    "/reset-password",
   ]),
-  ASSETS: ['/_next', '/favicon.ico', '/images', '/api/public', '/public'],
+  ASSETS: ["/_next", "/favicon.ico", "/images", "/api/public", "/public"],
 } as const;
 
 // Legacy export for backward compatibility

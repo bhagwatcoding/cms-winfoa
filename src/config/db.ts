@@ -2,7 +2,7 @@ import { env } from "./env";
 
 export const DB = {
     URI: env.MONGODB_URI,
-    NAME: "winfoa", // Main Database Name
+    NAME: env.MONGODB_NAME || "winfoa", // Main Database Name
 
     // Connection Options (Mongoose)
     OPTIONS: {

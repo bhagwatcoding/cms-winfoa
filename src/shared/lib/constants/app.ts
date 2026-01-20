@@ -16,7 +16,8 @@ export const IS_TEST = process.env.NODE_ENV === "test";
 
 export const APP = {
   NAME: process.env.APP_NAME || "winfoa",
-  DESCRIPTION: process.env.APP_DESCRIPTION || "Modern Multi-Tenant Education Portal",
+  DESCRIPTION:
+    process.env.APP_DESCRIPTION || "Modern Multi-Tenant Education Portal",
   VERSION: process.env.APP_VERSION || "1.0.0",
   AUTHOR: process.env.APP_AUTHOR || "Winfoa Team",
   DOMAIN: {
@@ -24,15 +25,15 @@ export const APP = {
     ROOT: process.env.ROOT_DOMAIN || "localhost:3000",
     SUB: {
       API: "api",
-      WALLET: "wallet"
+      WALLET: "wallet",
     },
   },
   SUBDOMAIN: "",
   IS_PRODUCTION: process.env.NODE_ENV === "production",
   IS_DEVELOPMENT: process.env.NODE_ENV === "development",
   IS_TEST: process.env.NODE_ENV === "test",
-  PROTOCOL: IS_PRODUCTION ? "https" : "http"
-}
+  PROTOCOL: IS_PRODUCTION ? "https" : "http",
+};
 
 // ==========================================
 // URLS & DOMAINS
@@ -40,7 +41,7 @@ export const APP = {
 
 export const ROOT_DOMAIN = process.env.ROOT_DOMAIN || "localhost:3000";
 export const ROOT_URL = process.env.ROOT_URL || "http://localhost:3000";
-export const API_URL = process.env.API_URL || "http://localhost:3000";
+export const API_URL = process.env.API_URL || "http://api.localhost:3000";
 // export const PROTOCOL = IS_PRODUCTION ? "https" : "http";
 
 // ==========================================
@@ -48,8 +49,8 @@ export const API_URL = process.env.API_URL || "http://localhost:3000";
 // ==========================================
 export const MONGODB = {
   URI: process.env.MONGODB_URI || "mongodb://localhost:27017/winfoa",
-  NAME: process.env.MONGODB_NAME || "winfoa"
-}
+  NAME: process.env.MONGODB_NAME || "winfoa",
+};
 
 // ==========================================
 // SESSION & SECURITY
@@ -57,8 +58,9 @@ export const MONGODB = {
 export const SESSION = {
   COOKIE_NAME: process.env.SESSION_COOKIE_NAME || "auth_session",
   MAX_AGE: parseInt(process.env.SESSION_MAX_AGE || "604800000"),
-  SECRET: process.env.SESSION_SECRET || "fallback-secret-key-change-in-production",
-}
+  SECRET:
+    process.env.SESSION_SECRET || "fallback-secret-key-change-in-production",
+};
 
 // ==========================================
 // PAGINATION
@@ -74,17 +76,13 @@ export const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 
 export const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 export const ALLOW_TYPES = {
-  IMAGES: [
-    "image/jpeg",
-    "image/png",
-    "image/webp",
-    "image/gif",
-  ],
+  IMAGES: ["image/jpeg", "image/png", "image/webp", "image/gif"],
   DOCUMENT: [
     "application/pdf",
     "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",]
-}
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  ],
+};
 
 // ==========================================
 // DATE & TIME
@@ -94,8 +92,8 @@ export const CLOCK = Object.freeze({
   FORMAT: Object.freeze({
     DATE: "YYYY-MM-DD",
     TIME: "HH:mm:ss",
-    DATETIME: "YYYY-MM-DD HH:mm:ss"
-  })
+    DATETIME: "YYYY-MM-DD HH:mm:ss",
+  }),
 });
 
 // ==========================================
@@ -112,14 +110,13 @@ export const LENGTH = {
     PASSWORD: 100,
     NAME: 100,
     PHONE: 15,
-  }
-}
-
+  },
+};
 
 export const REGEX = {
   PHONE: /^\+?[1-9]\d{1,14}$/,
-  EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-}
+  EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+};
 
 // ==========================================
 // CACHE
@@ -169,4 +166,3 @@ export const NOTIFICATION_TYPES = {
 
 // All constants are already exported above.
 // Use them directly: APP, SESSION, MONGODB, etc.
-
