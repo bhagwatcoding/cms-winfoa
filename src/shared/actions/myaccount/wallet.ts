@@ -1,9 +1,9 @@
 'use server';
 
-import connectDB from '@/shared/lib/db';
+import { connectDB } from '@/core/db';
 import { User } from '@/models';
 import { revalidatePath } from 'next/cache';
-import { getErrorMessage } from '@/shared/lib/utils';
+import { getErrorMessage } from '@/core/utils';
 import { Transaction } from "@/models"
 
 // Get wallet balance

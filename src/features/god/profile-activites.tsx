@@ -1,12 +1,16 @@
 // src/app/profile/activity/page.tsx
-import { ActivityLogger } from "@/services/activity.service";
-import { getCurrentUser } from "@/actions/auth.actions"; // your auth helper
+import { ActivityLogger } from "@/shared/services/activity.service";
+import { getCurrentUser } from "@/core/auth";
+import { redirect } from "next/navigation";
 
 export default async function ActivityPage() {
   const user = await getCurrentUser();
   
-  user = !user? : user.
-  const logs = await ActivityLogger.getUserLogs(user.id);
+  if (!user) {
+    redirect("/auth/login");
+  }
+  
+  const logs = await ActivityLogger.getUserLogs(user._id.toString());
 
   return (
     <div className="p-6">

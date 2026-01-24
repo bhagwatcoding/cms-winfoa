@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/shared/lib/db";
-import { requireAuth, requireRole } from "@/shared/lib/session";
+import { connectDB } from "@/core/db";
+import { requireAuth, requireRole } from "@/core/auth";
 import {
   uploadAvatar,
   uploadCourseMaterial,
   uploadCertificateTemplate,
   UPLOAD_CONFIG
-} from "@/shared/lib/upload";
+} from "@/core/upload";
 
 // POST /api/upload - Universal file upload endpoint
 export async function POST(request: NextRequest) {

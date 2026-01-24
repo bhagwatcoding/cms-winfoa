@@ -33,7 +33,7 @@ export const mockUsers: User[] = [
         id: "3",
         name: "Mike Johnson",
         email: "mike.j@example.com",
-        role: "staff",
+        role: "admin", // Changed from staff
         status: "active",
         joinedAt: "2024-03-10",
         lastLogin: "2024-01-13T09:00:00",
@@ -42,7 +42,7 @@ export const mockUsers: User[] = [
         id: "4",
         name: "Sarah Wilson",
         email: "sarah.w@example.com",
-        role: "student",
+        role: "user", // Changed from student
         status: "inactive",
         joinedAt: "2024-04-05",
     },
@@ -50,7 +50,7 @@ export const mockUsers: User[] = [
         id: "5",
         name: "David Brown",
         email: "david.b@example.com",
-        role: "center",
+        role: "admin", // Changed from center
         status: "active",
         joinedAt: "2024-05-12",
         lastLogin: "2024-01-10T14:20:00",
@@ -59,7 +59,7 @@ export const mockUsers: User[] = [
         id: "6",
         name: "Emily Davis",
         email: "emily.d@example.com",
-        role: "staff",
+        role: "user", // Changed from staff
         status: "on-leave",
         joinedAt: "2024-06-18",
     },
@@ -67,7 +67,7 @@ export const mockUsers: User[] = [
         id: "7",
         name: "Chris Martin",
         email: "chris.m@example.com",
-        role: "student",
+        role: "user", // Changed from student
         status: "active",
         joinedAt: "2024-07-22",
         lastLogin: "2024-01-15T08:15:00",

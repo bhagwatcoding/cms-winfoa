@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/shared/lib/db";
+import { connectDB } from "@/core/db";
 import { WalletTransaction, User } from "@/models";
-import { requireAuth, requireRole } from "@/shared/lib/session";
+import { requireAuth, requireRole } from "@/core/auth";
 
 // GET /api/wallet/transactions - Get transaction history
 export async function GET(request: NextRequest) {

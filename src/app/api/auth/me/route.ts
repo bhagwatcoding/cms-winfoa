@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, getCurrentSession } from "@/shared/lib/session";
+import { SessionService } from "@/shared/services/session";
 
 export async function GET(request: NextRequest) {
   try {
     // Get current user
-    const user = await getCurrentUser();
+    const user = await SessionService.getCurrentSession();
 
     if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
     // Get current session
-    const session = await getCurrentSession();
+    const session = await SessionService.getSession();
 
     // Return user information
     return NextResponse.json({
@@ -19,8 +19,8 @@ export async function GET(request: NextRequest) {
       user,
       session: session
         ? {
-            expires: session.expiresAt,
-            token: session.token,
+            expires: session.expires,
+            token: session.sessionToken,
           }
         : null,
     });
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
 // Handle POST requests for session validation
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser();
+    const user = await SessionService.getCurrentSession();  
 
     if (!user) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });

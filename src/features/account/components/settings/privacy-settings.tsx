@@ -1,6 +1,6 @@
 'use client'
 
-import { updatePrivacySettings } from '@/features/account/actions'
+import { updatePrivacySettings } from '@/actions/account'
 import { Label } from '@/ui'
 import { Switch } from '@/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui'

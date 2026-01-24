@@ -5,10 +5,10 @@
 
 'use server';
 
-import connectDB from '@/lib/db';
+import { connectDB } from '@/lib/db';
 import { Role, User } from '@/models';
 import type { IRole } from '@/models';
-import { getCurrentUser } from '@/lib/session';
+import { getCurrentUser } from '@/core/session';
 import { requirePermission } from '@/lib/permissions';
 import { ERROR_MESSAGES } from '@/lib/constants';
 import type { CreateResponse, UpdateResponse, DeleteResponse, FetchManyResponse } from '@/types/api';
@@ -28,7 +28,7 @@ export async function createRoleAction(data: {
     try {
         const currentUser = await getCurrentUser();
 
-        // Only super-admin can manage roles
+        // Only god can manage roles
         requirePermission(currentUser, 'system:manage');
 
         await connectDB();
@@ -48,7 +48,7 @@ export async function createRoleAction(data: {
             slug: data.slug,
             description: data.description,
             permissions: data.permissions,
-            isSystemRole: false, // Custom roles are not system roles
+            isSystem: false, // Custom roles are not system roles
             isActive: true,
             priority: data.priority || 0,
         });
@@ -84,7 +84,7 @@ export async function updateRoleAction(
     try {
         const currentUser = await getCurrentUser();
 
-        // Only super-admin can manage roles
+        // Only god can manage roles
         requirePermission(currentUser, 'system:manage');
 
         await connectDB();
@@ -98,7 +98,7 @@ export async function updateRoleAction(
         }
 
         // Prevent modifying system roles' permissions
-        if (role.isSystemRole && data.permissions) {
+        if (role.isSystem && data.permissions) {
             return {
                 success: false,
                 error: 'Cannot modify permissions of system roles'
@@ -136,7 +136,7 @@ export async function deleteRoleAction(roleId: string): Promise<DeleteResponse> 
     try {
         const currentUser = await getCurrentUser();
 
-        // Only super-admin can manage roles
+        // Only god can manage roles
         requirePermission(currentUser, 'system:manage');
 
         await connectDB();
@@ -150,7 +150,7 @@ export async function deleteRoleAction(roleId: string): Promise<DeleteResponse> 
         }
 
         // Prevent deleting system roles
-        if (role.isSystemRole) {
+        if (role.isSystem) {
             return {
                 success: false,
                 error: 'Cannot delete system roles'
@@ -299,7 +299,7 @@ export async function assignRoleToUserAction(
     try {
         const currentUser = await getCurrentUser();
 
-        // Only super-admin can assign roles
+        // Only god can assign roles
         requirePermission(currentUser, 'system:manage');
 
         await connectDB();
@@ -325,7 +325,7 @@ export async function assignRoleToUserAction(
 
         // Update user's role
         user.roleId = role._id;
-        user.role = role.slug as 'super-admin' | 'admin' | 'staff' | 'student' | 'user' | 'center'; // Sync string role for backward compatibility
+        user.role = role.slug as 'god' | 'admin' | 'staff' | 'user'; // Sync string role for backward compatibility
         await user.save();
 
         return {

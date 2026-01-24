@@ -14,7 +14,7 @@ interface UserStatsProps {
         memberSince: Date | string
         lastLogin?: Date | string
         totalActivities: number
-        recentActivities: Record<string, unknown>[]
+        recentActivities: any[]
         emailVerified: boolean
         oauthConnected: boolean
     }

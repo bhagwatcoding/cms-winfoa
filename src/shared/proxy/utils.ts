@@ -20,14 +20,14 @@ export class ProxyUtils {
   }
 
   static isAuthenticated(req: NextRequest): boolean {
-    return !!req.cookies.get(CONFIG.COOKIE.);
+    return !!req.cookies.get(CONFIG.COOKIE_NAME);
   }
 
   // URL Factory
   static buildUrl(req: NextRequest, path: string, subdomain?: string): URL {
     const url = new URL(path, req.url);
     const root = CONFIG.ROOT_DOMAIN.replace(/:3000$/, "");
-    url.hostname = subdomain ? `${subdomain}.${root}` :  root;
+    url.hostname = subdomain ? `${subdomain}.${root}` : root;
     return url;
   }
 }

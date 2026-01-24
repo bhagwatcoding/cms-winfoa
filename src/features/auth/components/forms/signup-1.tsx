@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Shield, Phone, Building2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/ui';
-import { signupAction } from '@/auth/actions/signup';
+import { signupAction } from '@/actions/auth/signup.form';
 
 export default function SignupPage() {
     const [showPassword, setShowPassword] = useState(false);

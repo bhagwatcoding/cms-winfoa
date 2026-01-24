@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/shared/lib/db";
+import { connectDB } from "@/core/db";
 import { User } from "@/models";
-import { requireAuth, requireRole } from "@/shared/lib/session";
+import { requireAuth } from "@/core/auth";
 
 // GET /api/users/roles - Get available roles and permissions
 export async function GET(request: NextRequest) {
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
           "system.settings",
           "system.maintenance"
         ],
-        subdomains: ["auth", "academy", "api", "ump", "provider", "myaccount", "wallet", "developer"]
+        subdomains: ["auth", "api", "ump", "myaccount", "wallet"]
       },
       "admin": {
         name: "Administrator",
@@ -41,55 +41,7 @@ export async function GET(request: NextRequest) {
           "wallet.manage",
           "api.manage"
         ],
-        subdomains: ["auth", "academy", "api", "ump", "provider", "myaccount", "wallet"]
-      },
-      "staff": {
-        name: "Staff Member",
-        description: "Staff access to academy and basic features",
-        level: 70,
-        permissions: [
-          "users.read",
-          "academy.create-courses",
-          "academy.manage-students",
-          "wallet.view"
-        ],
-        subdomains: ["auth", "academy", "myaccount", "wallet"]
-      },
-      "center": {
-        name: "Training Center",
-        description: "Training center management access",
-        level: 60,
-        permissions: [
-          "academy.create-courses",
-          "academy.manage-students",
-          "academy.generate-certificates",
-          "users.view-students"
-        ],
-        subdomains: ["auth", "academy", "myaccount"]
-      },
-      "provider": {
-        name: "Service Provider",
-        description: "Service provider portal access",
-        level: 60,
-        permissions: [
-          "provider.manage-services",
-          "provider.manage-clients",
-          "provider.view-analytics",
-          "wallet.transactions"
-        ],
-        subdomains: ["auth", "provider", "myaccount", "wallet"]
-      },
-      "student": {
-        name: "Student",
-        description: "Student access to learning materials",
-        level: 30,
-        permissions: [
-          "academy.enroll-courses",
-          "academy.view-progress",
-          "academy.download-certificates",
-          "wallet.view-balance"
-        ],
-        subdomains: ["auth", "academy", "myaccount"]
+        subdomains: ["auth", "api", "ump", "myaccount", "wallet"]
       },
       "user": {
         name: "Regular User",
@@ -105,7 +57,7 @@ export async function GET(request: NextRequest) {
     };
 
     // Filter roles based on current user permissions
-    let availableRoles = roleDefinitions;
+    let availableRoles: any = roleDefinitions;
 
     if (currentUser.role !== "super-admin") {
       // Non-super-admins cannot see or assign super-admin role
@@ -116,7 +68,7 @@ export async function GET(request: NextRequest) {
       if (currentUser.role === "admin") {
         const currentLevel = roleDefinitions.admin.level;
         availableRoles = Object.fromEntries(
-          Object.entries(availableRoles).filter(([_, role]) => role.level <= currentLevel)
+          Object.entries(availableRoles).filter(([_, role]: [string, any]) => role.level <= currentLevel)
         );
       }
     }
@@ -151,7 +103,7 @@ export async function GET(request: NextRequest) {
         roles: availableRoles,
         statistics: statsMap,
         currentUserRole: currentUser.role,
-        canManageRoles: ["super-admin", "admin"].includes(currentUser.role)
+        canManageRoles: currentUser.role ? ["super-admin", "admin"].includes(currentUser.role) : false
       },
       message: "Roles fetched successfully"
     });
@@ -176,7 +128,13 @@ export async function GET(request: NextRequest) {
 // POST /api/users/roles - Assign role to user
 export async function POST(request: NextRequest) {
   try {
-    const currentUser = await requireRole(["admin", "super-admin"]);
+    const currentUser = await requireAuth();
+    if (!currentUser.role || !["admin", "super-admin"].includes(currentUser.role)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
     await connectDB();
 
     const body = await request.json();
@@ -290,7 +248,13 @@ export async function POST(request: NextRequest) {
 // PUT /api/users/roles - Bulk role assignment
 export async function PUT(request: NextRequest) {
   try {
-    const currentUser = await requireRole(["super-admin"]);
+    const currentUser = await requireAuth();
+    if (currentUser.role !== "super-admin") {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
     await connectDB();
 
     const body = await request.json();
@@ -372,7 +336,13 @@ export async function PUT(request: NextRequest) {
 // DELETE /api/users/roles - Reset user role to default
 export async function DELETE(request: NextRequest) {
   try {
-    const currentUser = await requireRole(["admin", "super-admin"]);
+    const currentUser = await requireAuth();
+    if (!currentUser.role || !["admin", "super-admin"].includes(currentUser.role)) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      );
+    }
     await connectDB();
 
     const { searchParams } = new URL(request.url);

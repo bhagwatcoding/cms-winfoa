@@ -1,6 +1,6 @@
 'use client'
 
-import { revokeApiKey, deleteApiKey } from '@/api-mgmt/actions/apikey'
+import { revokeApiKey, deleteApiKey } from '@/actions/api-management/apikey'
 import { Button } from '@/ui'
 import { Key, Trash2, Ban } from 'lucide-react'
 import { useState } from 'react'

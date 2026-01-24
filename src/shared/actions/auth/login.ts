@@ -1,13 +1,13 @@
 'use server';
 
-import connectDB from '@/shared/lib/db';
+import { connectDB } from '@/core/db';
 import { User } from '@/models';
-import { getDashboardUrlForRole } from '@/shared/lib/helpers';
-import { loginSchema, type LoginInput } from '@/shared/lib/utils/validations';
-import { validateSchema } from '@/shared/lib/utils/validations/utils';
-import { createSession, setSessionCookie, logout as logoutSession } from '@/shared/lib/session';
+import { getDashboardUrlForRole } from '@/core/helpers';
+import { loginSchema, type LoginInput } from '@/core/utils/validations';
+import { validateSchema } from '@/core/utils/validations/utils';
+import { createSession, setSessionCookie, logout as logoutSession } from '@/core/session';
 import type { LoginResponse, LogoutResponse } from '@/types/api';
-import { getErrorMessage } from '@/shared/lib/utils';
+import { getErrorMessage } from '@/core/utils';
 
 export async function loginUser(credentials: LoginInput): Promise<LoginResponse> {
     // Validate input

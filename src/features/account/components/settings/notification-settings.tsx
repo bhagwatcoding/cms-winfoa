@@ -1,6 +1,6 @@
 'use client'
 
-import { updateEmailNotifications } from '@/features/account/actions'
+import { updateEmailNotifications } from '@/actions/account'
 import { Label } from '@/ui'
 import { Switch } from '@/ui/switch'
 import { useState, useTransition } from 'react'

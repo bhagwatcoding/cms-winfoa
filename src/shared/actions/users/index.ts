@@ -5,11 +5,11 @@
 
 'use server';
 
-import connectDB from '@/lib/db';
-import { getCurrentUser } from '@/lib/session';
+import { connectDB } from '@/lib/db';
+import { getCurrentUser } from '@/lib/auth/session';
 import { requirePermission } from '@/lib/permissions';
-import { createUserSchema, updateUserSchema } from '@/shared/lib/utils/validations';
-import { validateSchema } from '@/shared/lib/utils/validations/utils';
+import { createUserSchema, updateUserSchema } from '@/core/utils/schemas/user';
+import { validateSchema } from '@/core/utils/validations/utils';
 import { SUCCESS_MESSAGES, ERROR_MESSAGES } from '@/lib/constants';
 import { getErrorMessage } from '@/lib/utils';
 import { UserService } from '@/shared/services/user.service';
@@ -42,18 +42,18 @@ export async function createUserAction(data: unknown): Promise<CreateResponse<IU
 
         await connectDB();
 
-        const user = await UserService.createUser(userData);
-        const userObject = user; // UserService returns Object, but let's be sure about password removal if not done there. 
-        // UserService.createUser returns toObject() which usually keeps password unless selected out.
-        // My UserService implementation kept password in `toObject()` effectively unless schema has transform.
-        // I should probably manually remove it in Service or here.
-        // In Service I did: return user.toObject();
-        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
+        const user = await UserService.createUser(userData as Partial<IUser>);
+        const userObject = user as unknown as IUser; // Type assertion since it returns a plain object
+        
+        // Remove password if present (though UserService might not include it)
+        if ('password' in userObject) {
+            delete (userObject as any).password;
+        }
 
         return {
             success: true,
             message: SUCCESS_MESSAGES.USER_CREATED,
-            data: userObject as IUser,
+            data: userObject,
         };
     } catch (error) {
         console.error('Create user error:', error);
@@ -91,7 +91,7 @@ export async function updateUserAction(
 
         await connectDB();
 
-        const user = await UserService.updateUser(userId, validation.data!);
+        const user = await UserService.updateUser(userId, validation.data as Partial<IUser>);
         if (!user) {
             return {
                 success: false,
@@ -99,13 +99,15 @@ export async function updateUserAction(
             };
         }
 
-        const userObject = user;
-        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
+        const userObject = user as unknown as IUser;
+        if ('password' in userObject) {
+             delete (userObject as any).password;
+        }
 
         return {
             success: true,
             message: SUCCESS_MESSAGES.USER_UPDATED,
-            data: userObject as IUser,
+            data: userObject,
         };
     } catch (error) {
         console.error('Update user error:', error);
@@ -128,7 +130,7 @@ export async function deleteUserAction(userId: string): Promise<DeleteResponse> 
         requirePermission(currentUser, 'users:delete');
 
         // Prevent deleting own account
-        if (userId === currentUser?._id.toString()) {
+        if (userId === currentUser?.id) {
             return {
                 success: false,
                 error: 'Cannot delete your own account'
@@ -140,7 +142,7 @@ export async function deleteUserAction(userId: string): Promise<DeleteResponse> 
         // Check if user exists first? UserService.deleteUser could handle it but for returning specific error "User not found" maybe.
         // UserService.deleteUser uses findByIdAndDelete which returns null if not found.
 
-        const deleted = await UserService.deleteUser(userId);
+        const deleted = await UserService.deleteUser(currentUser?.id || 'unknown', userId);
         if (!deleted) {
             return {
                 success: false,
@@ -184,12 +186,14 @@ export async function getUserAction(userId: string): Promise<CreateResponse<IUse
             };
         }
 
-        const userObject = user;
-        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
+        const userObject = user as unknown as IUser;
+        if ('password' in userObject) {
+            delete (userObject as any).password;
+        }
 
         return {
             success: true,
-            data: userObject as IUser,
+            data: userObject,
         };
     } catch (error) {
         console.error('Get user error:', error);
@@ -228,8 +232,8 @@ export async function getUsersAction(params?: {
                 page: result.page,
                 limit: result.limit,
                 total: result.total,
-                totalPages: result.totalPages,
-                hasNextPage: result.page < result.totalPages,
+                totalPages: result.pages,
+                hasNextPage: result.page < result.pages,
                 hasPreviousPage: result.page > 1,
             },
         };
@@ -266,7 +270,7 @@ export async function updateUserRoleAction(
         requirePermission(currentUser, 'system:manage');
 
         // Prevent changing own role
-        if (userId === currentUser?._id.toString()) {
+        if (userId === currentUser?.id) {
             return {
                 success: false,
                 error: 'Cannot change your own role'
@@ -283,13 +287,15 @@ export async function updateUserRoleAction(
             };
         }
 
-        const userObject = user;
-        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
+        const userObject = user as unknown as IUser;
+        if ('password' in userObject) {
+            delete (userObject as any).password;
+        }
 
         return {
             success: true,
             message: 'User role updated successfully',
-            data: userObject as IUser,
+            data: userObject,
         };
     } catch (error) {
         console.error('Update role error:', error);
@@ -321,13 +327,15 @@ export async function toggleUserStatusAction(userId: string): Promise<UpdateResp
             };
         }
 
-        const userObject = user;
-        if ('password' in userObject) delete (userObject as Record<string, unknown>).password;
+        const userObject = user as unknown as IUser;
+        if ('password' in userObject) {
+            delete (userObject as any).password;
+        }
 
         return {
             success: true,
-            message: `User ${user.isActive ? 'activated' : 'deactivated'} successfully`,
-            data: userObject as IUser,
+            message: `User ${user.status === 'active' ? 'activated' : 'deactivated'} successfully`,
+            data: userObject,
         };
     } catch (error) {
         console.error('Toggle status error:', error);

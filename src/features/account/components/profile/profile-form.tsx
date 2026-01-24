@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { updateProfile } from '@/features/account/actions'
+import { updateProfile } from '@/actions/account'
 import { Button, Input, Label } from '@/ui'
 import { Loader2 } from 'lucide-react'
 

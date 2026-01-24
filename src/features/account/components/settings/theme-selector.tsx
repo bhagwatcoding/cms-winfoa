@@ -1,6 +1,6 @@
 'use client'
 
-import { updateTheme } from '@/features/account/actions/settings'
+import { updateTheme } from '@/actions/account/settings'
 import { Label } from '@/ui'
 import { Sun, Moon, Monitor } from 'lucide-react'
 import { useState, useTransition } from 'react'

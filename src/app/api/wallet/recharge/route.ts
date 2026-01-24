@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/shared/lib/db";
+import { connectDB } from "@/core/db";
 import { WalletTransaction, User } from "@/models";
-import { requireAuth } from "@/shared/lib/session";
+import { requireAuth } from "@/core/auth";
 
 // POST /api/wallet/recharge - Add funds to wallet
 export async function POST(request: NextRequest) {

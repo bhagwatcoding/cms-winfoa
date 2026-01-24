@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState, useState } from 'react'
-import { createApiKey } from '@/api-mgmt/actions/apikey'
+import { createApiKey } from '@/actions/api-management/apikey'
 import { Button, Input, Label } from '@/ui'
 import { Loader2, Copy, Check } from 'lucide-react'
 

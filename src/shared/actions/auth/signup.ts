@@ -1,12 +1,15 @@
 'use server';
 
-import connectDB from '@/shared/lib/db';
+import { connectDB } from '@/core/db';
 import { User, Session } from '@/models';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
-import { getDashboardUrlForRole } from '@/shared/lib/helpers';
-import { getErrorMessage } from '@/shared/lib/utils';
-import type { SignupData } from '@/shared/lib/utils/interface';
+import { getDashboardUrlForRole } from '@/core/helpers';
+import { getErrorMessage } from '@/core/utils';
+import type { SignupData } from '@/core/utils/interface';
+
+import Role from '@/models/core/Role';
+import { SESSION } from '@/config';
 
 export async function signupUser(data: SignupData) {
     try {
@@ -22,18 +25,42 @@ export async function signupUser(data: SignupData) {
             };
         }
 
+        // 1. Force DEFAULT 'user' role for all new signups
+        // Security: Never blindly trust data.role from client
+        const defaultRole = await Role.findOne({ slug: 'user' });
+        
+        // If 'user' role doesn't exist (e.g. not created in God portal yet),
+        // we must block signup or create it. Ideally, block and warn admin.
+        if (!defaultRole) {
+             // Fallback: Create basic user role if missing (Self-healing)
+             const newRole = await Role.create({
+                name: 'User',
+                slug: 'user',
+                description: 'Basic user access',
+                permissions: [],
+                isSystem: true,
+                priority: 10
+             });
+             // Use the newly created role
+             var roleId = newRole._id;
+        } else {
+             var roleId = defaultRole._id;
+        }
+
         // Hash password
         const hashedPassword = await bcrypt.hash(data.password, 10);
 
         // Create user
         const user = await User.create({
-            name: data.name,
+            firstName: data.name?.split(' ')[0] || 'User',
+            lastName: data.name?.split(' ').slice(1).join(' ') || '',
             email: data.email,
             password: hashedPassword,
             phone: data.phone || '',
-            role: data.role || 'user',
+            roleId: roleId, // Link to Role Document
             status: 'active',
-            joinedAt: new Date()
+            isGod: false, // Explicitly false
+            // joinedAt is handled by timestamps
         });
 
         // Create session
@@ -47,7 +74,7 @@ export async function signupUser(data: SignupData) {
         });
 
         // Set cookie (match proxy's expected cookie name: auth_session)
-        (await cookies()).set('auth_session', sessionToken, {
+        (await cookies()).set(SESSION.COOKIE.NAME, sessionToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
@@ -59,16 +86,16 @@ export async function signupUser(data: SignupData) {
         });
 
         // Get role-based dashboard URL
-        const redirectUrl = getDashboardUrlForRole(user.role);
+        const redirectUrl = getDashboardUrlForRole('user'); // Always user dashboard
 
         return {
             success: true,
             redirectUrl,
             user: {
                 id: user._id.toString(),
-                name: user.name,
+                name: user.firstName + ' ' + user.lastName,
                 email: user.email,
-                role: user.role
+                role: 'user'
             }
         };
     } catch (error) {

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useActionState } from 'react'
-import { deleteAccount } from '@/features/account/actions'
+import { deleteAccount } from '@/actions/account'
 import {
     Dialog,
     DialogContent,

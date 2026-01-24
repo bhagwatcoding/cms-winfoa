@@ -3,9 +3,12 @@ import { Sidebar, SidebarProvider, SidebarContent, SidebarFooter, SidebarGroup, 
 import { mainNavItems, managementItems, systemItems } from "./NavbarLink";
 import { usePathname } from "next/navigation";
 import { Zap, LogOut } from "lucide-react";
+import { getBaseUrl } from "@/lib/url-utils";
 
 export function GodSideBar({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
+    const authUrl = getBaseUrl("auth");
+
     return (
         <SidebarProvider>
             <Sidebar variant="inset" collapsible="icon">
@@ -93,7 +96,7 @@ export function GodSideBar({ children }: { children: React.ReactNode }) {
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton tooltip="Logout" asChild>
-                                <Link href="/auth/logout">
+                                <Link href={`${authUrl}/logout`}>
                                     <LogOut />
                                     <span>Logout</span>
                                 </Link>

@@ -14,16 +14,14 @@ export class AppRouter extends ProxyUtils {
     const AUTH = CONFIG.SUBDOMAINS.AUTH;
     const API = CONFIG.SUBDOMAINS.API;
 
-    // 1. API Handling
+    // 1. API Handling in if url not found then return 404 and {status: 404, message: "Not Found"}
     if (subdomain === API) {
-      return NextResponse.rewrite(this.buildUrl(req, `/api${path}`));
+      const apiUrl = this.buildUrl(req, `/api${path}`);   
+      return NextResponse.rewrite(apiUrl);
     }
 
     // 2. Auth Subdomain Handling
-    if (subdomain === AUTH) {
-      if (path === "/") return NextResponse.redirect(this.buildUrl(req, "/")); // No root access on auth
-      return NextResponse.rewrite(this.buildUrl(req, `/auth${path}`));
-    }
+    if (subdomain === AUTH) return NextResponse.rewrite(this.buildUrl(req, `/auth${path}`));
 
     // 3. Main App Subdomains (ump, provider, etc.)
     if (subdomain && APP.includes(subdomain)) {

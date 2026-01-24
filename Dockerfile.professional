@@ -1,0 +1,134 @@
+# /**
+#  * Professional Docker Configuration
+#  * Multi-stage Docker build for optimized production deployment
+#  * 
+#  * @module DockerConfig
+#  * @description Enterprise-grade Docker configuration for multi-subdomain applications
+#  */
+
+# =============================================================================
+# BUILD STAGE - Dependencies and Build
+# =============================================================================
+
+FROM node:18-alpine AS deps
+
+# Install system dependencies
+RUN apk add --no-cache libc6-compat git
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install dependencies
+RUN npm ci --only=production && npm cache clean --force
+
+# =============================================================================
+# DEVELOPMENT STAGE - Development environment
+# =============================================================================
+
+FROM node:18-alpine AS dev
+
+# Install system dependencies
+RUN apk add --no-cache libc6-compat git
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm ci && npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Set environment
+ENV NODE_ENV=development
+
+# Start development server
+CMD ["npm", "run", "dev"]
+
+# =============================================================================
+# BUILDER STAGE - Production build
+# =============================================================================
+
+FROM node:18-alpine AS builder
+
+# Install system dependencies
+RUN apk add --no-cache libc6-compat git
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json* ./
+
+# Install all dependencies
+RUN npm ci && npm cache clean --force
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN npm run build:optimize
+
+# Remove dev dependencies
+RUN npm prune --production && npm cache clean --force
+
+# =============================================================================
+# RUNNER STAGE - Production runtime
+# =============================================================================
+
+FROM node:18-alpine AS runner
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+
+# Set permissions
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:3000/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) }).on('error', () => process.exit(1))"
+
+# Start production server
+CMD ["npm", "start"]
+
+# =============================================================================
+# LABELS
+# =============================================================================
+
+LABEL maintainer="Winfoa Team <team@winfoa.com>"
+LABEL version="3.0.0"
+LABEL description="Professional multi-subdomain enterprise application"
+LABEL org.opencontainers.image.title="Winfoa Multi-Subdomain Platform"
+LABEL org.opencontainers.image.description="Enterprise-grade multi-subdomain web application"
+LABEL org.opencontainers.image.version="3.0.0"
+LABEL org.opencontainers.image.licenses="MIT"
+LABEL org.opencontainers.image.source="https://github.com/winfoa/cms-winfoa"

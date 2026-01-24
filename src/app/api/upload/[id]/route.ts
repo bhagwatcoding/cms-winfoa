@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { promises as fs } from 'fs';
 import path from 'path';
-import connectDB from "@/shared/lib/db";
-import { requireAuth, requireRole } from "@/shared/lib/session";
-import { deleteFile, deleteFileWithVariants, getFileInfo } from "@/shared/lib/upload";
+import { connectDB } from "@/core/db";
+import { requireAuth, requireRole } from "@/core/auth";
+import { deleteFile, deleteFileWithVariants, getFileInfo } from "@/core/upload";
 
 // GET /api/upload/[id] - Get file information or serve file
 export async function GET(

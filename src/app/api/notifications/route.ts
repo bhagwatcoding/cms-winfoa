@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/shared/lib/db";
+import { connectDB } from "@/core/db";
 import { User } from "@/models";
-import { requireAuth, requireRole } from "@/shared/lib/session";
+import { requireAuth, requireRole } from "@/core/auth";
 import {
   sendEmail,
   sendBulkEmails,
@@ -11,7 +11,7 @@ import {
   sendWalletRechargeConfirmation,
   sendCertificateNotification,
   EMAIL_TEMPLATES
-} from "@/shared/lib/email";
+} from "@/core/email";
 
 // GET /api/notifications - Get notification templates and statistics
 export async function GET(request: NextRequest) {

@@ -1,10 +1,10 @@
 import { Loader2 } from 'lucide-react'
-import {Skeleton, Card, CardContent, CardHeader } from "@/ui"
+import { Skeleton, Card, CardContent, CardHeader } from "@/components/ui"
 
 export default function Loading() {
   return (
     <div className="flex flex-col space-y-6 p-8">
-      
+
       {/* Header Section */}
       <div className="space-y-2">
         <Skeleton className="h-10 w-[250px]" />
@@ -30,13 +30,13 @@ export default function Loading() {
       {/* Main Content Area */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <div className="col-span-4">
-           <Skeleton className="h-[400px] w-full rounded-xl" />
+          <Skeleton className="h-[400px] w-full rounded-xl" />
         </div>
         <div className="col-span-3">
-           <Skeleton className="h-[400px] w-full rounded-xl" />
+          <Skeleton className="h-[400px] w-full rounded-xl" />
         </div>
       </div>
-      
+
     </div>
   )
 }
@@ -45,12 +45,12 @@ export default function Loading() {
 
 
 export function Loading2() {
-    return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-            <div className="text-center">
-                <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-                <p className="text-slate-600 text-lg font-medium">Loading...</p>
-            </div>
-        </div>
-    )
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="text-center">
+        <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+        <p className="text-slate-600 text-lg font-medium">Loading...</p>
+      </div>
+    </div>
+  )
 }

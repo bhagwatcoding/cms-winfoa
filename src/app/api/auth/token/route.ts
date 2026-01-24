@@ -6,7 +6,7 @@
 
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import connectDB from '@/lib/db';
+import { connectDB } from '@/lib/db';
 import { Session } from '@/models';
 import crypto from 'crypto';
 
@@ -54,10 +54,10 @@ export async function GET() {
             );
         }
 
-        const user = session.userId;
+        const user = session.userId as unknown as import('@/types/models').IUser;
 
         // Check if user is active
-        if (!user.isActive || user.status !== 'active') {
+        if (!user || user.status !== 'active') {
             // Invalidate session for deactivated user
             await Session.findByIdAndDelete(session._id);
             cookieStore.delete(SESSION_COOKIE_NAME);
@@ -77,11 +77,11 @@ export async function GET() {
             authenticated: true,
             user: {
                 id: user._id.toString(),
-                name: user.name,
+                name: user.fullName || `${user.firstName} ${user.lastName}`,
                 email: user.email,
                 role: user.role,
                 status: user.status,
-                isActive: user.isActive,
+                isActive: user.status === 'active',
                 permissions: user.customPermissions || [],
             },
             session: {

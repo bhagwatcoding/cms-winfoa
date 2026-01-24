@@ -5,9 +5,9 @@
 
 'use server';
 
-import connectDB from '@/lib/db';
+import { connectDB } from '@/lib/db';
 import { User } from '@/models';
-import { getCurrentUser } from '@/lib/session';
+import { getCurrentUser } from '@/core/session';
 import { requirePermission } from '@/lib/permissions';
 import type { Permission } from '@/lib/permissions';
 import { ERROR_MESSAGES } from '@/lib/constants';

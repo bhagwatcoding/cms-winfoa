@@ -1,190 +1,213 @@
-{
+/**
+ * Professional TypeScript Configuration
+ * Enterprise-grade TypeScript setup for multi-subdomain applications
+ * 
+ * @module TypeScriptConfig
+ * @description Optimized TypeScript configuration for performance and type safety
+ */ {
   "compilerOptions": {
-    "target": "ES2017",
+    // =============================================================================
+    // TARGET & MODULE CONFIGURATION
+    // =============================================================================
+    "target": "ES2022",
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "ES2022"
     ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noEmit": true,
+    // =============================================================================
+    // STRICT TYPE CHECKING
+    // =============================================================================
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": false,
+    // =============================================================================
+    // ADVANCED TYPE CHECKING
+    // =============================================================================
+    "exactOptionalPropertyTypes": false,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedSideEffectImports": true,
+    // =============================================================================
+    // MODULE RESOLUTION
+    // =============================================================================
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "@/apps/*": [
+        "./src/apps/*"
+      ],
+      "@/core/*": [
+        "./src/core/*"
+      ],
+      "@/features/*": [
+        "./src/features/*"
+      ],
+      "@/shared/*": [
+        "./src/shared/*"
+      ],
+      "@/types": [
+        "./src/shared/types/index.ts"
+      ],
+      "@/types/*": [
+        "./src/shared/types/*"
+      ],
+      "@/components/*": [
+        "./src/shared/components/*"
+      ],
+      "@ui/*": [
+        "./src/shared/components/ui/*"
+      ],
+      "@/ui": [
+        "./src/shared/components/ui/index.tsx"
+      ],
+      "@/ui/*": [
+        "./src/shared/components/ui/*"
+      ],
+      "@/lib/*": [
+        "./src/core/*"
+      ],
+      "@/models": [
+        "./src/core/db/models/index.ts"
+      ],
+      "@/models/*": [
+        "./src/core/db/models/*"
+      ],
+      "@/services": [
+        "./src/shared/services/index.ts"
+      ],
+      "@/services/*": [
+        "./src/shared/services/*"
+      ],
+      "@/hooks/*": [
+        "./src/shared/hooks/*"
+      ],
+      "@/utils": [
+        "./src/core/utils/index.ts"
+      ],
+      "@/utils/*": [
+        "./src/core/utils/*"
+      ],
+      "@/config/*": [
+        "./src/config/*"
+      ],
+      "@/constants/*": [
+        "./src/shared/constants/*"
+      ],
+      "@/styles/*": [
+        "./src/shared/styles/*"
+      ],
+      "@/assets/*": [
+        "./src/shared/assets/*"
+      ],
+      "@/actions": [
+        "./src/shared/actions/index.ts"
+      ],
+      "@/actions/*": [
+        "./src/shared/actions/*"
+      ],
+      "@/config": [
+        "./src/config/index.ts"
+      ]
+    },
+    // =============================================================================
+    // JSX & REACT CONFIGURATION
+    // =============================================================================
     "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    // =============================================================================
+    // DECORATORS & METADATA
+    // =============================================================================
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    // =============================================================================
+    // SOURCE MAPS & DEBUGGING
+    // =============================================================================
+    "sourceMap": true,
+    "inlineSources": true,
+    "declaration": true,
+    "declarationMap": true,
+    // =============================================================================
+    // IMPORT & EXPORT CONFIGURATION
+    // =============================================================================
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    // =============================================================================
+    // PERFORMANCE OPTIMIZATIONS
+    // =============================================================================
     "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
+    "preserveWatchOutput": true,
+    // =============================================================================
+    // ADVANCED CONFIGURATION
+    // =============================================================================
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "downlevelIteration": true,
+    "useDefineForClassFields": true,
+    // =============================================================================
+    // NEXT.JS SPECIFIC
+    // =============================================================================
     "plugins": [
       {
         "name": "next"
       }
     ],
-    "baseUrl": ".",
-    "paths": {
-      // ==========================================
-      // ROOT PATHS
-      // ==========================================
-      "@/*": [
-        "./src/*"
-      ],
-      // ==========================================
-      // CONFIG PATHS
-      // ==========================================
-      "@/config": [
-        "./src/config"
-      ],
-      "@/config/*": [
-        "./src/config/*"
-      ],
-      // ==========================================
-      // FEATURE PATHS (Multi-Subdomain Features)
-      // ==========================================
-      "@/features/*": [
-        "./src/features/*"
-      ],
-      "@/auth/*": [
-        "./src/features/auth/*"
-      ],
-      "@/account/*": [
-        "./src/features/account/*"
-      ],
-      "@/api-mgmt/*": [
-        "./src/features/api-management/*"
-      ],
-      "@/admin/*": [
-        "./src/features/admin/*"
-      ],
-      "@/skills/*": [
-        "./src/features/skills/*"
-      ],
-      "@/ump/*": [
-        "./src/features/ump/*"
-      ],
-      "@/myaccount/*": [
-        "./src/features/myaccount/*"
-      ],
-      "@/developer/*": [
-        "./src/features/developer/*"
-      ],
-      // ==========================================
-      // SHARED PATHS (Common Across Subdomains)
-      // ==========================================
-      "@/shared/*": [
-        "./src/shared/*"
-      ],
-      // ==========================================
-      // COMPONENT PATHS
-      // ==========================================
-      "@/components/*": [
-        "./src/shared/components/*"
-      ],
-      "@/ui": [
-        "./src/shared/components/ui"
-      ],
-      "@/ui/*": [
-        "./src/shared/components/ui/*"
-      ],
-      // ==========================================
-      // LIBRARY PATHS (Core Utilities)
-      // ==========================================
-      "@/lib/*": [
-        "./src/shared/lib/*"
-      ],
-      "@/lib/db": [
-        "./src/shared/lib/db"
-      ],
-      "@/lib/permissions": [
-        "./src/shared/lib/permissions"
-      ],
-      "@/lib/constants": [
-        "./src/shared/lib/constants"
-      ],
-      "@/lib/validations": [
-        "src/shared/lib/utils/validations"
-      ],
-      "@/lib/crypto": [
-        "./src/shared/lib/crypto"
-      ],
-      "@/lib/helpers": [
-        "./src/shared/lib/helpers"
-      ],
-      "@/lib/utils": [
-        "./src/shared/lib/utils"
-      ],
-      "@/lib/types": [
-        "src/shared/lib/typesss"
-      ],
-      // ==========================================
-      // ALIASES (Shortcuts)
-      // ==========================================
-      "@/helpers": [
-        "./src/shared/lib/helpers"
-      ],
-      "@/utils": [
-        "./src/shared/lib/utils"
-      ],
-      // ==========================================
-      // DATABASE PATHS
-      // ==========================================
-      "@/models": [
-        "./src/shared/lib/db/models"
-      ],
-      "@/models/*": [
-        "./src/shared/lib/db/models/*"
-      ],
-      // ==========================================
-      // ACTIONS PATHS (Server Actions)
-      // ==========================================
-      "@/actions": [
-        "./src/shared/actions"
-      ],
-      "@/actions/*": [
-        "./src/shared/actions/*"
-      ],
-      // ==========================================
-      // SERVICES PATHS (Server Services)
-      // ==========================================
-      "@/services": [
-        "./src/shared/services"
-      ],
-      "@/services/*": [
-        "./src/shared/services/*"
-      ],
-      // ==========================================
-      // HOOKS PATHS
-      // ==========================================
-      "@/hooks": [
-        "./src/shared/hooks"
-      ],
-      "@/hooks/*": [
-        "./src/shared/hooks/*"
-      ],
-      // ==========================================
-      // TYPES PATHS
-      // ==========================================
-      "@/types": [
-        "./src/shared/types"
-      ],
-      "@/types/*": [
-        "./src/shared/types/*"
-      ]
-    }
+    "allowJs": true
   },
+  // =============================================================================
+  // INCLUDE & EXCLUDE PATTERNS
+  // =============================================================================
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     ".next",
     "out",
+    "dist",
     "build",
-    "dist"
-  ]
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.tsx"
+  ],
+  // =============================================================================
+  // COMPILER OPTIONS FOR DIFFERENT ENVIRONMENTS
+  // =============================================================================
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  }
 }

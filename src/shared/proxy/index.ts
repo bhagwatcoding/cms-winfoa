@@ -55,13 +55,13 @@ export class ProxyHandler {
     Security.applyHeaders(response);
 
     // 6. OBSERVABILITY: Log Request
-    Logger.info("Request Served", {
-      method: req.method,
-      path,
-      subdomain: subdomain || "root",
-      status: response.status,
-      duration: `${Date.now() - start}ms`,
-    });
+    // Logger.info("Request Served", {
+    //   method: req.method,
+    //   path,
+    //   subdomain: subdomain || "root",
+    //   status: response.status,
+    //   duration: `${Date.now() - start}ms`,
+    // });
 
     return response;
   }

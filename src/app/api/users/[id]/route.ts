@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/shared/lib/db";
+import { connectDB } from "@/core/db";
 import { User } from "@/models";
-import { requireAuth, requireRole } from "@/shared/lib/session";
+import { requireAuth, requireRole } from "@/core/session";
 
 // GET /api/users/[id] - Get specific user
 export async function GET(
@@ -16,7 +16,7 @@ export async function GET(
 
     // Check permissions - users can see their own profile, admins can see all
     const isOwnProfile = currentUser.id === id;
-    const isAdmin = ["admin", "super-admin"].includes(currentUser.role);
+    const isAdmin = ["admin", "god"].includes(currentUser.role);
 
     if (!isOwnProfile && !isAdmin) {
       return NextResponse.json(
@@ -33,7 +33,6 @@ export async function GET(
       ]
     })
       .select("-password")
-      .populate("centerId", "name code location")
       .lean();
 
     if (!user) {
@@ -98,7 +97,7 @@ export async function PUT(
 
     // Check permissions
     const isOwnProfile = currentUser.id === id;
-    const isAdmin = ["admin", "super-admin"].includes(currentUser.role);
+    const isAdmin = ["admin", "god"].includes(currentUser.role);
 
     if (!isOwnProfile && !isAdmin) {
       return NextResponse.json(
@@ -139,7 +138,7 @@ export async function PUT(
       // Admins can update more fields
       const adminAllowedFields = [
         'name', 'phone', 'avatar', 'firstName', 'lastName', 'role',
-        'status', 'centerId', 'isActive', 'emailVerified', 'walletBalance',
+        'status', 'isActive', 'emailVerified', 'walletBalance',
         'customPermissions', 'permissionOverrides'
       ];
 
@@ -150,16 +149,16 @@ export async function PUT(
       });
 
       // Super-admin specific fields
-      if (currentUser.role === "super-admin") {
+      if (currentUser.role === "god") {
         if (body.email !== undefined) allowedUpdates.email = body.email.toLowerCase();
       }
     }
 
     // Validate role change permissions
     if (allowedUpdates.role) {
-      if (currentUser.role !== "super-admin" && allowedUpdates.role === "super-admin") {
+      if (currentUser.role !== "god" && allowedUpdates.role === "god") {
         return NextResponse.json(
-          { error: "Only super-admin can assign super-admin role" },
+          { error: "Only god can assign god role" },
           { status: 403 }
         );
       }
@@ -188,7 +187,6 @@ export async function PUT(
     // Return updated user without password
     const updatedUser = await User.findById(user._id)
       .select("-password")
-      .populate("centerId", "name code location")
       .lean();
 
     // Log the update
@@ -240,7 +238,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const currentUser = await requireRole(["admin", "super-admin"]);
+    const currentUser = await requireRole(["admin", "god"]);
     await connectDB();
 
     const { id } = params;
@@ -268,10 +266,10 @@ export async function DELETE(
       );
     }
 
-    // Prevent deletion of super-admin by non-super-admin
-    if (user.role === "super-admin" && currentUser.role !== "super-admin") {
+    // Prevent deletion of god users by non-god users
+    if (user.role === "god" && currentUser.role !== "god") {
       return NextResponse.json(
-        { error: "Only super-admin can delete super-admin users" },
+        { error: "Only god can delete god users" },
         { status: 403 }
       );
     }
@@ -336,7 +334,7 @@ export async function PATCH(
 
     // Check permissions
     const isOwnProfile = currentUser.id === id;
-    const isAdmin = ["admin", "super-admin"].includes(currentUser.role);
+    const isAdmin = ["admin", "god"].includes(currentUser.role);
 
     if (!isOwnProfile && !isAdmin) {
       return NextResponse.json(
@@ -420,9 +418,9 @@ export async function PATCH(
         break;
 
       case "reset-wallet":
-        if (currentUser.role !== "super-admin") {
+        if (currentUser.role !== "god") {
           return NextResponse.json(
-            { error: "Only super-admin can reset wallet balance" },
+            { error: "Only god can reset wallet balance" },
             { status: 403 }
           );
         }

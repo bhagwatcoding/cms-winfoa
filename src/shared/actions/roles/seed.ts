@@ -5,70 +5,25 @@
 
 'use server';
 
-import connectDB from '@/lib/db';
-import { Role } from '@/models/core/Role';
-import {
-    SUPER_ADMIN_PERMISSIONS,
-    ADMIN_PERMISSIONS,
-    STAFF_PERMISSIONS,
-    CENTER_PERMISSIONS,
-    STUDENT_PERMISSIONS,
-    USER_PERMISSIONS,
-} from '@/lib/permissions/constants';
+import { connectDB } from '@/lib/db';
+import Role from '@/models/core/Role';
+import { GOD_PERMISSIONS } from '@/lib/permissions/constants';
 import { getErrorMessage } from '@/lib/utils';
 
 export async function seedDefaultRoles() {
     try {
         await connectDB();
 
+        // 1. Define ONLY the God Role
+        // All other roles (Admin, Staff, Student) must be created dynamically via the God Portal
         const defaultRoles = [
             {
-                name: 'Super Admin',
-                slug: 'super-admin',
+                name: 'God',
+                slug: 'god',
                 description: 'Full system access with all permissions',
-                permissions: SUPER_ADMIN_PERMISSIONS,
-                isSystemRole: true,
+                permissions: GOD_PERMISSIONS,
+                isSystem: true,
                 priority: 100,
-            },
-            {
-                name: 'Administrator',
-                slug: 'admin',
-                description: 'User management and administrative operations',
-                permissions: ADMIN_PERMISSIONS,
-                isSystemRole: true,
-                priority: 90,
-            },
-            {
-                name: 'Staff',
-                slug: 'staff',
-                description: 'Student and course management access',
-                permissions: STAFF_PERMISSIONS,
-                isSystemRole: true,
-                priority: 70,
-            },
-            {
-                name: 'Center',
-                slug: 'center',
-                description: 'Center-specific operations and student management',
-                permissions: CENTER_PERMISSIONS,
-                isSystemRole: true,
-                priority: 60,
-            },
-            {
-                name: 'Student',
-                slug: 'student',
-                description: 'Student portal access',
-                permissions: STUDENT_PERMISSIONS,
-                isSystemRole: true,
-                priority: 30,
-            },
-            {
-                name: 'User',
-                slug: 'user',
-                description: 'Basic user access',
-                permissions: USER_PERMISSIONS,
-                isSystemRole: true,
-                priority: 10,
             },
         ];
 
@@ -91,7 +46,7 @@ export async function seedDefaultRoles() {
 
         return {
             success: true,
-            message: 'Default roles seeded successfully',
+            message: 'Default roles seeded successfully (God only)',
         };
     } catch (error) {
         console.error('Seed roles error:', error);

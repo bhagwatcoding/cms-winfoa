@@ -1,11 +1,11 @@
 'use server';
 
-import connectDB from '@/shared/lib/db';
+import { connectDB } from '@/core/db';
 import { User, UserPreferences } from '@/models';
 import { revalidatePath } from 'next/cache';
-import { getErrorMessage } from '@/shared/lib/utils';
-import { updateProfileSchema, updateUserPreferencesSchema } from '@/shared/lib/utils/validations';
-import { validateSchema } from '@/shared/lib/utils/validations/utils';
+import { getErrorMessage } from '@/core/utils';
+import { updateProfileSchema, updateUserPreferencesSchema } from '@/core/utils/validations';
+import { validateSchema } from '@/core/utils/validations/utils';
 
 // Get user profile
 export async function getUserProfile(userId: string) {

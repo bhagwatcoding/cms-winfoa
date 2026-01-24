@@ -6,9 +6,9 @@
 
 'use server';
 
-import connectDB from '@/lib/db';
+import { connectDB } from '@/lib/db';
 import { User, Session } from '@/models';
-import { getCurrentUser } from '@/lib/session';
+import { getCurrentUser } from '@/shared/services/session.service';
 import { requirePermission, userHasPermission } from '@/lib/permissions';
 import type { IUser, UserRole } from '@/types/models';
 import type { UpdateResponse, DeleteResponse } from '@/types/api';

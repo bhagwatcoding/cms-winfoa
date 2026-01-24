@@ -4,21 +4,12 @@
  */
 
 import { Document } from 'mongoose';
-import { DeviceType, LoginMethod, RiskLevel, SessionStatus } from './session.types';
-import { IUser } from './models'; // Assuming IUser is defined in models type file
+import { DeviceType, LoginMethod, RiskLevel, SessionStatus } from './enums';
+import { IUser, IDeviceInfo } from './models'; // Assuming IUser is defined in models type file
 
 // ==========================================
 // SESSION INTERFACES
 // ==========================================
-
-export interface IDeviceInfo {
-    browser?: string;
-    os?: string;
-    device?: string; // Friendly name like "iPhone 13"
-    type?: DeviceType; // Numeric Enum
-    isMobile?: boolean;
-    deviceId?: string; // Unique device identifier
-}
 
 export interface ISecurityInfo {
     loginMethod?: LoginMethod; // Numeric Enum

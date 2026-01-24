@@ -9,23 +9,17 @@ export const SUBDOMAINS = {
   AUTH: "auth",
   API: "api",
   MYACCOUNT: "myaccount",
-  WALLET: "wallet",
   GOD: "god", // Super admin panel
   UMP: "ump",
-  PROVIDER: "provider",
-  ACADEMY: "academy",
+  WALLET: "wallet",
 } as const;
 
 export type Subdomain = (typeof SUBDOMAINS)[keyof typeof SUBDOMAINS];
 
 // Define Roles explicitly to prevent typos in keys
 export type UserRole =
-  | "super-admin"
+  | "god"
   | "admin"
-  | "staff"
-  | "center"
-  | "provider"
-  | "student"
   | "user";
 
 // ==========================================
@@ -49,10 +43,8 @@ export const PUBLIC_SUBDOMAINS: Subdomain[] = [
 export const PROTECTED_SUBDOMAINS: Subdomain[] = [
   SUBDOMAINS.GOD, // Moved GOD here (usually you want the route protected)
   SUBDOMAINS.UMP,
-  SUBDOMAINS.PROVIDER,
-  SUBDOMAINS.WALLET,
   SUBDOMAINS.MYACCOUNT,
-  SUBDOMAINS.ACADEMY,
+  SUBDOMAINS.WALLET,
 ];
 
 // ==========================================
@@ -60,14 +52,12 @@ export const PROTECTED_SUBDOMAINS: Subdomain[] = [
 // ==========================================
 
 export const SUBDOMAIN_ACCESS_BY_ROLE: Record<UserRole, Subdomain[]> = {
-  "super-admin": [
+  god: [
     SUBDOMAINS.AUTH,
     SUBDOMAINS.GOD,
-    SUBDOMAINS.ACADEMY,
-    SUBDOMAINS.PROVIDER,
     SUBDOMAINS.UMP,
-    SUBDOMAINS.WALLET,
     SUBDOMAINS.MYACCOUNT,
+    SUBDOMAINS.WALLET,
   ],
   admin: [
     SUBDOMAINS.AUTH,
@@ -75,57 +65,16 @@ export const SUBDOMAIN_ACCESS_BY_ROLE: Record<UserRole, Subdomain[]> = {
     SUBDOMAINS.UMP,
     SUBDOMAINS.MYACCOUNT,
     SUBDOMAINS.WALLET,
-    SUBDOMAINS.ACADEMY,
   ],
-  staff: [
-    SUBDOMAINS.AUTH,
-    SUBDOMAINS.ACADEMY,
-    SUBDOMAINS.MYACCOUNT,
-    SUBDOMAINS.WALLET,
-  ],
-  center: [SUBDOMAINS.AUTH, SUBDOMAINS.ACADEMY, SUBDOMAINS.MYACCOUNT],
-  provider: [
-    SUBDOMAINS.AUTH,
-    SUBDOMAINS.PROVIDER,
-    SUBDOMAINS.MYACCOUNT,
-    SUBDOMAINS.WALLET,
-  ],
-  student: [SUBDOMAINS.AUTH, SUBDOMAINS.ACADEMY, SUBDOMAINS.MYACCOUNT],
-  user: [SUBDOMAINS.AUTH, SUBDOMAINS.MYACCOUNT],
+  user: [SUBDOMAINS.AUTH, SUBDOMAINS.MYACCOUNT, SUBDOMAINS.WALLET],
 };
 
 // ==========================================
-// 4. UTILITY FUNCTIONS (For Middleware)
+// 4. CONFIGURATION OBJECT
 // ==========================================
-
-export const config = {
-  /**
-   * Check if a subdomain is public
-   */
-  isPublic: (subdomain: string) => {
-    return PUBLIC_SUBDOMAINS.includes(subdomain as Subdomain);
-  },
-
-  /**
-   * Check if a specific role has access to a subdomain
-   */
-  hasAccess: (role: UserRole, subdomain: string) => {
-    const allowed = SUBDOMAIN_ACCESS_BY_ROLE[role];
-    return allowed ? allowed.includes(subdomain as Subdomain) : false;
-  },
-
-  /**
-   * Get the default redirect subdomain for a role (e.g. after login)
-   */
-  getDefaultRoute: (role: UserRole): Subdomain => {
-    if (role === "super-admin") return SUBDOMAINS.GOD;
-    if (role === "provider") return SUBDOMAINS.PROVIDER;
-    return SUBDOMAINS.MYACCOUNT;
-  },
-};
 
 export const SUBDOMAIN_CONFIG = {
+  TYPES: SUBDOMAINS,
   APP: PROTECTED_SUBDOMAINS,
   PUBLIC: PUBLIC_SUBDOMAINS,
-  TYPES: SUBDOMAINS,
 };

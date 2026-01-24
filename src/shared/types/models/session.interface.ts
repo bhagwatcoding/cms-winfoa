@@ -1,5 +1,5 @@
 // --- Interfaces ---
-import { DeviceType } from "../session.types";
+import { DeviceType } from "../enums";
 
 
 export interface IDeviceInfo {

@@ -9,6 +9,11 @@
 
 export type {
   IUser,
+  ISoftDelete,
+  ILoginHistory,
+  ILinkedAccount,
+  IUserProfile,
+  ITwoFactorSettings,
   ISession,
   IUserPreferences,
   IActivityLog,
@@ -20,34 +25,12 @@ export type {
   OAuthProvider,
   ThemeMode,
   NotificationSettings,
+  IDeviceInfo,
+  IGeoInfo,
+  ISessionResult,
+  ISecurityInfo,
+  IClientMeta,
 } from "./core.interface";
-
-// ==========================================
-// ACADEMY MODEL TYPES
-// ==========================================
-
-export type {
-  IStudent,
-  ICourse,
-  ICertificate,
-  IResult,
-  IAdmitCard,
-  IEmployee,
-  ICenter,
-  ITransaction,
-  INotification,
-  IPasswordResetToken,
-  Gender,
-  StudentStatus,
-  CourseLevel,
-  CertificateStatus,
-  ResultStatus,
-  AdmitCardStatus,
-  EmployeeStatus,
-  TransactionType,
-  TransactionStatus,
-  NotificationType,
-} from "./academy.interface";
 
 // ==========================================
 // WALLET MODEL TYPES

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { requireAuth, requireRole } from "@/shared/lib/session";
+import { requireAuth, requireRole } from "@/core/auth";
 import {
   PerformanceMonitor,
   ErrorTracker,
@@ -8,7 +8,7 @@ import {
   AlertSystem,
   MetricsReporter,
   MonitoringDashboard
-} from "@/shared/lib/monitoring";
+} from "@/core/monitoring";
 
 // GET /api/system - Get system health and monitoring data
 export async function GET(request: NextRequest) {

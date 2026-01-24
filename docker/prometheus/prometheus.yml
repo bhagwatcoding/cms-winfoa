@@ -1,0 +1,142 @@
+/**
+ * Prometheus Configuration
+ * Monitoring and metrics collection for multi-subdomain applications
+ * 
+ * @module PrometheusConfig
+ * @description Prometheus setup for comprehensive monitoring
+ */
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'winfoa-monitor'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - "alert_rules.yml"
+  - "recording_rules.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 5s
+    metrics_path: /metrics
+
+  # Application monitoring
+  - job_name: 'winfoa-app'
+    static_configs:
+      - targets: ['app:3000']
+    scrape_interval: 15s
+    metrics_path: /api/metrics
+    params:
+      format: ['prometheus']
+
+  # Node exporter for system metrics
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 15s
+
+  # MongoDB exporter
+  - job_name: 'mongodb'
+    static_configs:
+      - targets: ['mongodb-exporter:9216']
+    scrape_interval: 30s
+
+  # Redis exporter
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+
+  # Nginx exporter
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['nginx-exporter:9113']
+    scrape_interval: 30s
+
+  # Docker container metrics
+  - job_name: 'docker'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    scrape_interval: 30s
+
+  # Custom application metrics per subdomain
+  - job_name: 'winfoa-auth'
+    static_configs:
+      - targets: ['app:3000']
+    scrape_interval: 15s
+    metrics_path: /api/metrics/auth
+    params:
+      subdomain: ['auth']
+
+  - job_name: 'winfoa-dashboard'
+    static_configs:
+      - targets: ['app:3000']
+    scrape_interval: 15s
+    metrics_path: /api/metrics/dashboard
+    params:
+      subdomain: ['dashboard']
+
+  - job_name: 'winfoa-god'
+    static_configs:
+      - targets: ['app:3000']
+    scrape_interval: 15s
+    metrics_path: /api/metrics/god
+    params:
+      subdomain: ['god']
+
+  - job_name: 'winfoa-myaccount'
+    static_configs:
+      - targets: ['app:3000']
+    scrape_interval: 15s
+    metrics_path: /api/metrics/myaccount
+    params:
+      subdomain: ['myaccount']
+
+  - job_name: 'winfoa-ump'
+    static_configs:
+      - targets: ['app:3000']
+    scrape_interval: 15s
+    metrics_path: /api/metrics/ump
+    params:
+      subdomain: ['ump']
+
+  - job_name: 'winfoa-wallet'
+    static_configs:
+      - targets: ['app:3000']
+    scrape_interval: 15s
+    metrics_path: /api/metrics/wallet
+    params:
+      subdomain: ['wallet']
+
+  # Blackbox exporter for external endpoint monitoring
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://app:3000/health
+        - http://app:3000/api/health
+        - http://mongo:27017
+        - http://redis:6379
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

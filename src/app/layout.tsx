@@ -1,5 +1,6 @@
 import "./globals.css";
-import { Toaster, ErrorBoundary } from "@/ui";
+import { Toaster, ErrorBoundary } from "@/shared/components/ui";
+import { ThemeProvider } from "@/shared/components/providers/theme-provider";
 
 export const metadata = {
   title: {
@@ -17,10 +18,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ErrorBoundary>
-          <Toaster />
-          {children}
-        </ErrorBoundary>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ErrorBoundary>
+            <Toaster />
+            {children}
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   );

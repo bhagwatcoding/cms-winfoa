@@ -4,22 +4,51 @@ import {
   LoginMethod,
   RiskLevel,
   SessionStatus,
-  IDeviceInfo,
-  ISecurityInfo,
-  IGeoInfo,
 } from "@/types";
 
+// Interface definitions to match the schema structure
+interface IDeviceInfo {
+  browser?: string;
+  os?: string;
+  device?: string;
+  type?: DeviceType;
+  isMobile?: boolean;
+  deviceId?: string;
+}
+
+interface IGeoInfo {
+  ip?: string;
+  country?: string;
+  countryCode?: string;
+  city?: string;
+  timezone?: string;
+  coordinates?: {
+    lat: number;
+    long: number;
+  };
+  isp?: string;
+}
+
+interface ISecurityInfo {
+  loginMethod?: LoginMethod;
+  riskScore?: number;
+  riskLevel?: RiskLevel;
+  isVerified?: boolean;
+  failedAttempts?: number;
+}
+
 export interface ISession extends Document {
+  _id: mongoose.Types.ObjectId;
   userId: mongoose.Types.ObjectId;
   token: string;
   expiresAt: Date;
 
-  deviceInfo: IDeviceInfo;
-  geoInfo: IGeoInfo;
-  securityInfo: ISecurityInfo;
+  deviceInfo?: IDeviceInfo;
+  geoInfo?: IGeoInfo;
+  securityInfo?: ISecurityInfo;
 
   isActive: boolean;
-  status: SessionStatus;
+  status?: SessionStatus; 
 
   lastAccessedAt: Date;
   createdAt: Date;
@@ -40,7 +69,7 @@ const SessionSchema = new Schema<ISession>(
       browser: String,
       os: String,
       device: String,
-      type: { type: Number, enum: DeviceType, default: DeviceType.UNKNOWN },
+      type: { type: Number, enum: DeviceType, default: DeviceType.Unknown },
       isMobile: { type: Boolean, default: false },
       deviceId: String,
     },
@@ -61,10 +90,10 @@ const SessionSchema = new Schema<ISession>(
       loginMethod: {
         type: Number,
         enum: LoginMethod,
-        default: LoginMethod.PASSWORD,
+        default: LoginMethod.Password,
       },
       riskScore: { type: Number, default: 0 },
-      riskLevel: { type: Number, enum: RiskLevel, default: RiskLevel.LOW },
+      riskLevel: { type: Number, enum: RiskLevel, default: RiskLevel.Low },
       isVerified: { type: Boolean, default: false },
       failedAttempts: { type: Number, default: 0 },
     },
@@ -73,7 +102,7 @@ const SessionSchema = new Schema<ISession>(
     status: {
       type: Number,
       enum: SessionStatus,
-      default: SessionStatus.ACTIVE,
+      default: SessionStatus.Active,
     },
     lastAccessedAt: { type: Date, default: Date.now },
   },

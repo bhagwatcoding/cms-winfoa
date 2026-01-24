@@ -3,7 +3,7 @@
  * Standardized response types for all API endpoints and server actions
  */
 
-import type { ValidationError } from '@/shared/lib/utils/validations/utils';
+import type { ValidationError } from '@/types';
 
 // ==========================================
 // BASE RESPONSE TYPES

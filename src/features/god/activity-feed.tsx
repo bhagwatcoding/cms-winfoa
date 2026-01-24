@@ -191,7 +191,7 @@ function ActivityItemRow({ activity }: { activity: ActivityItem }) {
         </p>
       </div>
 
-      <span className="shrink-0 text-xs text-muted-foreground">
+      <span className="shrink-0 text-xs text-muted-foreground" suppressHydrationWarning>
         {formatDistanceToNow(activity.timestamp, { addSuffix: true })}
       </span>
     </div>

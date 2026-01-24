@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { changePassword } from '@/features/account/actions'
+import { changePassword } from '@/actions/account'
 import { Button, Input, Label } from '@/ui'
 import { Loader2, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'

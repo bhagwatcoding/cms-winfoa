@@ -4,9 +4,9 @@ import {
     getOAuthUserInfo,
     type OAuthProvider
 } from '@/auth/lib/oauth/providers'
-import { SessionService } from '@/auth/services/session.service'
+import { SessionService } from '@/services/auth/session.service'
 import { User } from '@/models'
-import connectDB from '@/lib/db'
+import { connectDB } from '@/lib/db'
 
 export async function GET(
     request: NextRequest,

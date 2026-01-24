@@ -2,7 +2,7 @@ import "server-only";
 import { headers } from "next/headers";
 import { ActivityLog } from "@/models";
 import { ActionType, ResourceType } from "@/types";
-import connectDB from "@/lib/db"; // Your DB connection utility
+import { connectDB } from "@/lib/db"; // Your DB connection utility
 
 export class ActivityLogger {
   /**
@@ -30,9 +30,11 @@ export class ActivityLogger {
         resource,
         resourceId,
         details,
-        ipAddress: ip,
-        userAgent: ua,
-        metadata,
+        metadata: {
+          ...(metadata || {}),
+          ipAddress: ip,
+          userAgent: ua,
+        },
       });
     } catch (error) {
       // Fail silently or log to system console so user flow isn't broken

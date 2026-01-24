@@ -1,12 +1,46 @@
 {
-  "name": "winfoa",
-  "version": "0.1.0",
+  "name": "winfoa-multi-subdomain",
+  "version": "3.0.0",
+  "description": "Professional multi-subdomain enterprise application",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbo",
+    "dev:debug": "NODE_OPTIONS='--inspect' next dev --turbo",
+    "dev:profile": "cross-env NODE_OPTIONS='--cpu-prof' next dev",
+    "build": "npm run build:clean && npm run build:optimize",
+    "build:clean": "rimraf .next",
+    "build:optimize": "cross-env NODE_ENV=production next build",
+    "build:analyze": "cross-env ANALYZE=true NODE_ENV=production next build",
+    "build:profile": "cross-env PROFILE=true NODE_ENV=production next build",
     "start": "next start",
-    "lint": "eslint"
+    "start:cluster": "pm2 start ecosystem.config.js",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 0",
+    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --coverage --maxWorkers=2",
+    "perf": "lighthouse-ci http://localhost:3000",
+    "perf:audit": "npm run build:analyze && npm run perf",
+    "bundle:analyze": "npm run build:analyze",
+    "bundle:visualize": "npx webpack-bundle-analyzer .next/analyze/client.json",
+    "clean": "rimraf .next node_modules/.cache coverage",
+    "clean:all": "npm run clean && rimraf node_modules",
+    "deps:check": "npm-check-updates",
+    "deps:update": "npm-check-updates -u && npm install",
+    "deps:security": "npm audit --audit-level high",
+    "deps:fix": "npm audit fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "validate": "npm run type-check && npm run lint && npm run test",
+    "validate:ci": "npm run type-check && npm run lint:fix && npm run test:ci",
+    "deploy:staging": "npm run validate:ci && npm run build:optimize && npm run deploy:staging:exec",
+    "deploy:production": "npm run validate:ci && npm run build:optimize && npm run deploy:production:exec",
+    "docker:build": "docker build -t winfoa-multi-subdomain .",
+    "docker:run": "docker run -p 3000:3000 winfoa-multi-subdomain",
+    "prepare": "husky install",
+    "pre-commit": "npm run lint:fix && npm run type-check && npm run test:ci"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -40,6 +74,7 @@
     "mongoose": "^9.1.1",
     "multer": "^2.0.2",
     "next": "16.1.1",
+    "next-themes": "^0.4.6",
     "pdf-lib": "^1.17.1",
     "postcss": "^8.5.6",
     "react": "19.2.3",
@@ -48,16 +83,79 @@
     "sharp": "^0.34.5",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.1.1",
     "@types/express-serve-static-core": "^5.1.1",
+    "@types/jest": "^29.5.12",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "cross-env": "^7.0.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lighthouse-ci": "^1.13.0",
+    "npm-check-updates": "^17.1.3",
+    "pm2": "^5.4.2",
+    "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5"
+    "typescript": "^5",
+    "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run pre-commit",
+      "pre-push": "npm run test:ci"
+    }
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest.setup.js"
+    ],
+    "moduleNameMapping": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!src/**/*.d.ts",
+      "!src/**/*.stories.tsx"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
   }
 }

@@ -1,4 +1,6 @@
 import { Document, Types } from "mongoose";
+import { TransactionType, TransactionStatus } from "../enums";
+
 export interface IWallet extends Document {
     userId: Types.ObjectId;
     balance: number;
@@ -9,9 +11,12 @@ export interface IWallet extends Document {
 export interface IWalletTransaction extends Document {
     userId: Types.ObjectId;
     amount: number;
-    type: string;
-    status: string;
+    type: TransactionType;
+    status: TransactionStatus;
     transactionId: Types.ObjectId;
+    description?: string;
+    paymentMethod?: string;
+    metadata?: Record<string, unknown>;
     createdAt: Date;
     updatedAt: Date;
 }

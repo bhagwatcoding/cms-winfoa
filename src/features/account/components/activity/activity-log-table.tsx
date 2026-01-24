@@ -14,10 +14,11 @@ import {
 
 interface Activity {
     _id: string
-    action: string
-    timestamp: Date | string
+    action: string | number
+    createdAt: Date | string
     ipAddress?: string
-    details?: Record<string, unknown>
+    details?: string
+    metadata?: Record<string, unknown>
 }
 
 interface ActivityLogTableProps {
@@ -76,9 +77,9 @@ export function ActivityLogTable({ activities }: ActivityLogTableProps) {
 
             <div className="space-y-2">
                 {activities.map((activity) => {
-                    const Icon = actionIcons[activity.action] || Shield
-                    const label = actionLabels[activity.action] || activity.action
-                    const timestamp = new Date(activity.timestamp)
+                    const Icon = actionIcons[String(activity.action)] || Shield
+                    const label = actionLabels[String(activity.action)] || String(activity.action)
+                    const timestamp = new Date(activity.createdAt)
 
                     return (
                         <div

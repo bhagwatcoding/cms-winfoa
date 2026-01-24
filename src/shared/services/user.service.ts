@@ -2,7 +2,8 @@ import "server-only";
 import { headers } from "next/headers";
 import { User, IUser, ActivityLog } from "@/models";
 import { ActionType, ResourceType } from "@/types";
-import connectDB from "@/lib/db"; // Your DB connector
+import { connectDB } from "@/lib/db"; // Your DB connector
+import bcrypt from "bcryptjs";
 
 // Configuration
 const GOD_SUBDOMAIN = "god"; // e.g., god.example.com
@@ -54,8 +55,8 @@ export class UserService {
     // Log Activity
     await ActivityLog.create({
       actorId,
-      action: ActionType.SOFT_DELETE,
-      resource: ResourceType.USER,
+      action: ActionType.SoftDelete,
+      resource: ResourceType.User,
       resourceId: targetUserId,
       details: "User deleted their account (Soft Delete)",
     });
@@ -81,10 +82,123 @@ export class UserService {
 
     await ActivityLog.create({
       actorId,
-      action: ActionType.RESTORE,
-      resource: ResourceType.USER,
+      action: ActionType.Restore,
+      resource: ResourceType.User,
       resourceId: targetUserId,
       details: "God restored this user",
     });
+  }
+
+  /**
+   * 4. CREATE USER
+   */
+  static async createUser(data: Partial<IUser>) {
+    await connectDB();
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email: data.email });
+    if (existingUser) {
+      throw new Error("Email already registered");
+    }
+
+    // Hash password if provided
+    let password = data.password;
+    if (password) {
+      password = await bcrypt.hash(password, 12);
+    }
+
+    const user = await User.create({
+      ...data,
+      password,
+      status: data.status || "active",
+    });
+
+    return user.toObject();
+  }
+
+  /**
+   * 5. UPDATE USER
+   */
+  static async updateUser(userId: string, data: Partial<IUser>) {
+    await connectDB();
+
+    // If password is being updated, hash it
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 12);
+    }
+
+    const user = await User.findByIdAndUpdate(userId, data, { new: true });
+    
+    if (!user) return null;
+    
+    return user.toObject();
+  }
+
+  /**
+   * 6. GET USER BY ID
+   */
+  static async getUserById(userId: string) {
+    await connectDB();
+    return User.findById(userId).select("-password").lean();
+  }
+
+  /**
+   * 7. GET USERS (Paginated/Filtered)
+   * Used by UMP
+   */
+  static async getUsers(params: { page?: number; limit?: number; search?: string; role?: string }) {
+      await connectDB();
+      const page = params.page || 1;
+      const limit = params.limit || 10;
+      const skip = (page - 1) * limit;
+
+      const query: any = { isDeleted: false };
+      
+      if (params.search) {
+          query.$text = { $search: params.search };
+      }
+      
+      if (params.role && params.role !== 'all') {
+          // Assuming role is stored as string or we need to lookup roleId
+          // Simple implementation assuming role string on user for now or ignore if complex
+      }
+
+      const users = await User.find(query)
+          .select("-password")
+          .skip(skip)
+          .limit(limit)
+          .lean();
+          
+      const total = await User.countDocuments(query);
+      
+      return {
+          users,
+          total,
+          pages: Math.ceil(total / limit),
+          page,
+          limit
+      };
+  }
+
+  /**
+   * 8. CHANGE ROLE
+   */
+  static async changeRole(userId: string, role: string) {
+    await connectDB();
+    // Lookup role if needed or just update string
+    return User.findByIdAndUpdate(userId, { role }, { new: true });
+  }
+
+  /**
+   * 9. TOGGLE STATUS
+   */
+  static async toggleStatus(userId: string) {
+    await connectDB();
+    const user = await User.findById(userId);
+    if (!user) throw new Error("User not found");
+    
+    const newStatus = user.status === 'active' ? 'inactive' : 'active';
+    user.status = newStatus;
+    return user.save();
   }
 }

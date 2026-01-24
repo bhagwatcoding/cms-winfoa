@@ -1,50 +1,92 @@
-// 🚀 GLOBAL ACTIONS - Barrel Export
-// All server actions organized by subdomain
+/**
+ * Actions Index
+ * Centralized exports for all subdomain actions
+ * This provides a clean API for importing actions across the application
+ * Organized by subdomain for easy access and maintenance
+ */
 
-// ==========================================
-// AUTH ACTIONS
-// ==========================================
-export * from './auth/login';
-export * from './auth/signup';
-export * from './auth/password-reset';
+// ====================
+// AUTHENTICATION ACTIONS
+// ====================
+export {
+    loginAction,
+    signupAction,
+    logoutAction
+} from './auth';
 
-// ==========================================
-// MYACCOUNT ACTIONS
-// ==========================================
-export * from './myaccount/profile';
-export * from './myaccount/wallet';
+// ====================
+// ACCOUNT ACTIONS
+// ====================
+export {
+    // Profile actions
+    updateProfileAction,
+    getProfileAction,
+    // Settings actions
+    updateSettingsAction,
+    changePasswordAction
+} from './account';
 
-// ==========================================
-// SKILLS ACTIONS (Education Portal)
-// ==========================================
-export * from './skills/students';
-export * from './skills/courses';
-export * from './skills/employees';
-export * from './skills/results';
-export * from './skills/certificates';
-export * from './skills/admit-cards';
-export * from './skills/notifications';
-export * from './skills/transactions';
+// ====================
+// UMP (USER MANAGEMENT PORTAL) ACTIONS
+// ====================
+export {
+    // User management
+    activateUserAction,
+    deactivateUserAction,
+    getUserManagementData,
+    // Role management
+    assignRoleToUserAction,
+    removeRoleFromUserAction
+} from './ump';
 
-// ==========================================
-// DEVELOPER ACTIONS (API Management)
-// ==========================================
-export * from './developer/api-keys';
+// ====================
+// WALLET ACTIONS
+// ====================
+export {
+    // Balance operations
+    getBalanceAction,
+    updateBalanceAction,
+    // Transaction operations
+    createTransactionAction,
+    getTransactionHistoryAction,
+    // Recharge operations
+    processRechargeAction,
+    validateRechargeAction
+} from './wallet';
 
-// ==========================================
-// UMP ACTIONS (User Management Portal)
-// ==========================================
-export * from './ump/users';
-export * from './ump/user-management';
+// ====================
+// GOD (SUPER ADMIN) ACTIONS
+// ====================
+export {
+    // System management
+    getSystemStatsAction,
+    updateSystemConfigAction,
+    // User management
+    getAllUsersAction,
+    bulkUserOperationsAction,
+    // Analytics
+    getAnalyticsDataAction,
+    generateReportAction
+} from './god';
 
-// ==========================================
-// USERS ACTIONS (Global User Operations)
-// ==========================================
-export * from './users';
+// ====================
+// ROLE ACTIONS
+// ====================
+export {
+    createRoleAction,
+    updateRoleAction,
+    deleteRoleAction,
+    getRolesAction,
+    getRoleByIdAction
+} from './roles';
 
-// Usage Examples:
-// import { loginUser, logoutUser } from '@/actions'
-// import { getStudents, createStudent } from '@/actions'
-// import { getApiKeys, createApiKey } from '@/actions'
-// import { activateUserAction, deactivateUserAction } from '@/actions'
-
+// ====================
+// USER ACTIONS
+// ====================
+export {
+    getUsersAction,
+    createUserAction,
+    updateUserAction,
+    deleteUserAction,
+    updateUserPermissionsAction
+} from './users';

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/shared/lib/db";
+import { connectDB } from "@/core/db";
 import { User } from "@/models";
-import { createSession, setSessionCookie } from "@/shared/lib/session";
+import { createSession, setSessionCookie } from "@/core/auth";
 
 export async function POST(request: NextRequest) {
   try {

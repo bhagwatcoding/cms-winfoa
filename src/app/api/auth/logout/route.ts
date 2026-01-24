@@ -1,16 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { logout, getCurrentUser } from "@/shared/lib/session";
+import { SessionService } from "@/shared/services/session";
 
 export async function POST(request: NextRequest) {
   try {
     // Get current user (optional, for logging purposes)
-    const user = await getCurrentUser();
+    const user = await SessionService.getCurrentSession();
 
-    // Destroy the session
-    await logout();
+    // Get current session
+    const session = await SessionService.getSession(request);
+    
+    // Destroy the session if it exists
+    if (session?.sessionToken) await SessionService.destroySession(session.sessionToken);
+    
+    // Delete session cookie
+    await SessionService.deleteSessionCookie();
 
     console.log(
-      `🚪 User logged out: ${user?.email || "Unknown"} at ${new Date().toISOString()}`,
+      `User logged out: ${user?.email || "Unknown"} at ${new Date().toISOString()}`,
     );
 
     return NextResponse.json({
@@ -29,7 +35,16 @@ export async function POST(request: NextRequest) {
 // Handle GET requests (for logout links)
 export async function GET(request: NextRequest) {
   try {
-    await logout();
+    // Get current session
+    const session = await SessionService.getSession(request);
+    
+    // Destroy the session if it exists
+    if (session?.sessionToken) {
+      await SessionService.destroySession(session.sessionToken);
+    }
+    
+    // Delete session cookie
+    await SessionService.deleteSessionCookie();
 
     return NextResponse.json({
       success: true,

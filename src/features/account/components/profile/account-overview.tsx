@@ -7,19 +7,22 @@ interface AccountOverviewProps {
     user: {
         firstName?: string
         lastName?: string
-        name: string
+        name?: string
         email: string
         phone?: string
-        role: string
+        role?: string
         emailVerified: boolean
-        isActive: boolean
+        status?: string
+        joinedAt?: Date | string
+        createdAt?: Date | string
         oauthProvider?: string
-        joinedAt: Date | string
     }
 }
 
 export function AccountOverview({ user }: AccountOverviewProps) {
-    const joinedDate = new Date(user.joinedAt)
+    const joinedDate = new Date(user.joinedAt || user.createdAt || new Date())
+    const isActive = user.status === 'active'
+    const fullName = user.name || (user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : 'User')
 
     return (
         <div className="space-y-6">
@@ -30,8 +33,8 @@ export function AccountOverview({ user }: AccountOverviewProps) {
                         Your account information at a glance
                     </p>
                 </div>
-                <Badge variant={user.isActive ? 'default' : 'secondary'}>
-                    {user.isActive ? 'Active' : 'Inactive'}
+                <Badge variant={isActive ? 'default' : 'secondary'}>
+                    {isActive ? 'Active' : 'Inactive'}
                 </Badge>
             </div>
 
@@ -43,12 +46,7 @@ export function AccountOverview({ user }: AccountOverviewProps) {
                     </div>
                     <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium text-muted-foreground">Full Name</p>
-                        <p className="font-semibold truncate">{user.name}</p>
-                        {(user.firstName || user.lastName) && (
-                            <p className="text-xs text-muted-foreground">
-                                {user.firstName} {user.lastName}
-                            </p>
-                        )}
+                        <p className="font-semibold truncate">{fullName}</p>
                     </div>
                 </div>
 

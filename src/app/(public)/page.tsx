@@ -8,18 +8,15 @@ import {
   CardTitle,
 } from "@/ui/card";
 import {
-  GraduationCap,
   Shield,
   Code,
   Users,
-  Building2,
   UserCog,
-  Wallet,
-  Settings,
-  ArrowRight,
+  Crown,
   Globe,
   Zap,
   Lock,
+  ArrowRight
 } from "lucide-react";
 
 const subdomains = [
@@ -36,20 +33,6 @@ const subdomains = [
       "OAuth Integration",
     ],
     color: "bg-red-500",
-  },
-  {
-    name: "Learning Academy",
-    subdomain: "academy",
-    url: "http://academy.localhost:3000",
-    icon: GraduationCap,
-    description: "Educational platform and course management",
-    features: [
-      "Course Management",
-      "Student Portal",
-      "Certificates",
-      "Exam System",
-    ],
-    color: "bg-blue-500",
   },
   {
     name: "API Gateway",
@@ -75,15 +58,6 @@ const subdomains = [
     color: "bg-purple-500",
   },
   {
-    name: "Provider Portal",
-    subdomain: "provider",
-    url: "http://provider.localhost:3000",
-    icon: Building2,
-    description: "Service provider management and portal",
-    features: ["Provider Dashboard", "Service Catalog", "Billing", "Support"],
-    color: "bg-orange-500",
-  },
-  {
     name: "My Account",
     subdomain: "myaccount",
     url: "http://myaccount.localhost:3000",
@@ -98,27 +72,32 @@ const subdomains = [
     color: "bg-teal-500",
   },
   {
-    name: "Digital Wallet",
-    subdomain: "wallet",
-    url: "http://wallet.localhost:3000",
-    icon: Wallet,
-    description: "Digital wallet and payment management",
+    name: "God Mode",
+    subdomain: "god",
+    url: "http://god.localhost:3000",
+    icon: Crown,
+    description: "Super Admin Control Panel",
     features: [
-      "Payment Processing",
-      "Transaction History",
-      "Balance Management",
-      "Refunds",
+      "System Analytics",
+      "Global Configuration",
+      "User Oversight",
+      "System Health",
     ],
-    color: "bg-yellow-500",
+    color: "bg-yellow-600",
   },
   {
-    name: "Developer Portal",
-    subdomain: "developer",
-    url: "http://developer.localhost:3000",
-    icon: Settings,
-    description: "Developer tools and API documentation",
-    features: ["API Keys", "SDK Downloads", "Documentation", "Testing Tools"],
-    color: "bg-indigo-500",
+    name: "Wallet",
+    subdomain: "wallet",
+    url: "http://wallet.localhost:3000",
+    icon: Zap,
+    description: "Digital wallet and payments",
+    features: [
+      "Balance",
+      "Transactions",
+      "Recharge",
+      "Bill Payments",
+    ],
+    color: "bg-orange-500",
   },
 ];
 
@@ -169,7 +148,7 @@ export default function MainDashboard() {
           <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
             A comprehensive web application architecture featuring specialized
             subdomains for authentication, learning management, user
-            administration, payments, and developer tools.
+            administration, and system control.
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm text-slate-500">
             <span className="px-3 py-1 bg-white rounded-full border">
@@ -199,142 +178,56 @@ export default function MainDashboard() {
                 key={subdomain.subdomain}
                 className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 backdrop-blur-sm hover:-translate-y-1"
               >
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between">
+                <CardHeader>
+                  <div className="flex justify-between items-start mb-4">
                     <div
-                      className={`${subdomain.color} rounded-xl p-3 text-white shadow-lg group-hover:scale-110 transition-transform`}
+                      className={`p-3 rounded-xl ${subdomain.color} bg-opacity-10`}
                     >
-                      <IconComponent className="h-6 w-6" />
+                      <IconComponent
+                        className={`h-6 w-6 ${subdomain.color.replace(
+                          "bg-",
+                          "text-"
+                        )}`}
+                      />
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <Link href={subdomain.url} target="_blank">
-                        <ArrowRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
+                    <span className="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">
+                      {subdomain.subdomain}.localhost
+                    </span>
                   </div>
-                  <CardTitle className="text-lg font-bold text-slate-900">
+                  <CardTitle className="text-xl mb-2">
                     {subdomain.name}
                   </CardTitle>
-                  <CardDescription className="text-slate-600">
-                    {subdomain.description}
-                  </CardDescription>
+                  <CardDescription>{subdomain.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-500">Subdomain:</span>
-                      <code className="px-2 py-1 bg-slate-100 rounded text-blue-600 font-mono">
-                        {subdomain.subdomain}.localhost:3000
-                      </code>
-                    </div>
-                    <div className="space-y-2">
-                      <span className="text-sm font-medium text-slate-700">
-                        Features:
-                      </span>
-                      <ul className="text-sm text-slate-600 space-y-1">
-                        {subdomain.features.map((feature, index) => (
-                          <li key={index} className="flex items-center">
-                            <div className="w-1.5 h-1.5 bg-slate-400 rounded-full mr-2" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <Link href={subdomain.url} target="_blank">
-                      <Button
-                        className="w-full mt-4 group-hover:shadow-md transition-shadow"
-                        size="sm"
-                      >
-                        Open {subdomain.name}
-                        <ArrowRight className="h-4 w-4 ml-2" />
-                      </Button>
-                    </Link>
-                  </div>
+                  <ul className="space-y-2 mb-6">
+                    {subdomain.features.map((feature, i) => (
+                      <li key={i} className="flex items-center text-sm text-slate-600">
+                        <div className="h-1.5 w-1.5 rounded-full bg-slate-400 mr-2" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href={subdomain.url} target="_blank">
+                    <Button className="w-full group-hover:bg-slate-900 transition-colors">
+                      Visit Subdomain
+                      <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             );
           })}
         </div>
 
-        {/* Architecture Overview */}
-        <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border-0 shadow-lg">
-          <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">
-            Platform Architecture
-          </h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Globe className="h-8 w-8 text-blue-600" />
-              </div>
-              <h4 className="font-semibold text-slate-900 mb-2">
-                Multi-Domain Routing
-              </h4>
-              <p className="text-sm text-slate-600">
-                Advanced middleware handling subdomain routing with Next.js 16
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Zap className="h-8 w-8 text-green-600" />
-              </div>
-              <h4 className="font-semibold text-slate-900 mb-2">
-                High Performance
-              </h4>
-              <p className="text-sm text-slate-600">
-                Optimized with SSR, caching, and modern React patterns
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-purple-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Lock className="h-8 w-8 text-purple-600" />
-              </div>
-              <h4 className="font-semibold text-slate-900 mb-2">
-                Enterprise Security
-              </h4>
-              <p className="text-sm text-slate-600">
-                Built-in authentication, authorization, and data protection
-              </p>
-            </div>
-          </div>
+        {/* Footer Info */}
+        <div className="border-t border-slate-200 pt-8 text-center text-slate-500">
+          <p>
+            System Status: <span className="text-green-600 font-medium">Operational</span> • 
+            Version 1.0.0
+          </p>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-12 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-2 mb-4">
-              <Globe className="h-6 w-6" />
-              <span className="text-xl font-bold text-white">
-                Winfoa Platform
-              </span>
-            </div>
-            <p className="text-sm">
-              © 2024 Winfoa Web Development Company. Full-stack multi-subdomain
-              architecture.
-            </p>
-            <div className="mt-4 flex justify-center space-x-6 text-sm">
-              <Link href="/docs" className="hover:text-white transition-colors">
-                Documentation
-              </Link>
-              <Link href="/api" className="hover:text-white transition-colors">
-                API Reference
-              </Link>
-              <Link
-                href="/support"
-                className="hover:text-white transition-colors"
-              >
-                Support
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
