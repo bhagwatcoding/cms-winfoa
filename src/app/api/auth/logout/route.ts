@@ -1,23 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import { SessionService } from "@/shared/services/session";
+import { NextResponse } from "next/server";
+import { SessionCoreService } from "@/shared/services/session";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    // Get current user (optional, for logging purposes)
-    const user = await SessionService.getCurrentSession();
-
     // Get current session
-    const session = await SessionService.getSession(request);
-    
-    // Destroy the session if it exists
-    if (session?.sessionToken) await SessionService.destroySession(session.sessionToken);
-    
-    // Delete session cookie
-    await SessionService.deleteSessionCookie();
+    const session = await SessionCoreService.getCurrentSession();
 
-    console.log(
-      `User logged out: ${user?.email || "Unknown"} at ${new Date().toISOString()}`,
-    );
+    if (session) {
+      // Invalidate the session
+      await SessionCoreService.invalidateSession(session);
+      console.log(
+        `User logged out: ${session.userId?.email || "Unknown"} at ${new Date().toISOString()}`,
+      );
+    }
 
     return NextResponse.json({
       success: true,
@@ -33,18 +28,15 @@ export async function POST(request: NextRequest) {
 }
 
 // Handle GET requests (for logout links)
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Get current session
-    const session = await SessionService.getSession(request);
-    
-    // Destroy the session if it exists
-    if (session?.sessionToken) {
-      await SessionService.destroySession(session.sessionToken);
+    const session = await SessionCoreService.getCurrentSession();
+
+    if (session) {
+      // Invalidate the session
+      await SessionCoreService.invalidateSession(session);
     }
-    
-    // Delete session cookie
-    await SessionService.deleteSessionCookie();
 
     return NextResponse.json({
       success: true,

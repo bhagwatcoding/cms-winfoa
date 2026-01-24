@@ -10,7 +10,7 @@ import { ProfileService } from '@/services/account'
 import { SessionService } from '@/services/session'
 import { getErrorMessage } from '@/lib/utils'
 import { validateSchema } from '@/shared/types/validation.utils'
-import { updateProfileSchema,changeEmailSchema, accountDeletionSchema } from '@/types/schemas'
+import { updateProfileSchema, changeEmailSchema, accountDeletionSchema } from '@/types/schemas'
 
 export async function getProfile() {
     try {
@@ -44,7 +44,7 @@ export async function updateProfile(formData: FormData) {
         }
 
         const validation = validateSchema(updateProfileSchema, profileData)
-        if (!validation.success) {
+        if (!validation.success || !validation.data) {
             return { error: 'Validation failed', errors: validation.errors }
         }
 
@@ -75,14 +75,13 @@ export async function changeEmail(formData: FormData) {
         }
 
         const validation = validateSchema(changeEmailSchema, emailData)
-        if (!validation.success) {
+        if (!validation.success || !validation.data) {
             return { error: 'Validation failed', errors: validation.errors }
         }
 
         const result = await ProfileService.changeEmail(
             session.userId._id.toString(),
-            validation.data.newEmail,
-            validation.data.password
+            validation.data.newEmail
         )
 
         return { success: true, data: result }
@@ -107,19 +106,49 @@ export async function deleteAccount(formData: FormData) {
         }
 
         const validation = validateSchema(accountDeletionSchema, deletionData)
-        if (!validation.success) {
+        if (!validation.success || !validation.data) {
             return { error: 'Validation failed', errors: validation.errors }
         }
 
         const result = await ProfileService.deleteAccount(
-            session.userId._id.toString(),
-            validation.data.password,
-            validation.data.reason
+            session.userId._id.toString()
         )
 
         return { success: true, data: result }
     } catch (error) {
         console.error('Delete account error:', error)
+        return { error: getErrorMessage(error) }
+    }
+}
+
+export async function getUserStats() {
+    try {
+        const session = await SessionService.getCurrentSession()
+
+        if (!session) {
+            return { error: 'Not authenticated' }
+        }
+
+        const stats = await ProfileService.getUserStats(session.userId._id.toString())
+        return { success: true, data: stats }
+    } catch (error) {
+        console.error('Get user stats error:', error)
+        return { error: getErrorMessage(error) }
+    }
+}
+
+export async function getRecentActivity() {
+    try {
+        const session = await SessionService.getCurrentSession()
+
+        if (!session) {
+            return { error: 'Not authenticated' }
+        }
+
+        const activity = await ProfileService.getRecentActivity(session.userId._id.toString())
+        return { success: true, data: activity }
+    } catch (error) {
+        console.error('Get recent activity error:', error)
         return { error: getErrorMessage(error) }
     }
 }

@@ -203,4 +203,27 @@ export class ProfileService {
             oauthConnected: user.linkedAccounts && user.linkedAccounts.length > 0
         }
     }
+
+    /**
+     * Get recent activity
+     */
+    static async getRecentActivity(userId: string, limit: number = 20) {
+        await connectDB()
+
+        const activities = await ActivityLog
+            .find({ actorId: userId })
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .lean()
+
+        return activities.map(activity => ({
+            id: activity._id.toString(),
+            action: activity.action,
+            resource: activity.resource,
+            details: activity.details,
+            metadata: activity.metadata,
+            createdAt: activity.createdAt
+        }))
+    }
 }
+

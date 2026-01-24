@@ -46,11 +46,8 @@ export {
 export {
     USER_ROLES,
     USER_STATUS,
-    STUDENT_STATUS,
-    COURSE_LEVELS,
-    CERTIFICATE_STATUS,
     TRANSACTION_TYPES,
-    TRANSACTION_STATUS,
+    TRANSACTION_STATUS_MAP,
 } from './database';
 export {
     SUCCESS_MESSAGES,

@@ -138,6 +138,7 @@ export interface IUser extends Document, ISoftDelete {
 
   // Compatibility fields
   oauthProvider?: string;
+  oauthId?: string;
   lastLogin?: Date;
 
   // Status

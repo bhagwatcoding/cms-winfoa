@@ -4,28 +4,28 @@
  */
 
 import {
-    USER_ROLE,
-    USER_STATUS as USER_STATUS_ENUM,
-    TRANSACTION_TYPE,
-    TRANSACTION_STATUS as TRANSACTION_STATUS_ENUM,
-    NOTIFICATION_TYPE
+    UserRole,
+    UserStatus,
+    TransactionType,
+    TransactionStatus,
+    NotificationType
 } from '@/types';
 
 // ==========================================
 // USER ROLES & STATUS
 // ==========================================
 
-export const USER_ROLES: Record<string, USER_ROLE> = {
-    GOD: USER_ROLE.GOD,
-    SUPER_ADMIN: USER_ROLE.SUPER_ADMIN,
-    USER: USER_ROLE.USER,
+export const USER_ROLES = {
+    GOD: UserRole.God,
+    SUPER_ADMIN: UserRole.SuperAdmin,
+    USER: UserRole.User,
 } as const;
 
-export const USER_STATUS: Record<string, USER_STATUS_ENUM> = {
-    ACTIVE: USER_STATUS_ENUM.ACTIVE,
-    INACTIVE: USER_STATUS_ENUM.INACTIVE,
-    SUSPENDED: USER_STATUS_ENUM.SUSPENDED,
-    PENDING: USER_STATUS_ENUM.PENDING,
+export const USER_STATUS = {
+    ACTIVE: UserStatus.Active,
+    INACTIVE: UserStatus.Inactive,
+    SUSPENDED: UserStatus.Suspended,
+    PENDING: UserStatus.Pending,
 } as const;
 
 export const USER_ROLE_LABELS: Record<keyof typeof USER_ROLES, string> = {
@@ -45,15 +45,15 @@ export const USER_STATUS_LABELS: Record<keyof typeof USER_STATUS, string> = {
 // TRANSACTION TYPES & STATUS
 // ==========================================
 
-export const TRANSACTION_TYPES: Record<string, TRANSACTION_TYPE> = {
-    CREDIT: TRANSACTION_TYPE.CREDIT,
-    DEBIT: TRANSACTION_TYPE.DEBIT,
+export const TRANSACTION_TYPES = {
+    CREDIT: TransactionType.Credit,
+    DEBIT: TransactionType.Debit,
 } as const;
 
-export const TRANSACTION_STATUS: Record<string, TRANSACTION_STATUS_ENUM> = {
-    PENDING: TRANSACTION_STATUS_ENUM.PENDING,
-    COMPLETED: TRANSACTION_STATUS_ENUM.COMPLETED,
-    FAILED: TRANSACTION_STATUS_ENUM.FAILED,
+export const TRANSACTION_STATUS_MAP = {
+    PENDING: TransactionStatus.Pending,
+    COMPLETED: TransactionStatus.Completed,
+    FAILED: TransactionStatus.Failed,
 } as const;
 
 export const TRANSACTION_TYPE_LABELS: Record<keyof typeof TRANSACTION_TYPES, string> = {
@@ -61,7 +61,7 @@ export const TRANSACTION_TYPE_LABELS: Record<keyof typeof TRANSACTION_TYPES, str
     DEBIT: 'Debit',
 };
 
-export const TRANSACTION_STATUS_LABELS: Record<keyof typeof TRANSACTION_STATUS, string> = {
+export const TRANSACTION_STATUS_LABELS: Record<keyof typeof TRANSACTION_STATUS_MAP, string> = {
     PENDING: 'Pending',
     COMPLETED: 'Completed',
     FAILED: 'Failed',
@@ -71,11 +71,11 @@ export const TRANSACTION_STATUS_LABELS: Record<keyof typeof TRANSACTION_STATUS, 
 // NOTIFICATION TYPES
 // ==========================================
 
-export const NOTIFICATION_TYPES_ENUM: Record<string, NOTIFICATION_TYPE> = {
-    INFO: NOTIFICATION_TYPE.INFO,
-    SUCCESS: NOTIFICATION_TYPE.SUCCESS,
-    WARNING: NOTIFICATION_TYPE.WARNING,
-    ERROR: NOTIFICATION_TYPE.ERROR,
+export const NOTIFICATION_TYPES_ENUM = {
+    INFO: NotificationType.Info,
+    SUCCESS: NotificationType.Success,
+    WARNING: NotificationType.Warning,
+    ERROR: NotificationType.Error,
 } as const;
 
 export const NOTIFICATION_TYPE_LABELS: Record<keyof typeof NOTIFICATION_TYPES_ENUM, string> = {
@@ -162,13 +162,13 @@ export function getEnumLabel<T extends string>(
  * @param labels - Label mapping
  * @returns Array of {value, label} options
  */
-export function getEnumOptions<T extends string>(
-    enumObj: Record<string, T>,
-    labels: Record<T, string>
-): Array<{ value: T; label: string }> {
-    return Object.values(enumObj).map(value => ({
-        value,
-        label: labels[value] || value,
+export function getEnumOptions<K extends string, V>(
+    enumObj: Record<K, V>,
+    labels: Record<K, string>
+): Array<{ value: V; label: string }> {
+    return (Object.keys(enumObj) as K[]).map(key => ({
+        value: enumObj[key],
+        label: labels[key] || key,
     }));
 }
 
@@ -179,5 +179,5 @@ export function getEnumOptions<T extends string>(
 export const USER_ROLE_OPTIONS = getEnumOptions(USER_ROLES, USER_ROLE_LABELS);
 export const USER_STATUS_OPTIONS = getEnumOptions(USER_STATUS, USER_STATUS_LABELS);
 export const TRANSACTION_TYPE_OPTIONS = getEnumOptions(TRANSACTION_TYPES, TRANSACTION_TYPE_LABELS);
-export const TRANSACTION_STATUS_OPTIONS = getEnumOptions(TRANSACTION_STATUS, TRANSACTION_STATUS_LABELS);
+export const TRANSACTION_STATUS_OPTIONS = getEnumOptions(TRANSACTION_STATUS_MAP, TRANSACTION_STATUS_LABELS);
 export const NOTIFICATION_TYPE_OPTIONS = getEnumOptions(NOTIFICATION_TYPES_ENUM, NOTIFICATION_TYPE_LABELS);

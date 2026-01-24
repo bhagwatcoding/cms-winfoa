@@ -19,8 +19,7 @@ const nextConfig: NextConfig = {
   // Optimize production builds
   productionBrowserSourceMaps: false,
 
-  // Enable SWC minification for faster builds
-  swcMinify: true,
+  // SWC minification enabled by default in Next.js 15
 
   // Optimize images
   images: {
@@ -232,20 +231,13 @@ const nextConfig: NextConfig = {
   // DEVELOPMENT CONFIGURATION
   // =============================================================================
 
-  // Development server configuration
-  devIndicators: {
-    buildActivity: false,
-  },
-
-  // Fast refresh configuration
-  fastRefresh: true,
+  // Development mode optimizations handled automatically by Next.js 15
 
   // =============================================================================
   // ANALYTICS & MONITORING
   // =============================================================================
 
-  // Enable Web Vitals reporting
-  webVitalsAttribution: ['CLS', 'LCP'],
+  // Web Vitals reporting configured in instrumentation.ts
 };
 
 export default nextConfig;
