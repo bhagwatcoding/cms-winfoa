@@ -1,9 +1,9 @@
 export const ALLOW_TYPES = {
-  IMAGES: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+  IMAGES: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
   DOCUMENTS: [
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ],
 };
 

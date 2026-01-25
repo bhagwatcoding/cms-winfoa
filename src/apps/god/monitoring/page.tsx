@@ -1,7 +1,7 @@
 /**
  * Monitoring Dashboard Component
  * Real-time monitoring dashboard for multi-subdomain applications
- * 
+ *
  * @module MonitoringDashboard
  * @description Enterprise monitoring dashboard with real-time metrics
  */
@@ -9,10 +9,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/shared/components/ui/card';
 import { Badge } from '@/shared/components/ui/badge';
 import { Button } from '@/shared/components/ui/button';
-import { AlertCircle, CheckCircle, Clock, Database, HardDrive, MemoryStick, Server } from 'lucide-react';
+import {
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  Database,
+  HardDrive,
+  MemoryStick,
+  Server,
+} from 'lucide-react';
 
 // =============================================================================
 // TYPES
@@ -100,6 +114,7 @@ function useHealthMonitoring() {
 
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [autoRefresh, refreshInterval]);
 
   return {
@@ -133,7 +148,9 @@ function StatusBadge({ status }: { status: string }) {
   };
 
   return (
-    <Badge variant={variants[status as keyof typeof variants] as any}>
+    <Badge
+      variant={variants[status as keyof typeof variants] as 'default' | 'secondary' | 'destructive'}
+    >
       {icons[status as keyof typeof icons]}
       <span className="ml-1 capitalize">{status}</span>
     </Badge>
@@ -157,9 +174,7 @@ function MetricCard({ metric }: { metric: Metric }) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{metric.name}</CardTitle>
-        <span className={`text-lg ${trendColors[metric.trend]}`}>
-          {trendIcons[metric.trend]}
-        </span>
+        <span className={`text-lg ${trendColors[metric.trend]}`}>{trendIcons[metric.trend]}</span>
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
@@ -184,24 +199,16 @@ function HealthCheckCard({ name, result }: { name: string; result: HealthCheckRe
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           {icons[name as keyof typeof icons] || <Server className="h-4 w-4" />}
-          {name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+          {name.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
         </CardTitle>
         <StatusBadge status={result.status} />
       </CardHeader>
       <CardContent>
-        <div className="text-xs text-muted-foreground">
-          Response Time: {result.responseTime}ms
-        </div>
+        <div className="text-xs text-muted-foreground">Response Time: {result.responseTime}ms</div>
         {result.message && (
-          <div className="text-xs text-muted-foreground mt-1">
-            {result.message}
-          </div>
+          <div className="text-xs text-muted-foreground mt-1">{result.message}</div>
         )}
-        {result.error && (
-          <div className="text-xs text-red-500 mt-1">
-            {result.error}
-          </div>
-        )}
+        {result.error && <div className="text-xs text-red-500 mt-1">{result.error}</div>}
       </CardContent>
     </Card>
   );
@@ -212,17 +219,8 @@ function HealthCheckCard({ name, result }: { name: string; result: HealthCheckRe
 // =============================================================================
 
 export default function MonitoringDashboard() {
-  const {
-    healthStatus,
-    metrics,
-    loading,
-    error,
-    autoRefresh,
-    setAutoRefresh,
-    refreshInterval,
-    setRefreshInterval,
-    refresh,
-  } = useHealthMonitoring();
+  const { healthStatus, metrics, loading, error, autoRefresh, setAutoRefresh, refresh } =
+    useHealthMonitoring();
 
   if (loading) {
     return (
@@ -277,16 +275,14 @@ export default function MonitoringDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">System Monitoring</h1>
-          <p className="text-muted-foreground">
-            Real-time health status and performance metrics
-          </p>
+          <p className="text-muted-foreground">Real-time health status and performance metrics</p>
         </div>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <label className="text-sm font-medium">Auto Refresh:</label>
             <Button
               size="sm"
-              variant={autoRefresh ? "default" : "outline"}
+              variant={autoRefresh ? 'default' : 'outline'}
               onClick={() => setAutoRefresh(!autoRefresh)}
             >
               {autoRefresh ? 'Enabled' : 'Disabled'}
@@ -300,14 +296,23 @@ export default function MonitoringDashboard() {
       </div>
 
       {/* Overall Status */}
-      <Card className={overallStatus === 'unhealthy' ? 'border-red-200' : overallStatus === 'degraded' ? 'border-yellow-200' : 'border-green-200'}>
+      <Card
+        className={
+          overallStatus === 'unhealthy'
+            ? 'border-red-200'
+            : overallStatus === 'degraded'
+              ? 'border-yellow-200'
+              : 'border-green-200'
+        }
+      >
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             Overall System Status
             <StatusBadge status={overallStatus} />
           </CardTitle>
           <CardDescription>
-            Environment: {healthStatus.environment} | Version: {healthStatus.version} | Uptime: {uptime}m
+            Environment: {healthStatus.environment} | Version: {healthStatus.version} | Uptime:{' '}
+            {uptime}m
           </CardDescription>
         </CardHeader>
         <CardContent>

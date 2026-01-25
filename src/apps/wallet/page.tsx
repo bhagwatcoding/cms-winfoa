@@ -1,26 +1,15 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { getWalletBalance, getRecentTransactions } from "./actions";
+import { useEffect, useState } from 'react';
+import { getWalletBalance, getRecentTransactions } from './actions';
 import {
   BalanceCard,
   TransactionList,
   LargeActionButton,
   StatsCard,
   type Transaction,
-} from "@/features/wallet";
-import {
-  Plus,
-  Send,
-  Receipt,
-  Banknote,
-  TrendingUp,
-  TrendingDown,
-  CreditCard,
-  Clock,
-} from "lucide-react";
-
-
+} from '@/features/wallet';
+import { Plus, TrendingUp, TrendingDown, Clock } from 'lucide-react';
 
 export default function WalletDashboard() {
   const [balance, setBalance] = useState<number | null>(null);
@@ -39,11 +28,11 @@ export default function WalletDashboard() {
         // Transform transactions to match our interface
         const formattedTx = (txData.transactions || []).map((tx: any) => ({
           id: tx._id?.toString() || Math.random().toString(),
-          type: tx.type as "credit" | "debit",
+          type: tx.type as 'credit' | 'debit',
           amount: tx.amount || 0,
-          description: tx.description || "Transaction",
-          category: tx.metadata?.type || "other",
-          status: tx.status || "completed",
+          description: tx.description || 'Transaction',
+          category: tx.metadata?.type || 'other',
+          status: tx.status || 'completed',
           createdAt: tx.createdAt,
         }));
         setTransactions(formattedTx);
@@ -55,11 +44,11 @@ export default function WalletDashboard() {
 
   // Mock stats - in real app, calculate from transactions
   const monthlySpent = transactions
-    .filter((tx) => tx.type === "debit")
+    .filter((tx) => tx.type === 'debit')
     .reduce((sum, tx) => sum + tx.amount, 0);
 
   const monthlyReceived = transactions
-    .filter((tx) => tx.type === "credit")
+    .filter((tx) => tx.type === 'credit')
     .reduce((sum, tx) => sum + tx.amount, 0);
 
   return (
@@ -67,9 +56,7 @@ export default function WalletDashboard() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold">Wallet Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome back! Manage your finances securely.
-        </p>
+        <p className="text-muted-foreground">Welcome back! Manage your finances securely.</p>
       </div>
 
       {/* Main Grid */}
@@ -88,20 +75,18 @@ export default function WalletDashboard() {
         <div className="space-y-4">
           <StatsCard
             title="Money Out"
-            value={`₹${monthlySpent.toLocaleString("en-IN")}`}
+            value={`₹${monthlySpent.toLocaleString('en-IN')}`}
             icon={TrendingDown}
             variant="danger"
           />
           <StatsCard
             title="Money In"
-            value={`₹${monthlyReceived.toLocaleString("en-IN")}`}
+            value={`₹${monthlyReceived.toLocaleString('en-IN')}`}
             icon={TrendingUp}
             variant="success"
           />
         </div>
       </div>
-
-
 
       {/* Large Action Buttons */}
       <div className="grid gap-4 sm:grid-cols-2">

@@ -21,29 +21,29 @@ export type { AuthActionResult };
  * Login action with professional session management
  */
 export async function loginAction(
-    email: string,
-    password: string,
-    rememberMe: boolean = false
+  email: string,
+  password: string,
+  rememberMe: boolean = false
 ): Promise<AuthActionResult> {
-    return AuthService.login({ email, password, rememberMe });
+  return AuthService.login({ email, password, rememberMe });
 }
 
 /**
  * Signup action with professional validation
  */
 export async function signupAction(data: {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-    role?: UserRole;
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role?: UserRole;
 }): Promise<AuthActionResult> {
-    return AuthService.signup(data);
+  return AuthService.signup(data);
 }
 
 /**
  * Logout action
  */
 export async function logoutAction(): Promise<AuthActionResult<void>> {
-    return AuthService.logout();
+  return AuthService.logout();
 }

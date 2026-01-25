@@ -1,16 +1,15 @@
-'use server'
+'use server';
 
-import { SessionService } from '@/services/session.service';
-import { headers } from 'next/headers';
+import { HeaderStore } from '@/core/helpers';
+import { SessionService } from '@/core/services/session.service';
 import { redirect } from 'next/navigation';
 
 export async function loginUserAction(userId: string) {
-  const headerStore = await headers();
-  const ua = headerStore.get('user-agent') || '';
-  const ip = headerStore.get('x-forwarded-for') || '127.0.0.1';
+  const ua = await HeaderStore.userAgent();
+  const ip = await HeaderStore.ip();
 
   // Creates DB entry + Sets Cookie
-  await SessionService.createSession(userId, ua, ip);
-  
+  await SessionService.create(userId, { userAgent: ua, ip });
+
   redirect('/dashboard');
 }

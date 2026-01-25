@@ -1,15 +1,17 @@
-import { clsx, type ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-    return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function getErrorMessage(error: unknown): string {
-    if (error instanceof Error) return error.message
-    if (typeof error === 'string') return error
-    if (typeof error === 'object' && error !== null && 'message' in error) return String((error as Record<string, unknown>).message)
-    return 'An unknown error occurred'
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    return String((error as Record<string, unknown>).message);
+  }
+  return 'An unknown error occurred';
 }
 
 export const serialize = <T>(data: T): T => (data ? JSON.parse(JSON.stringify(data)) : data);

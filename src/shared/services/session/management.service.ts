@@ -4,15 +4,16 @@
  * Handles session lifecycle, user sessions, and session operations
  */
 
-import "server-only";
-import { User } from "@/models";
-import { LoginMethod, SessionStatus, ResourceType, ActionType } from "@/types";
-import { SessionCoreService } from "./core.service";
-import { SessionSecurityService } from "./security.service";
-import { SessionAnalyticsService } from "./analytics.service";
-import { ActivityLogger } from "@/shared/services/activity.service";
+import 'server-only';
 
-import { RequestDetective } from "@/core/detector";
+import { LoginMethod, SessionStatus, ActionType } from '@/types';
+import { ResourceType, RiskLevel } from '@/core/db/enums';
+import { SessionCoreService } from './core.service';
+import { SessionSecurityService } from './security.service';
+import { SessionAnalyticsService } from './analytics.service';
+import { ActivityLogger } from '../activity.service';
+
+import { RequestDetective } from '@/core/detector';
 
 export class SessionManagementService {
   /**
@@ -43,11 +44,7 @@ export class SessionManagementService {
       const token = SessionCoreService.generateSessionToken();
 
       // 4. Create Security Info
-      const securityInfo = SessionSecurityService.createSecurityInfo(
-        method,
-        riskScore,
-        riskLevel
-      );
+      const securityInfo = SessionSecurityService.createSecurityInfo(method, riskScore, riskLevel);
 
       // 5. Create Session with comprehensive data
       const session = await SessionCoreService.createSession(userId, token, {
@@ -56,7 +53,7 @@ export class SessionManagementService {
         rememberMe: metadata?.rememberMe,
         deviceInfo,
         geoInfo,
-        securityInfo
+        securityInfo,
       });
 
       // 6. Log Activity for Audit Trail
@@ -66,17 +63,17 @@ export class SessionManagementService {
         ResourceType.Session,
         `User logged in via ${method}`,
         session._id.toString(),
-        { 
-          device: deviceInfo.name || "Unknown", 
+        {
+          device: deviceInfo.name || 'Unknown',
           method: method.toString(),
           riskLevel: riskLevel.toString(),
-          location: `${geoInfo.city || "Unknown"}, ${geoInfo.country || "Unknown"}`
+          location: `${geoInfo.city || 'Unknown'}, ${geoInfo.country || 'Unknown'}`,
         }
       );
 
       return session;
     } catch (error) {
-      console.error("Session creation error:", error);
+      console.error('Session creation error:', error);
       throw error;
     }
   }
@@ -95,10 +92,11 @@ export class SessionManagementService {
 
         // Log logout activity
         await ActivityLogger.log(
-          session.userId._id,
+          (session.userId as unknown as { _id: { toString: () => string } })._id?.toString() ||
+            session.userId.toString(),
           ActionType.Logout,
           ResourceType.Session,
-          "User logged out",
+          'User logged out',
           session._id.toString()
         );
 
@@ -106,10 +104,10 @@ export class SessionManagementService {
         await SessionCoreService.invalidateSession(session);
       }
 
-      return { success: true, message: "Logged out successfully" };
+      return { success: true, message: 'Logged out successfully' };
     } catch (error) {
-      console.error("Logout error:", error);
-      return { success: false, message: "Logout failed" };
+      console.error('Logout error:', error);
+      return { success: false, message: 'Logout failed' };
     }
   }
 
@@ -124,11 +122,11 @@ export class SessionManagementService {
       // Add security context
       const securityContext = {
         isTrustedDevice: await SessionSecurityService.isTrustedDevice(
-          session.userId._id,
+          session.userId._id.toString(),
           session.deviceInfo
         ),
         isTrustedLocation: await SessionSecurityService.isTrustedLocation(
-          session.userId._id,
+          session.userId._id.toString(),
           session.geoInfo
         ),
         deviceAnalysis: await SessionSecurityService.analyzeDevice(session.deviceInfo),
@@ -136,16 +134,16 @@ export class SessionManagementService {
         securityRecommendations: SessionSecurityService.generateSecurityRecommendations(
           await SessionSecurityService.analyzeDevice(session.deviceInfo),
           await SessionSecurityService.analyzeLocation(session.geoInfo),
-          session.securityInfo?.riskLevel
-        )
+          session.securityInfo?.riskLevel || RiskLevel.Low
+        ),
       };
 
       return {
         ...session.toObject(),
-        securityContext
+        securityContext,
       };
     } catch (error) {
-      console.error("Get current session with security error:", error);
+      console.error('Get current session with security error:', error);
       return null;
     }
   }
@@ -156,33 +154,39 @@ export class SessionManagementService {
   static async getUserSessions(userId: string) {
     try {
       const sessions = await SessionCoreService.getSessionsByUserId(userId);
-      
+
       // Add security analysis to each session
       const sessionsWithSecurity = await Promise.all(
         sessions.map(async (session) => {
           const deviceAnalysis = await SessionSecurityService.analyzeDevice(session.deviceInfo);
           const locationAnalysis = await SessionSecurityService.analyzeLocation(session.geoInfo);
-          
+
           return {
             ...session.toObject(),
             securityAnalysis: {
               deviceAnalysis,
               locationAnalysis,
-              isTrustedDevice: await SessionSecurityService.isTrustedDevice(userId, session.deviceInfo),
-              isTrustedLocation: await SessionSecurityService.isTrustedLocation(userId, session.geoInfo),
+              isTrustedDevice: await SessionSecurityService.isTrustedDevice(
+                userId,
+                session.deviceInfo
+              ),
+              isTrustedLocation: await SessionSecurityService.isTrustedLocation(
+                userId,
+                session.geoInfo
+              ),
               recommendations: SessionSecurityService.generateSecurityRecommendations(
                 deviceAnalysis,
                 locationAnalysis,
-                session.securityInfo?.riskLevel
-              )
-            }
+                session.securityInfo?.riskLevel || RiskLevel.Low
+              ),
+            },
           };
         })
       );
 
       return sessionsWithSecurity;
     } catch (error) {
-      console.error("Get user sessions error:", error);
+      console.error('Get user sessions error:', error);
       return [];
     }
   }
@@ -193,7 +197,7 @@ export class SessionManagementService {
   static async revokeSession(sessionId: string, userId: string): Promise<boolean> {
     try {
       const session = await SessionCoreService.getSessionById(sessionId);
-      
+
       if (!session || session.userId.toString() !== userId) {
         return false;
       }
@@ -208,13 +212,13 @@ export class SessionManagementService {
         userId,
         ActionType.Update,
         ResourceType.Session,
-        "Session revoked by user",
+        'Session revoked by user',
         sessionId
       );
 
       return true;
     } catch (error) {
-      console.error("Revoke session error:", error);
+      console.error('Revoke session error:', error);
       return false;
     }
   }
@@ -247,13 +251,13 @@ export class SessionManagementService {
           ActionType.Update,
           ResourceType.Session,
           `Revoked ${revokedCount} sessions`,
-          "bulk"
+          'bulk'
         );
       }
 
       return revokedCount;
     } catch (error) {
-      console.error("Revoke all sessions error:", error);
+      console.error('Revoke all sessions error:', error);
       return 0;
     }
   }
@@ -263,33 +267,52 @@ export class SessionManagementService {
    */
   static async getSessionDashboard(userId: string) {
     try {
-      const [
-        sessionStats,
-        deviceAnalytics,
-        locationAnalytics,
-        securityAnalytics
-      ] = await Promise.all([
-        SessionAnalyticsService.getSessionStats(userId),
-        SessionAnalyticsService.getDeviceAnalytics(userId),
-        SessionAnalyticsService.getLocationAnalytics(userId),
-        SessionAnalyticsService.getSecurityAnalytics(userId)
-      ]);
+      const [sessionStats, deviceAnalytics, locationAnalytics, securityAnalytics] =
+        await Promise.all([
+          SessionAnalyticsService.getSessionStats(userId),
+          SessionAnalyticsService.getDeviceAnalytics(userId),
+          SessionAnalyticsService.getLocationAnalytics(userId),
+          SessionAnalyticsService.getSecurityAnalytics(userId),
+        ]);
 
       return {
         overview: sessionStats,
         devices: deviceAnalytics,
         locations: locationAnalytics,
         security: securityAnalytics,
-        lastUpdated: new Date()
+        lastUpdated: new Date(),
       };
     } catch (error) {
-      console.error("Get session dashboard error:", error);
+      console.error('Get session dashboard error:', error);
       return {
         overview: { total: 0, active: 0, expired: 0, byDevice: {}, byRiskLevel: {} },
-        devices: { totalDevices: 0, uniqueDevices: [], deviceTypes: {}, osDistribution: {}, browserDistribution: {}, trustedDevices: 0, suspiciousDevices: 0 },
-        locations: { totalLocations: 0, uniqueCountries: [], uniqueCities: [], countryDistribution: {}, cityDistribution: {}, suspiciousLocations: 0, timezoneDistribution: {} },
-        security: { riskLevelDistribution: {}, verifiedSessions: 0, unverifiedSessions: 0, highRiskSessions: 0, securityRecommendations: [], loginMethodDistribution: {} },
-        lastUpdated: new Date()
+        devices: {
+          totalDevices: 0,
+          uniqueDevices: [],
+          deviceTypes: {},
+          osDistribution: {},
+          browserDistribution: {},
+          trustedDevices: 0,
+          suspiciousDevices: 0,
+        },
+        locations: {
+          totalLocations: 0,
+          uniqueCountries: [],
+          uniqueCities: [],
+          countryDistribution: {},
+          cityDistribution: {},
+          suspiciousLocations: 0,
+          timezoneDistribution: {},
+        },
+        security: {
+          riskLevelDistribution: {},
+          verifiedSessions: 0,
+          unverifiedSessions: 0,
+          highRiskSessions: 0,
+          securityRecommendations: [],
+          loginMethodDistribution: {},
+        },
+        lastUpdated: new Date(),
       };
     }
   }

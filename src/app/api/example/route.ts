@@ -1,7 +1,7 @@
 /**
  * Example Route Handler
  * Demonstrates the professional API handler pattern
- * 
+ *
  * @module ExampleRoute
  */
 
@@ -16,9 +16,9 @@ import { NextRequest } from 'next/server';
  */
 export const GET = apiHandler(async (req: NextRequest) => {
   // Log custom info
-  logger.info('Processing example request', { 
+  logger.info('Processing example request', {
     url: req.url,
-    userAgent: req.headers.get('user-agent') 
+    userAgent: req.headers.get('user-agent'),
   });
 
   // Simulate some logic
@@ -29,8 +29,8 @@ export const GET = apiHandler(async (req: NextRequest) => {
       'Automatic Error Handling',
       'Database Connection Management',
       'Structured Logging',
-      'Standardized Response Format'
-    ]
+      'Standardized Response Format',
+    ],
   };
 
   // Return success response
@@ -43,19 +43,23 @@ export const GET = apiHandler(async (req: NextRequest) => {
  */
 export const POST = apiHandler(async (req: NextRequest) => {
   const body = await req.json().catch(() => ({}));
-  
+
   // Validation example
   if (!body.name) {
-    return ApiHelper.validationError([
-      { field: 'name', message: 'Name is required' }
-    ], 'Invalid request data');
+    return ApiHelper.validationError(
+      [{ field: 'name', message: 'Name is required' }],
+      'Invalid request data'
+    );
   }
 
   // Simulate processing
   logger.info('Created new item', { name: body.name });
 
-  return ApiHelper.created({ 
-    id: crypto.randomUUID(), 
-    name: body.name 
-  }, 'Item created successfully');
+  return ApiHelper.created(
+    {
+      id: crypto.randomUUID(),
+      name: body.name,
+    },
+    'Item created successfully'
+  );
 });

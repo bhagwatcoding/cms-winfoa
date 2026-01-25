@@ -1,68 +1,17 @@
-import mongoose, { Schema, Document } from 'mongoose'
+/**
+ * User Preferences Model
+ * Combines schema with model export
+ */
 
-export interface IUserPreferences extends Document {
-    userId: mongoose.Types.ObjectId
-    emailNotifications: {
-        marketing: boolean
-        updates: boolean
-        security: boolean
-        newsletter: boolean
-    }
-    pushNotifications: {
-        enabled: boolean
-        browser: boolean
-        mobile: boolean
-    }
-    privacy: {
-        profileVisibility: 'public' | 'private' | 'friends'
-        showEmail: boolean
-        showActivity: boolean
-    }
-    theme: 'light' | 'dark' | 'system'
-    language: string
-    timezone: string
-    createdAt: Date
-    updatedAt: Date
-}
+import { Model, model, models } from 'mongoose';
+import { UserPreferencesSchema } from '@/core/db/schemas/userpreferences.schema';
+import { IUserPreferencesDoc } from '@/core/db/interfaces/userpreferences.interface';
 
-const UserPreferencesSchema = new Schema<IUserPreferences>(
-    {
-        userId: {
-            type: Schema.Types.ObjectId,
-            ref: 'User',
-            required: true,
-            unique: true
-        },
-        emailNotifications: {
-            marketing: { type: Boolean, default: false },
-            updates: { type: Boolean, default: true },
-            security: { type: Boolean, default: true },
-            newsletter: { type: Boolean, default: false }
-        },
-        pushNotifications: {
-            enabled: { type: Boolean, default: false },
-            browser: { type: Boolean, default: false },
-            mobile: { type: Boolean, default: false }
-        },
-        privacy: {
-            profileVisibility: {
-                type: String,
-                enum: ['public', 'private', 'friends'],
-                default: 'public'
-            },
-            showEmail: { type: Boolean, default: false },
-            showActivity: { type: Boolean, default: true }
-        },
-        theme: {
-            type: String,
-            enum: ['light', 'dark', 'system'],
-            default: 'system'
-        },
-        language: { type: String, default: 'en' },
-        timezone: { type: String, default: 'UTC' }
-    },
-    { timestamps: true }
-)
+// ==========================================
+// EXPORT
+// ==========================================
 
-export default mongoose.models.UserPreferences ||
-    mongoose.model<IUserPreferences>('UserPreferences', UserPreferencesSchema)
+export type { IUserPreferencesDoc as IUserPreferences };
+
+export default (models.UserPreferences as Model<IUserPreferencesDoc>) ||
+  model<IUserPreferencesDoc>('UserPreferences', UserPreferencesSchema);

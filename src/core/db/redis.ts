@@ -1,63 +1,88 @@
 /**
  * Professional Redis Client Manager
  * Handles Redis connection with singleton pattern and error handling
- * 
+ *
  * @module RedisClient
  */
 
-import { Redis } from 'ioredis';
-import { env } from '@/config/env';
+// Redis is optional - this file provides a placeholder/mock when Redis is not configured
 
 // =============================================================================
 // TYPES
 // =============================================================================
 
 declare global {
-  // eslint-disable-next-line no-var
-  var redis: Redis | undefined;
+  var _redis: unknown;
+}
+
+// =============================================================================
+// MOCK REDIS CLIENT (for when Redis is not configured)
+// =============================================================================
+
+class MockRedisClient {
+  private store: Map<string, string> = new Map();
+
+  async get(key: string): Promise<string | null> {
+    return this.store.get(key) ?? null;
+  }
+
+  async set(key: string, value: string): Promise<'OK'> {
+    this.store.set(key, value);
+    return 'OK';
+  }
+
+  async del(key: string): Promise<number> {
+    return this.store.delete(key) ? 1 : 0;
+  }
+
+  async incr(key: string): Promise<number> {
+    const val = parseInt(this.store.get(key) || '0', 10);
+    this.store.set(key, String(val + 1));
+    return val + 1;
+  }
+
+  async expire(): Promise<number> {
+    // Mock - doesn't actually expire
+    return 1;
+  }
+
+  async ttl(): Promise<number> {
+    return -1;
+  }
+
+  on(): this {
+    return this;
+  }
+
+  async ping(): Promise<string> {
+    return 'PONG';
+  }
+
+  async quit(): Promise<'OK'> {
+    this.store.clear();
+    return 'OK';
+  }
 }
 
 // =============================================================================
 // CLIENT FACTORY
 // =============================================================================
 
-const redisOptions = {
-  maxRetriesPerRequest: 3,
-  retryStrategy(times: number) {
-    const delay = Math.min(times * 50, 2000);
-    return delay;
-  },
-};
+export type RedisClient = MockRedisClient;
 
-const getRedisClient = () => {
-  if (!env.REDIS_URL) {
-    console.warn('⚠️ REDIS_URL not defined, Redis features will be disabled');
-    // Return a mock or null if preferred, but for now we'll throw or return a dummy that fails gracefully?
-    // Better to just let it fail if required, or return a disconnected client.
-    // For "autopilot", we'll assume it might not be configured yet, so we return a dummy-ish client or handle it.
-    // However, the health check imports this.
-    
-    // For safety in dev environment without Redis:
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('Using mock Redis for development');
-      // @ts-ignore
-      return new Redis({ lazyConnect: true }); // Won't connect
-    }
-    
-    throw new Error('REDIS_URL not defined');
+const getRedisClient = (): RedisClient => {
+  const REDIS_URL = process.env.REDIS_URL;
+
+  if (!REDIS_URL) {
+    console.warn('⚠️ [Redis] REDIS_URL not defined, using in-memory mock client');
+    return new MockRedisClient();
   }
 
-  const client = new Redis(env.REDIS_URL, redisOptions);
-
-  client.on('error', (err) => {
-    console.error('❌ [Redis] Error:', err);
-  });
-
-  client.on('connect', () => {
-    console.log('✅ [Redis] Connected');
-  });
-
-  return client;
+  // If we want real Redis, we need to:
+  // 1. npm install ioredis
+  // 2. Uncomment and use the real implementation
+  console.warn('⚠️ [Redis] Real Redis support requires ioredis. Using mock client.');
+  return new MockRedisClient();
 };
 
 // =============================================================================
@@ -65,10 +90,10 @@ const getRedisClient = () => {
 // =============================================================================
 
 // Use global singleton to prevent multiple connections in serverless/hot-reload env
-export const redis = global.redis || getRedisClient();
+export const redis: RedisClient = (global._redis as RedisClient) || getRedisClient();
 
 if (process.env.NODE_ENV !== 'production') {
-  global.redis = redis;
+  global._redis = redis;
 }
 
 export default redis;

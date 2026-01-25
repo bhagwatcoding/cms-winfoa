@@ -6,14 +6,14 @@
 
 // Re-export all session-related functions from auth module
 export {
-    createSession,
-    getSession,
-    login,
-    logout,
-    requireAuth,
-    requireRole,
-    getCurrentUser,
-    setSessionCookie,
-    hashPassword,
-    verifyPassword
+  createSession,
+  getSession,
+  login,
+  logout,
+  requireAuth,
+  requireRole,
+  getCurrentUser,
+  setSessionCookie,
+  hashPassword,
+  verifyPassword,
 } from './auth';

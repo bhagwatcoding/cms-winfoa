@@ -1,64 +1,25 @@
-import mongoose, { Schema, Document } from 'mongoose'
-import { IUserRegistry } from '@/types'
+/**
+ * User Registry Model
+ * Combines schema with model export for UMP user registry
+ */
 
-const UserRegistrySchema = new Schema<IUserRegistry>(
-    {
-        userId: {
-            type: String,
-            required: true,
-            unique: true
-        },
-        email: {
-            type: String,
-            required: true,
-            unique: true
-        },
-        role: {
-            type: String,
-            required: true,
-            enum: ['super-admin', 'admin', 'staff', 'student', 'user', 'center']
-        },
-        status: {
-            type: String,
-            enum: ['active', 'inactive', 'pending'],
-            default: 'pending'
-        },
-        createdBy: {
-            type: Schema.Types.ObjectId,
-            ref: 'User'
-        },
-        registeredAt: {
-            type: Date,
-            default: Date.now
-        },
-        metadata: {
-            type: Schema.Types.Mixed,
-            default: {}
-        }
-    },
-    { timestamps: true }
-)
+import { Model, model, models } from 'mongoose';
+import { UserRegistrySchema } from '@/core/db/schemas';
+import { IUserRegistry } from '@/core/db/interfaces';
 
-// Auto-increment counter for user IDs
-const CounterSchema = new Schema({
-    _id: { type: String, required: true },
-    seq: { type: Number, default: 0 }
-})
+// ==========================================
+// STATIC METHODS INTERFACE
+// ==========================================
 
-const Counter = mongoose.models.Counter || mongoose.model('Counter', CounterSchema)
-
-// Generate next user ID
-UserRegistrySchema.statics.generateUserId = async function () {
-    const year = new Date().getFullYear()
-    const counter = await Counter.findByIdAndUpdate(
-        'userId',
-        { $inc: { seq: 1 } },
-        { new: true, upsert: true }
-    )
-
-    const paddedNum = String(counter.seq).padStart(6, '0')
-    return `WIN-${year}-${paddedNum}`
+interface IUserRegistryModel extends Model<IUserRegistry> {
+  generateUserId(): Promise<string>;
 }
 
-export default mongoose.models.UserRegistry ||
-    mongoose.model<IUserRegistry>('UserRegistry', UserRegistrySchema)
+// ==========================================
+// EXPORT
+// ==========================================
+
+export type { IUserRegistry };
+
+export default (models.UserRegistry as IUserRegistryModel) ||
+  model<IUserRegistry, IUserRegistryModel>('UserRegistry', UserRegistrySchema);

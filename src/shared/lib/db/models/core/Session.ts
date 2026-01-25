@@ -1,10 +1,5 @@
-import mongoose, { Schema, Document, Model, model, models } from "mongoose";
-import {
-  DeviceType,
-  LoginMethod,
-  RiskLevel,
-  SessionStatus,
-} from "@/types";
+import mongoose, { Schema, Document, Model, model, models } from 'mongoose';
+import { DeviceType, LoginMethod, RiskLevel, SessionStatus } from '@/types';
 
 // Interface definitions to match the schema structure
 interface IDeviceInfo {
@@ -48,7 +43,7 @@ export interface ISession extends Document {
   securityInfo?: ISecurityInfo;
 
   isActive: boolean;
-  status?: SessionStatus; 
+  status?: SessionStatus;
 
   lastAccessedAt: Date;
   createdAt: Date;
@@ -58,7 +53,7 @@ const SessionSchema = new Schema<ISession>(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
       required: true,
       index: true,
     },
@@ -106,11 +101,10 @@ const SessionSchema = new Schema<ISession>(
     },
     lastAccessedAt: { type: Date, default: Date.now },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 // Auto-delete hard expired sessions
 SessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-export default (models.Session as Model<ISession>) ||
-  model<ISession>("Session", SessionSchema);
+export default (models.Session as Model<ISession>) || model<ISession>('Session', SessionSchema);

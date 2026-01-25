@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { SessionCoreService } from "@/shared/services/session";
-import type { IUser } from "@/types/models";
+import { NextResponse } from 'next/server';
+import { SessionCoreService } from '@/shared/services/session';
+import type { IUser } from '@/types/models';
 
 export async function GET() {
   try {
@@ -8,7 +8,7 @@ export async function GET() {
     const session = await SessionCoreService.getCurrentSession();
 
     if (!session || !session.userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
     const user = session.userId as unknown as IUser;
@@ -33,11 +33,8 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Get user error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error('Get user error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -47,7 +44,7 @@ export async function POST() {
     const session = await SessionCoreService.getCurrentSession();
 
     if (!session || !session.userId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
     const user = session.userId as unknown as IUser;
@@ -64,23 +61,20 @@ export async function POST() {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
-    console.error("Session validation error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error('Session validation error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 // Handle unsupported methods
 export async function PUT() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
 export async function DELETE() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
 export async function PATCH() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }

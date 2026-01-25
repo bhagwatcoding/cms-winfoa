@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/core/db";
-import { WalletTransaction, User } from "@/models";
-import { requireAuth, requireRole } from "@/core/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/core/db';
+import { WalletTransaction, User } from '@/models';
+import { requireAuth, requireRole } from '@/core/auth';
 
 // GET /api/wallet/transactions - Get transaction history
 export async function GET(request: NextRequest) {
@@ -10,24 +10,25 @@ export async function GET(request: NextRequest) {
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "20");
-    const type = searchParams.get("type") || "";
-    const status = searchParams.get("status") || "";
-    const dateFrom = searchParams.get("dateFrom");
-    const dateTo = searchParams.get("dateTo");
-    const minAmount = searchParams.get("minAmount");
-    const maxAmount = searchParams.get("maxAmount");
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const type = searchParams.get('type') || '';
+    const status = searchParams.get('status') || '';
+    const dateFrom = searchParams.get('dateFrom');
+    const dateTo = searchParams.get('dateTo');
+    const minAmount = searchParams.get('minAmount');
+    const maxAmount = searchParams.get('maxAmount');
 
     // Build query - users can only see their own transactions unless admin
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = {};
 
-    const isAdmin = ["admin", "super-admin"].includes(currentUser.role);
+    const isAdmin = ['admin', 'super-admin'].includes(currentUser.role || '');
     if (!isAdmin) {
       query.userId = currentUser.id;
     } else {
       // Admin can filter by specific user
-      const userId = searchParams.get("userId");
+      const userId = searchParams.get('userId');
       if (userId) {
         query.userId = userId;
       }
@@ -48,7 +49,7 @@ export async function GET(request: NextRequest) {
         query.createdAt.$gte = new Date(dateFrom);
       }
       if (dateTo) {
-        query.createdAt.$lte = new Date(dateTo + "T23:59:59.999Z");
+        query.createdAt.$lte = new Date(dateTo + 'T23:59:59.999Z');
       }
     }
 
@@ -68,7 +69,7 @@ export async function GET(request: NextRequest) {
     // Execute query
     const [transactions, total] = await Promise.all([
       WalletTransaction.find(query)
-        .populate("userId", "name email umpUserId")
+        .populate('userId', 'name email umpUserId')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -82,29 +83,29 @@ export async function GET(request: NextRequest) {
       {
         $group: {
           _id: null,
-          totalAmount: { $sum: "$amount" },
+          totalAmount: { $sum: '$amount' },
           totalCredit: {
             $sum: {
               $cond: [
-                { $in: ["$type", ["recharge", "refund", "cashback", "bonus"]] },
-                "$amount",
-                0
-              ]
-            }
+                { $in: ['$type', ['recharge', 'refund', 'cashback', 'bonus']] },
+                '$amount',
+                0,
+              ],
+            },
           },
           totalDebit: {
             $sum: {
               $cond: [
-                { $in: ["$type", ["payment", "transfer", "withdrawal", "fee"]] },
-                "$amount",
-                0
-              ]
-            }
+                { $in: ['$type', ['payment', 'transfer', 'withdrawal', 'fee']] },
+                '$amount',
+                0,
+              ],
+            },
           },
-          avgTransactionAmount: { $avg: "$amount" },
-          transactionCount: { $sum: 1 }
-        }
-      }
+          avgTransactionAmount: { $avg: '$amount' },
+          transactionCount: { $sum: 1 },
+        },
+      },
     ]);
 
     const stats = summaryStats[0] || {
@@ -112,7 +113,7 @@ export async function GET(request: NextRequest) {
       totalCredit: 0,
       totalDebit: 0,
       avgTransactionAmount: 0,
-      transactionCount: 0
+      transactionCount: 0,
     };
 
     // Calculate pagination info
@@ -134,7 +135,7 @@ export async function GET(request: NextRequest) {
       summary: {
         ...stats,
         netAmount: stats.totalCredit - stats.totalDebit,
-        avgTransactionAmount: Math.round(stats.avgTransactionAmount * 100) / 100
+        avgTransactionAmount: Math.round(stats.avgTransactionAmount * 100) / 100,
       },
       filters: {
         type,
@@ -146,21 +147,14 @@ export async function GET(request: NextRequest) {
       },
       message: `Found ${transactions.length} transactions`,
     });
-
   } catch (error: any) {
-    console.error("Get transactions error:", error);
+    console.error('Get transactions error:', error);
 
-    if (error.message === "Unauthorized - Please login") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+    if (error?.message === 'Unauthorized - Please login') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    return NextResponse.json(
-      { error: "Failed to fetch transactions" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch transactions' }, { status: 500 });
   }
 }
 
@@ -175,74 +169,67 @@ export async function POST(request: NextRequest) {
       userId,
       type,
       amount,
-      currency = "USD",
+      currency = 'USD',
       description,
       metadata = {},
-      status = "completed"
+      status = 'completed',
     } = body;
 
     // Validate required fields
     if (!userId || !type || !amount || !description) {
       return NextResponse.json(
-        { error: "User ID, type, amount, and description are required" },
+        { error: 'User ID, type, amount, and description are required' },
         { status: 400 }
       );
     }
 
     // Check if amount is valid
     if (amount <= 0) {
-      return NextResponse.json(
-        { error: "Amount must be greater than 0" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Amount must be greater than 0' }, { status: 400 });
     }
 
     // Validate transaction type
     const validTypes = [
-      "recharge", "payment", "transfer", "refund",
-      "withdrawal", "fee", "cashback", "bonus", "adjustment"
+      'recharge',
+      'payment',
+      'transfer',
+      'refund',
+      'withdrawal',
+      'fee',
+      'cashback',
+      'bonus',
+      'adjustment',
     ];
 
     if (!validTypes.includes(type)) {
-      return NextResponse.json(
-        { error: "Invalid transaction type" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid transaction type' }, { status: 400 });
     }
 
     // Check permissions
-    const isAdmin = ["admin", "super-admin"].includes(currentUser.role);
+    const isAdmin = ['admin', 'super-admin'].includes(currentUser.role || '');
     const isSelfTransaction = currentUser.id === userId;
 
     if (!isAdmin && !isSelfTransaction) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
 
     // Find target user
-    const targetUser = await User.findById(userId);
+
+    const targetUser = await User.findById(userId as string);
     if (!targetUser) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Handle wallet balance update
     let newBalance = targetUser.walletBalance || 0;
-    const creditTypes = ["recharge", "refund", "cashback", "bonus"];
-    const debitTypes = ["payment", "transfer", "withdrawal", "fee"];
+    const creditTypes = ['recharge', 'refund', 'cashback', 'bonus'];
+    const debitTypes = ['payment', 'transfer', 'withdrawal', 'fee'];
 
     if (creditTypes.includes(type)) {
       newBalance += amount;
     } else if (debitTypes.includes(type)) {
       if (newBalance < amount) {
-        return NextResponse.json(
-          { error: "Insufficient wallet balance" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: 'Insufficient wallet balance' }, { status: 400 });
       }
       newBalance -= amount;
     }
@@ -258,13 +245,12 @@ export async function POST(request: NextRequest) {
         ...metadata,
         performedBy: currentUser.id,
         performedByEmail: currentUser.email,
-        ipAddress: request.headers.get('x-forwarded-for') ||
-                   request.headers.get('x-real-ip') ||
-                   'unknown'
+        ipAddress:
+          request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown',
       },
       status,
       balanceBefore: targetUser.walletBalance,
-      balanceAfter: newBalance
+      balanceAfter: newBalance,
     });
 
     await transaction.save();
@@ -274,48 +260,41 @@ export async function POST(request: NextRequest) {
     await targetUser.save();
 
     // Populate user data for response
-    await transaction.populate("userId", "name email umpUserId");
+    await transaction.populate('userId', 'name email umpUserId');
 
     // Log transaction
-    console.log(`💰 Transaction created: ${type} ${currency} ${amount} for ${targetUser.email} by ${currentUser.email}`);
+    console.log(
+      `💰 Transaction created: ${type} ${currency} ${amount} for ${targetUser.email} by ${currentUser.email}`
+    );
 
     return NextResponse.json({
       success: true,
       data: transaction,
-      message: `${type} transaction of ${currency} ${amount} created successfully`
+      message: `${type} transaction of ${currency} ${amount} created successfully`,
     });
-
   } catch (error: any) {
-    console.error("Create transaction error:", error);
+    console.error('Create transaction error:', error);
 
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map(
-        (err: any) => err.message
-      );
+    if (error?.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors || {}).map((err: any) => err.message);
       return NextResponse.json(
-        { error: `Validation error: ${validationErrors.join(", ")}` },
+        { error: `Validation error: ${validationErrors.join(', ')}` },
         { status: 400 }
       );
     }
 
-    if (error.message === "Unauthorized - Please login") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+    if (error.message === 'Unauthorized - Please login') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    return NextResponse.json(
-      { error: "Failed to create transaction" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create transaction' }, { status: 500 });
   }
 }
 
 // PUT /api/wallet/transactions - Bulk transaction operations (Admin only)
 export async function PUT(request: NextRequest) {
   try {
-    const currentUser = await requireRole(["admin", "super-admin"]);
+    const currentUser = await requireRole(['admin', 'super-admin']);
     await connectDB();
 
     const body = await request.json();
@@ -323,7 +302,7 @@ export async function PUT(request: NextRequest) {
 
     if (!action || !transactionIds || !Array.isArray(transactionIds)) {
       return NextResponse.json(
-        { error: "Action and transaction IDs array are required" },
+        { error: 'Action and transaction IDs array are required' },
         { status: 400 }
       );
     }
@@ -332,10 +311,10 @@ export async function PUT(request: NextRequest) {
     let message;
 
     switch (action) {
-      case "update-status":
+      case 'update-status':
         if (!updates?.status) {
           return NextResponse.json(
-            { error: "Status is required for status update" },
+            { error: 'Status is required for status update' },
             { status: 400 }
           );
         }
@@ -346,39 +325,33 @@ export async function PUT(request: NextRequest) {
             $set: {
               status: updates.status,
               updatedAt: new Date(),
-              updatedBy: currentUser.id
-            }
+              updatedBy: currentUser.id,
+            },
           }
         );
         message = `Updated status for ${result.modifiedCount} transactions`;
         break;
 
-      case "add-notes":
+      case 'add-notes':
         if (!updates?.notes) {
-          return NextResponse.json(
-            { error: "Notes are required" },
-            { status: 400 }
-          );
+          return NextResponse.json({ error: 'Notes are required' }, { status: 400 });
         }
 
         result = await WalletTransaction.updateMany(
           { _id: { $in: transactionIds } },
           {
             $set: {
-              "metadata.adminNotes": updates.notes,
+              'metadata.adminNotes': updates.notes,
               updatedAt: new Date(),
-              updatedBy: currentUser.id
-            }
+              updatedBy: currentUser.id,
+            },
           }
         );
         message = `Added notes to ${result.modifiedCount} transactions`;
         break;
 
       default:
-        return NextResponse.json(
-          { error: "Invalid action specified" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: 'Invalid action specified' }, { status: 400 });
     }
 
     return NextResponse.json({
@@ -386,56 +359,47 @@ export async function PUT(request: NextRequest) {
       data: {
         action,
         transactionsAffected: result.modifiedCount,
-        updates
+        updates,
       },
-      message
+      message,
     });
-
   } catch (error: any) {
-    console.error("Bulk transaction update error:", error);
+    console.error('Bulk transaction update error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions. Admin access required." },
+        { error: 'Insufficient permissions. Admin access required.' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to update transactions" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update transactions' }, { status: 500 });
   }
 }
 
 // DELETE /api/wallet/transactions - Cancel/void transactions (Admin only)
 export async function DELETE(request: NextRequest) {
   try {
-    const currentUser = await requireRole(["super-admin"]);
+    const currentUser = await requireRole(['super-admin']);
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const transactionIds = searchParams.get("ids")?.split(",") || [];
-    const reason = searchParams.get("reason") || "Admin cancellation";
+    const transactionIds = searchParams.get('ids')?.split(',') || [];
+    const reason = searchParams.get('reason') || 'Admin cancellation';
 
     if (transactionIds.length === 0) {
-      return NextResponse.json(
-        { error: "Transaction IDs are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Transaction IDs are required' }, { status: 400 });
     }
 
     // Find transactions to cancel
     const transactions = await WalletTransaction.find({
       _id: { $in: transactionIds },
-      status: { $in: ["completed", "pending"] }
-    }).populate("userId");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      status: { $in: ['completed', 'pending'] as any[] },
+    }).populate('userId');
 
     if (transactions.length === 0) {
-      return NextResponse.json(
-        { error: "No valid transactions found to cancel" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'No valid transactions found to cancel' }, { status: 404 });
     }
 
     const results = [];
@@ -445,13 +409,15 @@ export async function DELETE(request: NextRequest) {
         // Reverse the wallet balance effect
         const user = await User.findById(transaction.userId);
         if (user) {
-          const creditTypes = ["recharge", "refund", "cashback", "bonus"];
-          const debitTypes = ["payment", "transfer", "withdrawal", "fee"];
+          const creditTypes = ['recharge', 'refund', 'cashback', 'bonus'];
+          const debitTypes = ['payment', 'transfer', 'withdrawal', 'fee'];
 
-          if (creditTypes.includes(transaction.type)) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          if (creditTypes.includes(transaction.type as any)) {
             // Reverse credit: subtract from balance
             user.walletBalance -= transaction.amount;
-          } else if (debitTypes.includes(transaction.type)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          } else if (debitTypes.includes(transaction.type as any)) {
             // Reverse debit: add back to balance
             user.walletBalance += transaction.amount;
           }
@@ -460,33 +426,38 @@ export async function DELETE(request: NextRequest) {
         }
 
         // Mark transaction as cancelled
-        transaction.status = "cancelled";
-        transaction.cancelledAt = new Date();
-        transaction.cancelledBy = currentUser.id;
-        transaction.cancellationReason = reason;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        transaction.status = 'cancelled' as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (transaction as any).cancelledAt = new Date();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (transaction as any).cancelledBy = currentUser.id;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (transaction as any).cancellationReason = reason;
         await transaction.save();
 
         results.push({
           transactionId: transaction._id,
           amount: transaction.amount,
           type: transaction.type,
-          status: "cancelled"
+          status: 'cancelled',
         });
-
       } catch (error) {
         console.error(`Failed to cancel transaction ${transaction._id}:`, error);
         results.push({
           transactionId: transaction._id,
-          status: "failed",
-          error: "Failed to cancel transaction"
+          status: 'failed',
+          error: 'Failed to cancel transaction',
         });
       }
     }
 
-    const successful = results.filter(r => r.status === "cancelled").length;
+    const successful = results.filter((r) => r.status === 'cancelled').length;
 
     // Log cancellation
-    console.log(`❌ Transactions cancelled: ${successful}/${results.length} by ${currentUser.email}`);
+    console.log(
+      `❌ Transactions cancelled: ${successful}/${results.length} by ${currentUser.email}`
+    );
 
     return NextResponse.json({
       success: true,
@@ -494,24 +465,20 @@ export async function DELETE(request: NextRequest) {
         results,
         successful,
         failed: results.length - successful,
-        reason
+        reason,
       },
-      message: `Successfully cancelled ${successful} out of ${results.length} transactions`
+      message: `Successfully cancelled ${successful} out of ${results.length} transactions`,
     });
-
   } catch (error: any) {
-    console.error("Cancel transactions error:", error);
+    console.error('Cancel transactions error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions. Super-admin access required." },
+        { error: 'Insufficient permissions. Super-admin access required.' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to cancel transactions" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to cancel transactions' }, { status: 500 });
   }
 }

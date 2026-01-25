@@ -1,0 +1,494 @@
+src/app/api/auth/[provider]/route.ts(2,10): error TS2305: Module '"@/auth/lib/oauth/providers"' has no exported member 'getOAuthUrl'.
+src/app/api/auth/[provider]/route.ts(10,22): error TS2352: Conversion of type 'string' to type 'OAuthProvider' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/app/api/auth/[provider]/route.ts(13,9): error TS2367: This comparison appears to be unintentional because the types 'OAuthProvider' and 'string' have no overlap.
+src/app/api/auth/[provider]/route.ts(13,34): error TS2367: This comparison appears to be unintentional because the types 'OAuthProvider' and 'string' have no overlap.
+src/app/api/auth/callback/[provider]/route.ts(3,3): error TS2305: Module '"@/auth/lib/oauth/providers"' has no exported member 'exchangeCodeForToken'.
+src/app/api/auth/callback/[provider]/route.ts(4,3): error TS2305: Module '"@/auth/lib/oauth/providers"' has no exported member 'getOAuthUserInfo'.
+src/app/api/auth/callback/[provider]/route.ts(17,22): error TS2352: Conversion of type 'string' to type 'OAuthProvider' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+src/app/api/auth/callback/[provider]/route.ts(38,9): error TS2367: This comparison appears to be unintentional because the types 'OAuthProvider' and 'string' have no overlap.
+src/app/api/auth/callback/[provider]/route.ts(38,34): error TS2367: This comparison appears to be unintentional because the types 'OAuthProvider' and 'string' have no overlap.
+src/app/api/auth/callback/[provider]/route.ts(60,17): error TS2339: Property 'oauthProvider' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/auth/callback/[provider]/route.ts(61,14): error TS2339: Property 'oauthProvider' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/auth/callback/[provider]/route.ts(62,14): error TS2339: Property 'oauthId' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/auth/callback/[provider]/route.ts(75,9): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'oauthProvider' does not exist in type '{ firstName?: StringQueryTypeCasting | undefined; lastName?: StringQueryTypeCasting | undefined; email?: StringQueryTypeCasting | undefined; ... 116 more ...; deletedBy?: StringQueryTypeCasting | undefined; }'.
+src/app/api/auth/callback/[provider]/route.ts(86,61): error TS2345: Argument of type '{ userAgent: string; ipAddress: string; }' is not assignable to parameter of type 'string'.
+src/app/api/auth/callback/[provider]/route.ts(99,54): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/auth/forgot-password/route.ts(22,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'token' does not exist in type '{ userId?: ObjectIdQueryTypeCasting | undefined; email?: StringQueryTypeCasting | undefined; tokenHash?: StringQueryTypeCasting | undefined; ... 64 more ...; validateSync?: { ...; } | undefined; }'.
+src/app/api/auth/login/route.ts(32,27): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/app/api/auth/login/route.ts(44,36): error TS2339: Property 'token' does not exist on type 'string'.
+src/app/api/auth/login/route.ts(44,43): error TS2554: Expected 1 arguments, but got 2.
+src/app/api/auth/login/route.ts(44,51): error TS2339: Property 'expiresAt' does not exist on type 'string'.
+src/app/api/auth/login/route.ts(47,10): error TS2551: Property 'lastLogin' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'. Did you mean 'lastLoginAt'?
+src/app/api/auth/login/route.ts(55,20): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/auth/login/route.ts(61,29): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/auth/me/route.ts(3,28): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/app/api/auth/register/route.ts(78,36): error TS2339: Property 'token' does not exist on type 'string'.
+src/app/api/auth/register/route.ts(78,43): error TS2554: Expected 1 arguments, but got 2.
+src/app/api/auth/register/route.ts(78,51): error TS2339: Property 'expiresAt' does not exist on type 'string'.
+src/app/api/auth/register/route.ts(85,20): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/auth/register/route.ts(90,29): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/auth/register/route.ts(107,9): error TS2345: Argument of type '(err: { message: string; }) => string' is not assignable to parameter of type '(value: unknown, index: number, array: unknown[]) => string'.
+  Types of parameters 'err' and 'value' are incompatible.
+    Type 'unknown' is not assignable to type '{ message: string; }'.
+src/app/api/auth/seed/route.ts(37,9): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/app/api/auth/signup/route.ts(84,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/app/api/auth/signup/route.ts(100,20): error TS2339: Property '_id' does not exist on type 'never'.
+src/app/api/auth/signup/route.ts(102,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'deviceInfo' does not exist in type '{ userId?: ObjectIdQueryTypeCasting | undefined; token?: StringQueryTypeCasting | undefined; device?: { ip?: string | undefined; userAgent?: string | undefined; type?: DeviceType | undefined; os?: string | undefined; browser?: string | undefined; } | undefined; ... 63 more ...; validateSync?: { ...; } | undefined; }'.
+src/app/api/auth/signup/route.ts(142,20): error TS2339: Property '_id' does not exist on type 'never'.
+src/app/api/auth/signup/route.ts(143,22): error TS2339: Property 'name' does not exist on type 'never'.
+src/app/api/auth/signup/route.ts(144,23): error TS2339: Property 'email' does not exist on type 'never'.
+src/app/api/auth/signup/route.ts(145,22): error TS2339: Property 'role' does not exist on type 'never'.
+src/app/api/auth/token/route.ts(57,54): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/app/api/god/analytics/route.ts(22,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(filter?: _QueryFilter<{ password: string; toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 314 more ...; "schema.virtualpath": (name: string) => VirtualType<...> | null; }> | undefined, options?: (CountOptions & ... 2 more ... & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<UserStatus>> | undefined'.
+  Overload 2 of 2, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, options?: (CountOptions & Pick<QueryOptions<IUser>, "timestamps" | ... 1 more ... | "lean"> & { ...; } & Abortable) | null | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/app/api/health/route.ts(55,11): error TS18048: 'mongoose.connection.db' is possibly 'undefined'.
+src/app/api/health/route.ts(230,66): error TS2367: This comparison appears to be unintentional because the types '"healthy" | "unhealthy"' and '"degraded"' have no overlap.
+src/app/api/notifications/route.ts(115,55): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/notifications/route.ts(116,50): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/system/route.ts(68,31): error TS2345: Argument of type 'string | { timeRange: { hours: number; from: Date; to: Date; }; summary: { totalRequests: number; totalErrors: number; errorRate: number; averageResponseTime: number; requestsPerMinute: number; }; ... 4 more ...; alerts: { ...; }[]; }' is not assignable to parameter of type 'BodyInit | null | undefined'.
+  Type '{ timeRange: { hours: number; from: Date; to: Date; }; summary: { totalRequests: number; totalErrors: number; errorRate: number; averageResponseTime: number; requestsPerMinute: number; }; ... 4 more ...; alerts: { ...; }[]; }' is not assignable to type 'BodyInit | null | undefined'.
+src/app/api/upload/[id]/route.ts(175,55): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/upload/route.ts(61,68): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/users/[id]/route.ts(16,47): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/users/[id]/route.ts(39,9): error TS2353: Object literal may only specify known properties, and 'name' does not exist in type 'IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/users/[id]/route.ts(39,20): error TS2339: Property 'name' does not exist on type 'IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/users/[id]/route.ts(78,47): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/users/[id]/route.ts(222,5): error TS2322: Type '"inactive"' is not assignable to type 'UserStatus'.
+src/app/api/users/[id]/route.ts(235,25): error TS2339: Property 'umpUserId' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/users/[id]/route.ts(270,47): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/users/[id]/route.ts(321,9): error TS2322: Type '"active" | "inactive"' is not assignable to type 'UserStatus'.
+  Type '"active"' is not assignable to type 'UserStatus'.
+src/app/api/users/[id]/route.ts(321,23): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/app/api/users/[id]/route.ts(322,25): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/app/api/users/[id]/route.ts(323,27): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/app/api/users/[id]/route.ts(340,14): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/balance/route.ts(22,21): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/balance/route.ts(26,20): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/recharge/route.ts(66,34): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/recharge/route.ts(99,10): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/recharge/route.ts(200,50): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/recharge/route.ts(205,7): error TS2769: No overload matches this call.
+  Overload 2 of 4, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, projection?: ProjectionType<IWalletTransaction> | null | undefined, options?: (QueryOptions<...> & Abortable) | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/app/api/wallet/recharge/route.ts(214,5): error TS2322: Type '(IWalletTransaction & Required<{ _id: ObjectId; }> & { __v: number; })[]' is not assignable to type 'never[]'.
+  Type 'IWalletTransaction & Required<{ _id: ObjectId; }> & { __v: number; }' is not assignable to type 'never'.
+src/app/api/wallet/transactions/route.ts(25,55): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/wallet/transactions/route.ts(208,55): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/app/api/wallet/transactions/route.ts(222,33): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/transactions/route.ts(250,33): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/transactions/route.ts(257,16): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/transactions/route.ts(393,50): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(filter?: _QueryFilter<{ toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 227 more ...; paymentMethod: string; }> | undefined, projection?: ProjectionType<...> | ... 1 more ... | undefined, options?: (QueryOptions<...> & Abortable) | undefined): Query<...>', gave the following error.
+    Type '{ $in: string[]; }' is not assignable to type 'Condition<ApplyBasicQueryCasting<TransactionStatus>> | undefined'.
+      Types of property '$in' are incompatible.
+        Type 'string[]' is not assignable to type 'readonly (TransactionStatus | TransactionStatus[] | null)[]'.
+          Type 'string' is not assignable to type 'TransactionStatus | TransactionStatus[] | null'.
+  Overload 2 of 4, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, projection?: ProjectionType<IWalletTransaction> | null | undefined, options?: (QueryOptions<...> & Abortable) | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and '_id' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/app/api/wallet/transactions/route.ts(412,36): error TS2345: Argument of type 'import("/Users/niteeshkumar/Documents/GitHub/cms-winfoa/src/core/types/enums/transaction.type").TransactionType' is not assignable to parameter of type 'string'.
+src/app/api/wallet/transactions/route.ts(414,18): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/transactions/route.ts(415,42): error TS2345: Argument of type 'import("/Users/niteeshkumar/Documents/GitHub/cms-winfoa/src/core/types/enums/transaction.type").TransactionType' is not assignable to parameter of type 'string'.
+src/app/api/wallet/transactions/route.ts(417,18): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/transactions/route.ts(424,9): error TS2322: Type '"cancelled"' is not assignable to type 'TransactionStatus'.
+src/app/api/wallet/transactions/route.ts(425,21): error TS2339: Property 'cancelledAt' does not exist on type 'IWalletTransaction & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/transactions/route.ts(426,21): error TS2339: Property 'cancelledBy' does not exist on type 'IWalletTransaction & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/api/wallet/transactions/route.ts(427,21): error TS2339: Property 'cancellationReason' does not exist on type 'IWalletTransaction & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/app/layout.tsx(1,8): error TS2307: Cannot find module './globals.css' or its corresponding type declarations.
+src/apps/auth/token/page.tsx(67,13): error TS7030: Not all code paths return a value.
+src/apps/god/monitoring/hooks.tsx(88,13): error TS7030: Not all code paths return a value.
+src/apps/god/monitoring/page.tsx(105,13): error TS7030: Not all code paths return a value.
+src/apps/myaccount/page.tsx(39,32): error TS2322: Type '{ id: string; name: string; role: any; joinedAt: Date; firstName: string; lastName: string; email: string; password?: string; phone?: string; roleId: Types.ObjectId | { slug: string; name: string; permissions: string[]; }; ... 64 more ...; __v: number; }' is not assignable to type '{ firstName?: string | undefined; lastName?: string | undefined; name?: string | undefined; email: string; phone?: string | undefined; role?: string | undefined; emailVerified: boolean; status?: string | undefined; joinedAt?: string | ... 1 more ... | undefined; createdAt?: string | ... 1 more ... | undefined; oauth...'.
+  Types of property 'status' are incompatible.
+    Type 'import("/Users/niteeshkumar/Documents/GitHub/cms-winfoa/src/core/types/enums/core.type").UserStatus' is not assignable to type 'string'.
+src/apps/ump/page.tsx(22,72): error TS2339: Property 'name' does not exist on type 'IUser'.
+src/apps/ump/page.tsx(172,42): error TS7006: Parameter 'user' implicitly has an 'any' type.
+src/core/api/response-helper.ts(72,5): error TS2322: Type 'NextResponse<{ success: true; data: T[]; pagination: PaginationMeta; message: string | undefined; }>' is not assignable to type 'NextResponse<ApiResponse<T>>'.
+  Type '{ success: true; data: T[]; pagination: PaginationMeta; message: string | undefined; }' is not assignable to type 'ApiResponse<T>'.
+    Type '{ success: true; data: T[]; pagination: PaginationMeta; message: string | undefined; }' is not assignable to type 'SuccessResponse<T>'.
+      Types of property 'data' are incompatible.
+        Type 'T[]' is not assignable to type 'T'.
+          'T' could be instantiated with an arbitrary type which could be unrelated to 'T[]'.
+src/core/auth.ts(53,5): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'deviceInfo' does not exist in type '{ userId?: ObjectIdQueryTypeCasting | undefined; token?: StringQueryTypeCasting | undefined; device?: { ip?: string | undefined; userAgent?: string | undefined; type?: DeviceType | undefined; os?: string | undefined; browser?: string | undefined; } | undefined; ... 63 more ...; validateSync?: { ...; } | undefined; }'.
+src/core/constants/database.ts(7,3): error TS2305: Module '"@/types"' has no exported member 'UserRole'.
+src/core/constants/database.ts(8,3): error TS2305: Module '"@/types"' has no exported member 'UserStatus'.
+src/core/constants/database.ts(9,3): error TS2305: Module '"@/types"' has no exported member 'TransactionType'.
+src/core/constants/database.ts(10,3): error TS2305: Module '"@/types"' has no exported member 'TransactionStatus'.
+src/core/constants/database.ts(11,3): error TS2305: Module '"@/types"' has no exported member 'NotificationType'.
+src/core/detector.ts(3,10): error TS2305: Module '"@/types"' has no exported member 'DeviceType'.
+src/core/detector.ts(3,22): error TS2305: Module '"@/types"' has no exported member 'IDeviceInfo'.
+src/core/detector.ts(3,35): error TS2305: Module '"@/types"' has no exported member 'IGeoInfo'.
+src/core/detector.ts(14,57): error TS2345: Argument of type 'Promise<string | null>' is not assignable to parameter of type 'string'.
+src/core/detector.ts(15,42): error TS2345: Argument of type 'Promise<string | null>' is not assignable to parameter of type 'string'.
+src/core/detector.ts(16,54): error TS2345: Argument of type 'Promise<string | null>' is not assignable to parameter of type 'string'.
+src/core/detector.ts(25,12): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(26,17): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(27,17): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(28,17): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(32,12): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(33,17): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(34,17): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(35,17): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(36,17): error TS2339: Property 'includes' does not exist on type 'Promise<string | null>'.
+src/core/detector.ts(40,47): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/core/detector.ts(40,83): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/core/detector.ts(52,29): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/core/detector.ts(53,29): error TS2339: Property 'get' does not exist on type 'Promise<ReadonlyHeaders>'.
+src/core/permissions/checker.ts(9,15): error TS2305: Module '"@/core/auth"' has no exported member 'SessionUser'.
+src/core/permissions/index.ts(22,3): error TS2724: '"./constants"' has no exported member named 'SUPER_ADMIN_PERMISSIONS'. Did you mean 'USER_PERMISSIONS'?
+src/core/permissions/index.ts(23,3): error TS2724: '"./constants"' has no exported member named 'ADMIN_PERMISSIONS'. Did you mean 'GOD_PERMISSIONS'?
+src/core/permissions/index.ts(24,3): error TS2305: Module '"./constants"' has no exported member 'STAFF_PERMISSIONS'.
+src/core/permissions/index.ts(25,3): error TS2724: '"./constants"' has no exported member named 'CENTER_PERMISSIONS'. Did you mean 'USER_PERMISSIONS'?
+src/core/permissions/index.ts(26,3): error TS2724: '"./constants"' has no exported member named 'STUDENT_PERMISSIONS'. Did you mean 'USER_PERMISSIONS'?
+src/core/types/index.ts(3,15): error TS2307: Cannot find module './enmus' or its corresponding type declarations.
+src/core/types/interfaces/core.interface.ts(1,52): error TS2307: Cannot find module '@/core/types/enmus' or its corresponding type declarations.
+src/features/account/components/profile/delete-account-dialog.tsx(20,76): error TS2345: Argument of type '(formData: FormData) => Promise<{ error: string; errors?: undefined; success?: undefined; data?: undefined; } | { error: string; errors: ValidationError[] | undefined; success?: undefined; data?: undefined; } | { ...; }>' is not assignable to parameter of type '(state: unknown, payload: FormData) => unknown'.
+  Types of parameters 'formData' and 'state' are incompatible.
+    Type 'unknown' is not assignable to type 'FormData'.
+src/features/account/components/profile/delete-account-dialog.tsx(70,19): error TS2339: Property 'error' does not exist on type '{}'.
+src/features/account/components/profile/delete-account-dialog.tsx(72,22): error TS2339: Property 'error' does not exist on type '{}'.
+src/features/account/components/profile/profile-form.tsx(18,76): error TS2345: Argument of type '(formData: FormData) => Promise<{ error: string; errors?: undefined; success?: undefined; data?: undefined; } | { error: string; errors: ValidationError[] | undefined; success?: undefined; data?: undefined; } | { ...; }>' is not assignable to parameter of type '(state: unknown, payload: FormData) => unknown'.
+  Types of parameters 'formData' and 'state' are incompatible.
+    Type 'unknown' is not assignable to type 'FormData'.
+src/features/account/components/profile/profile-form.tsx(83,17): error TS2339: Property 'error' does not exist on type '{}'.
+src/features/account/components/profile/profile-form.tsx(85,20): error TS2339: Property 'error' does not exist on type '{}'.
+src/features/account/components/profile/profile-form.tsx(89,17): error TS2339: Property 'success' does not exist on type '{}'.
+src/features/account/components/security/change-password-form.tsx(10,76): error TS2345: Argument of type '(formData: FormData) => Promise<{ error: string; errors?: undefined; success?: undefined; data?: undefined; } | { error: string; errors: ValidationError[] | undefined; success?: undefined; data?: undefined; } | { ...; }>' is not assignable to parameter of type '(state: unknown, payload: FormData) => unknown'.
+  Types of parameters 'formData' and 'state' are incompatible.
+    Type 'unknown' is not assignable to type 'FormData'.
+src/features/account/components/security/change-password-form.tsx(97,17): error TS2339: Property 'error' does not exist on type '{}'.
+src/features/account/components/security/change-password-form.tsx(99,20): error TS2339: Property 'error' does not exist on type '{}'.
+src/features/account/components/security/change-password-form.tsx(103,17): error TS2339: Property 'success' does not exist on type '{}'.
+src/features/account/components/security/change-password-form.tsx(105,20): error TS2339: Property 'message' does not exist on type '{}'.
+src/features/account/components/settings/notification-settings.tsx(3,10): error TS2305: Module '"@/actions/account"' has no exported member 'updateEmailNotifications'.
+src/features/account/components/settings/privacy-settings.tsx(3,10): error TS2305: Module '"@/actions/account"' has no exported member 'updatePrivacySettings'.
+src/features/account/components/settings/theme-selector.tsx(3,10): error TS2305: Module '"@/actions/account/settings"' has no exported member 'updateTheme'.
+src/features/account/index.ts(3,15): error TS2307: Cannot find module './services' or its corresponding type declarations.
+src/features/account/index.ts(5,15): error TS2307: Cannot find module './actions' or its corresponding type declarations.
+src/features/account/index.ts(6,15): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/features/admin/index.ts(7,15): error TS2307: Cannot find module './services/userid.service' or its corresponding type declarations.
+src/features/god/profile-activites.tsx(2,32): error TS2307: Cannot find module '@/shared/services/activity.service' or its corresponding type declarations.
+src/features/god/roles/RolesManagement.tsx(304,40): error TS2339: Property 'isActive' does not exist on type 'IRole'.
+src/features/god/roles/RolesManagement.tsx(305,27): error TS2339: Property 'isActive' does not exist on type 'IRole'.
+src/features/god/roles/RolesManagement.tsx(333,48): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+src/features/god/user-deleted.tsx(1,69): error TS2307: Cannot find module '@/actions/users.actions' or its corresponding type declarations.
+src/features/god/user-deleted.tsx(21,18): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(23,15): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(30,53): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(32,18): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(34,53): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(35,16): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(36,81): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(42,25): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(43,60): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(51,17): error TS18046: 'user' is of type 'unknown'.
+src/features/god/user-deleted.tsx(52,59): error TS18046: 'user' is of type 'unknown'.
+src/features/ump/index.ts(4,15): error TS2307: Cannot find module './services' or its corresponding type declarations.
+src/features/ump/index.ts(7,15): error TS2307: Cannot find module './types' or its corresponding type declarations.
+src/features/ump/users/components/user-header.tsx(6,28): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/features/ump/users/components/user-list.tsx(5,28): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/features/ump/users/components/user-pagination.tsx(4,37): error TS2307: Cannot find module '@/types/api' or its corresponding type declarations.
+src/features/ump/users/components/user-row.tsx(8,28): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/features/ump/users/components/user-row.tsx(100,12): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<"GOD" | "USER" | "SUPER_ADMIN", string>'.
+src/features/ump/users/components/user-row.tsx(115,12): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type 'Record<"ACTIVE" | "INACTIVE" | "SUSPENDED" | "PENDING", string>'.
+src/features/ump/users/components/user-table.tsx(4,28): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/features/ump/users/components/UsersManagement.tsx(54,3): error TS2724: '"@/actions"' has no exported member named 'getUserSessionsAction'. Did you mean 'getUsersAction'?
+src/features/ump/users/components/UsersManagement.tsx(55,3): error TS2305: Module '"@/actions"' has no exported member 'invalidateAllUserSessionsAction'.
+src/features/ump/users/components/UsersManagement.tsx(56,3): error TS2305: Module '"@/actions"' has no exported member 'changeUserRoleAction'.
+src/features/ump/users/components/UsersManagement.tsx(59,38): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/features/wallet/bills/form-card.tsx(6,25): error TS2307: Cannot find module '@/app/wallet/actions' or its corresponding type declarations.
+src/shared/actions/account/activity.ts(4,10): error TS2459: Module '"@/services/auth"' declares 'SessionService' locally, but it is not exported.
+src/shared/actions/account/index.ts(2,1): error TS2308: Module './activity' has already exported a member named 'getRecentActivity'. Consider explicitly re-exporting to resolve the ambiguity.
+src/shared/actions/account/profile.ts(13,79): error TS2307: Cannot find module '@/types/schemas' or its corresponding type declarations.
+src/shared/actions/account/profile.ts(84,23): error TS2339: Property 'newEmail' does not exist on type '{}'.
+src/shared/actions/account/settings.ts(19,8): error TS2307: Cannot find module '@/types/schemas' or its corresponding type declarations.
+src/shared/actions/account/settings.ts(62,7): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Record<string, unknown>'.
+src/shared/actions/account/settings.ts(94,7): error TS18046: 'validation.data' is of type 'unknown'.
+src/shared/actions/account/settings.ts(95,7): error TS18046: 'validation.data' is of type 'unknown'.
+src/shared/actions/admin/user-registry.ts(7,10): error TS2305: Module '"@/core/utils/validations/admin.validation"' has no exported member 'registerUserSchema'.
+src/shared/actions/admin/user-registry.ts(18,13): error TS2339: Property 'email' does not exist on type '{}'.
+src/shared/actions/admin/user-registry.ts(18,20): error TS2339: Property 'role' does not exist on type '{}'.
+src/shared/actions/admin/user-registry.ts(18,26): error TS2339: Property 'metadata' does not exist on type '{}'.
+src/shared/actions/auth/index.ts(10,39): error TS2307: Cannot find module '@/types/auth' or its corresponding type declarations.
+src/shared/actions/auth/index.ts(11,31): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/shared/actions/auth/login.form.ts(17,23): error TS7030: Not all code paths return a value.
+src/shared/actions/auth/login.form.ts(63,9): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/shared/actions/auth/login.form.ts(83,10): error TS2339: Property 'loginCount' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/login.form.ts(83,29): error TS2339: Property 'loginCount' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/login.ts(6,10): error TS2305: Module '"@/core/utils/validations"' has no exported member 'loginSchema'.
+src/shared/actions/auth/login.ts(6,28): error TS2305: Module '"@/core/utils/validations"' has no exported member 'LoginInput'.
+src/shared/actions/auth/login.ts(9,52): error TS2307: Cannot find module '@/types/api' or its corresponding type declarations.
+src/shared/actions/auth/login.ts(25,11): error TS2339: Property 'email' does not exist on type '{}'.
+src/shared/actions/auth/login.ts(25,18): error TS2339: Property 'password' does not exist on type '{}'.
+src/shared/actions/auth/login.ts(51,9): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/shared/actions/auth/login.ts(66,36): error TS2339: Property 'token' does not exist on type 'string'.
+src/shared/actions/auth/login.ts(66,43): error TS2554: Expected 1 arguments, but got 2.
+src/shared/actions/auth/login.ts(66,51): error TS2339: Property 'expiresAt' does not exist on type 'string'.
+src/shared/actions/auth/login.ts(69,10): error TS2551: Property 'lastLogin' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'. Did you mean 'lastLoginAt'?
+src/shared/actions/auth/login.ts(73,48): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/shared/actions/auth/login.ts(80,20): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/login.ts(83,21): error TS2339: Property 'image' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/password-reset.ts(28,10): error TS2339: Property 'resetToken' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/password-reset.ts(29,10): error TS2339: Property 'resetTokenExpiry' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/password-reset.ts(69,10): error TS2339: Property 'resetToken' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/password-reset.ts(70,10): error TS2339: Property 'resetTokenExpiry' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/auth/password-reset.ts(101,59): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(password: string, hash: string): Promise<boolean>', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 2, '(password: string, hash: string, callback?: Callback<boolean> | undefined, progressCallback?: ProgressCallback | undefined): void', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/shared/actions/auth/signup.form.ts(17,23): error TS7030: Not all code paths return a value.
+src/shared/actions/auth/signup.form.ts(48,14): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(52,59): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(57,22): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(63,46): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(66,14): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(68,18): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(68,61): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(69,17): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(70,14): error TS18048: 'validatedData' is possibly 'undefined'.
+src/shared/actions/auth/signup.form.ts(72,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/shared/actions/auth/signup.form.ts(82,51): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/actions/auth/signup.form.ts(82,68): error TS2339: Property 'email' does not exist on type 'never'.
+src/shared/actions/auth/signup.form.ts(85,33): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/actions/auth/signup.ts(9,15): error TS2305: Module '"@/core/utils/interface"' has no exported member 'SignupData'.
+src/shared/actions/auth/signup.ts(61,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/shared/actions/auth/signup.ts(71,20): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/actions/auth/signup.ts(96,18): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/actions/auth/signup.ts(97,20): error TS2339: Property 'firstName' does not exist on type 'never'.
+src/shared/actions/auth/signup.ts(97,43): error TS2339: Property 'lastName' does not exist on type 'never'.
+src/shared/actions/auth/signup.ts(98,21): error TS2339: Property 'email' does not exist on type 'never'.
+src/shared/actions/god/index.ts(18,27): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(filter?: _QueryFilter<{ password: string; toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 314 more ...; "schema.virtualpath": (name: string) => VirtualType<...> | null; }> | undefined, options?: (CountOptions & ... 2 more ... & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<UserStatus>> | undefined'.
+  Overload 2 of 2, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, options?: (CountOptions & Pick<QueryOptions<IUser>, "timestamps" | ... 1 more ... | "lean"> & { ...; } & Abortable) | null | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/shared/actions/index.ts(18,3): error TS2724: '"./account"' has no exported member named 'updateProfileAction'. Did you mean 'updateProfile'?
+src/shared/actions/index.ts(19,3): error TS2305: Module '"./account"' has no exported member 'getProfileAction'.
+src/shared/actions/index.ts(21,3): error TS2305: Module '"./account"' has no exported member 'updateSettingsAction'.
+src/shared/actions/index.ts(22,3): error TS2724: '"./account"' has no exported member named 'changePasswordAction'. Did you mean 'changePassword'?
+src/shared/actions/index.ts(43,3): error TS2305: Module '"./wallet"' has no exported member 'getBalanceAction'.
+src/shared/actions/index.ts(44,3): error TS2305: Module '"./wallet"' has no exported member 'updateBalanceAction'.
+src/shared/actions/index.ts(46,3): error TS2305: Module '"./wallet"' has no exported member 'createTransactionAction'.
+src/shared/actions/index.ts(47,3): error TS2305: Module '"./wallet"' has no exported member 'getTransactionHistoryAction'.
+src/shared/actions/index.ts(49,3): error TS2305: Module '"./wallet"' has no exported member 'processRechargeAction'.
+src/shared/actions/index.ts(50,3): error TS2305: Module '"./wallet"' has no exported member 'validateRechargeAction'.
+src/shared/actions/index.ts(58,3): error TS2724: '"./god"' has no exported member named 'getSystemStatsAction'. Did you mean 'getSystemStats'?
+src/shared/actions/index.ts(59,3): error TS2305: Module '"./god"' has no exported member 'updateSystemConfigAction'.
+src/shared/actions/index.ts(61,3): error TS2305: Module '"./god"' has no exported member 'getAllUsersAction'.
+src/shared/actions/index.ts(62,3): error TS2305: Module '"./god"' has no exported member 'bulkUserOperationsAction'.
+src/shared/actions/index.ts(64,3): error TS2305: Module '"./god"' has no exported member 'getAnalyticsDataAction'.
+src/shared/actions/index.ts(65,3): error TS2305: Module '"./god"' has no exported member 'generateReportAction'.
+src/shared/actions/index.ts(76,3): error TS2724: '"./roles"' has no exported member named 'getRoleByIdAction'. Did you mean 'getRoleAction'?
+src/shared/actions/index.ts(87,3): error TS2305: Module '"./users"' has no exported member 'updateUserPermissionsAction'.
+src/shared/actions/myaccount/profile.ts(7,10): error TS2305: Module '"@/core/utils/validations"' has no exported member 'updateProfileSchema'.
+src/shared/actions/myaccount/profile.ts(7,31): error TS2305: Module '"@/core/utils/validations"' has no exported member 'updateUserPreferencesSchema'.
+src/shared/actions/myaccount/profile.ts(40,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Argument of type '{ $set: unknown; }' is not assignable to parameter of type 'UpdateQuery<IUser>'.
+      Type '{ $set: unknown; }' is not assignable to type '_UpdateQuery<IUser, AnyObject>'.
+        Types of property '$set' are incompatible.
+          Type 'unknown' is not assignable to type '(AnyKeys<IUser> & AnyObject) | undefined'.
+src/shared/actions/myaccount/profile.ts(73,9): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'ThemeMode | undefined'.
+src/shared/actions/myaccount/profile.ts(105,9): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/shared/actions/myaccount/wallet.ts(17,22): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/myaccount/wallet.ts(50,10): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/myaccount/wallet.ts(50,32): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/myaccount/wallet.ts(60,21): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/myaccount/wallet.ts(93,15): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/myaccount/wallet.ts(101,10): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/myaccount/wallet.ts(101,32): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/myaccount/wallet.ts(111,21): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/roles/index.ts(19,8): error TS2307: Cannot find module '@/types/api' or its corresponding type declarations.
+src/shared/actions/roles/index.ts(57,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'isActive' does not exist in type '{ name?: StringQueryTypeCasting | undefined; slug?: StringQueryTypeCasting | undefined; description?: StringQueryTypeCasting | undefined; ... 65 more ...; validateSync?: { ...; } | undefined; }'.
+src/shared/actions/roles/index.ts(64,18): error TS2339: Property 'toObject' does not exist on type 'never'.
+src/shared/actions/roles/index.ts(118,43): error TS2339: Property 'isActive' does not exist on type 'Document<unknown, {}, IRole, {}, DefaultSchemaOptions> & IRole & Required<{ _id: ObjectId; }> & { __v: number; } & { ...; }'.
+src/shared/actions/roles/index.ts(333,56): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/ump/index.ts(10,28): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/shared/actions/ump/index.ts(11,53): error TS2307: Cannot find module '@/types/api' or its corresponding type declarations.
+src/shared/actions/ump/index.ts(70,21): error TS2339: Property 'updateUserPermissions' does not exist on type 'typeof UMPService'.
+src/shared/actions/ump/index.ts(77,21): error TS2339: Property 'resetUserPermissions' does not exist on type 'typeof UMPService'.
+src/shared/actions/ump/index.ts(88,21): error TS2551: Property 'bulkActivateUsers' does not exist on type 'typeof UMPService'. Did you mean 'activateUser'?
+src/shared/actions/ump/index.ts(97,21): error TS2551: Property 'bulkDeactivateUsers' does not exist on type 'typeof UMPService'. Did you mean 'deactivateUser'?
+src/shared/actions/ump/index.ts(104,21): error TS2339: Property 'bulkDeleteUsers' does not exist on type 'typeof UMPService'.
+src/shared/actions/ump/users.ts(8,10): error TS2305: Module '"@/core/utils/validations"' has no exported member 'createUserSchema'.
+src/shared/actions/ump/users.ts(8,28): error TS2305: Module '"@/core/utils/validations"' has no exported member 'updateUserSchema'.
+src/shared/actions/ump/users.ts(55,63): error TS2339: Property 'email' does not exist on type '{}'.
+src/shared/actions/ump/users.ts(75,18): error TS2339: Property 'password' does not exist on type '{}'.
+src/shared/actions/ump/users.ts(76,51): error TS2339: Property 'password' does not exist on type '{}'.
+src/shared/actions/ump/users.ts(82,24): error TS2339: Property 'status' does not exist on type '{}'.
+src/shared/actions/ump/users.ts(88,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'ObjectId' is not assignable to type 'StringQueryTypeCasting | undefined'.
+src/shared/actions/ump/users.ts(89,30): error TS2339: Property 'createdBy' does not exist on type '{}'.
+src/shared/actions/ump/users.ts(126,20): error TS2339: Property 'password' does not exist on type '{}'.
+src/shared/actions/ump/users.ts(131,87): error TS2339: Property 'password' does not exist on type '{}'.
+src/shared/actions/ump/users.ts(190,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(filter?: _QueryFilter<{ password: string; toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 314 more ...; "schema.virtualpath": (name: string) => VirtualType<...> | null; }> | undefined, options?: (CountOptions & ... 2 more ... & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<UserStatus>> | undefined'.
+  Overload 2 of 2, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, options?: (CountOptions & Pick<QueryOptions<IUser>, "timestamps" | ... 1 more ... | "lean"> & { ...; } & Abortable) | null | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/shared/actions/ump/users.ts(191,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(filter?: _QueryFilter<{ password: string; toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 314 more ...; "schema.virtualpath": (name: string) => VirtualType<...> | null; }> | undefined, options?: (CountOptions & ... 2 more ... & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<UserStatus>> | undefined'.
+  Overload 2 of 2, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, options?: (CountOptions & Pick<QueryOptions<IUser>, "timestamps" | ... 1 more ... | "lean"> & { ...; } & Abortable) | null | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/shared/actions/users/index.ts(9,32): error TS2307: Cannot find module '@/lib/auth/session' or its corresponding type declarations.
+src/shared/actions/users/index.ts(21,8): error TS2307: Cannot find module '@/types/api' or its corresponding type declarations.
+src/shared/actions/users/index.ts(22,38): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/shared/actions/users/index.ts(342,24): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/shared/actions/users/permissions.ts(15,37): error TS2307: Cannot find module '@/types/api' or its corresponding type declarations.
+src/shared/actions/users/permissions.ts(16,28): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/shared/actions/wallet/index.ts(10,3): error TS2305: Module '"@/core/utils/schemas"' has no exported member 'rechargeSchema'.
+src/shared/actions/wallet/index.ts(11,3): error TS2305: Module '"@/core/utils/schemas"' has no exported member 'transferSchema'.
+src/shared/actions/wallet/index.ts(12,3): error TS2305: Module '"@/core/utils/schemas"' has no exported member 'withdrawalSchema'.
+src/shared/actions/wallet/index.ts(13,3): error TS2305: Module '"@/core/utils/schemas"' has no exported member 'billPaymentSchema'.
+src/shared/actions/wallet/index.ts(23,31): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(57,24): error TS2339: Property 'create' does not exist on type '{ new (title: string, options?: NotificationOptions | undefined): Notification; prototype: Notification; readonly permission: NotificationPermission; requestPermission(deprecatedCallback?: NotificationPermissionCallback | undefined): Promise<...>; }'.
+src/shared/actions/wallet/index.ts(81,29): error TS2339: Property 'createTransaction' does not exist on type 'IWalletTransactionModel'.
+src/shared/actions/wallet/index.ts(121,28): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(131,29): error TS2339: Property 'createTransaction' does not exist on type 'IWalletTransactionModel'.
+src/shared/actions/wallet/index.ts(135,45): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(144,29): error TS2339: Property 'createTransaction' does not exist on type 'IWalletTransactionModel'.
+src/shared/actions/wallet/index.ts(148,44): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(160,43): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(167,46): error TS2339: Property 'name' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(191,28): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(195,29): error TS2339: Property 'createTransaction' does not exist on type 'IWalletTransactionModel'.
+src/shared/actions/wallet/index.ts(235,28): error TS2339: Property 'walletBalance' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/actions/wallet/index.ts(239,29): error TS2339: Property 'createTransaction' does not exist on type 'IWalletTransactionModel'.
+src/shared/components/ui/index.tsx(42,1): error TS2308: Module './skeleton' has already exported a member named 'Skeleton'. Consider explicitly re-exporting to resolve the ambiguity.
+src/shared/lib/db/models/core/Session.ts(2,10): error TS2305: Module '"@/types"' has no exported member 'DeviceType'.
+src/shared/lib/db/models/core/Session.ts(2,22): error TS2305: Module '"@/types"' has no exported member 'LoginMethod'.
+src/shared/lib/db/models/core/Session.ts(2,35): error TS2305: Module '"@/types"' has no exported member 'RiskLevel'.
+src/shared/lib/db/models/core/Session.ts(2,46): error TS2305: Module '"@/types"' has no exported member 'SessionStatus'.
+src/shared/services/account/activity.service.ts(2,10): error TS2305: Module '"@/types"' has no exported member 'ActionType'.
+src/shared/services/account/activity.service.ts(2,22): error TS2305: Module '"@/types"' has no exported member 'ResourceType'.
+src/shared/services/account/profile.service.ts(2,10): error TS2305: Module '"@/types"' has no exported member 'ActionType'.
+src/shared/services/account/profile.service.ts(2,22): error TS2305: Module '"@/types"' has no exported member 'ResourceType'.
+src/shared/services/account/settings.service.ts(4,10): error TS2305: Module '"@/types"' has no exported member 'ActionType'.
+src/shared/services/account/settings.service.ts(4,22): error TS2305: Module '"@/types"' has no exported member 'ResourceType'.
+src/shared/services/account/settings.service.ts(58,15): error TS2339: Property 'oauthProvider' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/account/settings.service.ts(76,10): error TS2339: Property 'oauthProvider' does not exist on type 'Document<unknown, {}, IUser, {}, DefaultSchemaOptions> & IUser & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/admin/userid.service.ts(40,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserRole | undefined'.
+      Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/shared/services/admin/userid.service.ts(41,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserRole | undefined'.
+      Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/shared/services/admin/userid.service.ts(47,24): error TS2339: Property 'userId' does not exist on type 'never'.
+src/shared/services/admin/userid.service.ts(48,28): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/services/api-management/apikey.service.ts(20,47): error TS2551: Property 'generateKey' does not exist on type 'IApiKeyModel'. Did you mean 'generate'?
+src/shared/services/api-management/apikey.service.ts(26,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'key' does not exist in type '{ userId?: ObjectIdQueryTypeCasting | undefined; name?: StringQueryTypeCasting | undefined; description?: StringQueryTypeCasting | undefined; ... 79 more ...; validateSync?: { ...; } | undefined; }'.
+src/shared/services/api-management/apikey.service.ts(37,17): error TS2339: Property 'toObject' does not exist on type 'never'.
+src/shared/services/api-management/apikey.service.ts(96,17): error TS2339: Property 'verifyKey' does not exist on type 'Document<unknown, {}, IApiKey, {}, DefaultSchemaOptions> & IApiKey & Required<{ _id: ObjectId; }> & { __v: number; } & { ...; }'.
+src/shared/services/api-management/apikey.service.ts(101,18): error TS2339: Property 'incrementRequests' does not exist on type 'Document<unknown, {}, IApiKey, {}, DefaultSchemaOptions> & IApiKey & Required<{ _id: ObjectId; }> & { __v: number; } & { ...; }'.
+src/shared/services/api-management/apikey.service.ts(184,30): error TS2339: Property 'requestCount' does not exist on type 'Document<unknown, {}, IApiKey, {}, DefaultSchemaOptions> & IApiKey & Required<{ _id: ObjectId; }> & { __v: number; } & { ...; }'.
+src/shared/services/api-management/requestlog.service.ts(50,22): error TS18046: 'filter.timestamp' is of type 'unknown'.
+src/shared/services/api-management/requestlog.service.ts(51,20): error TS18046: 'filter.timestamp' is of type 'unknown'.
+src/shared/services/auth/auth.service.ts(7,10): error TS2305: Module '"@/types"' has no exported member 'UserStatus'.
+src/shared/services/auth/auth.service.ts(30,9): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/shared/services/auth/auth.service.ts(116,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/shared/services/auth/auth.service.ts(125,64): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/services/auth/auth.service.ts(125,81): error TS2339: Property 'email' does not exist on type 'never'.
+src/shared/services/auth/index.ts(10,39): error TS2307: Cannot find module '@/types/auth' or its corresponding type declarations.
+src/shared/services/auth/index.ts(11,31): error TS2307: Cannot find module '@/types/models' or its corresponding type declarations.
+src/shared/services/auth/index.ts(12,10): error TS2305: Module '"@/types"' has no exported member 'isValidLoginMethod'.
+src/shared/services/auth/index.ts(12,30): error TS2305: Module '"@/types"' has no exported member 'LoginMethod'.
+src/shared/services/auth/index.ts(12,43): error TS2305: Module '"@/types"' has no exported member 'LoginMethodLabel'.
+src/shared/services/auth/index.ts(84,37): error TS2554: Expected 2 arguments, but got 1.
+src/shared/services/session/analytics.service.ts(9,10): error TS2305: Module '"@/types"' has no exported member 'RiskLevel'.
+src/shared/services/session/analytics.service.ts(9,21): error TS2305: Module '"@/types"' has no exported member 'SessionStatus'.
+src/shared/services/session/analytics.service.ts(9,36): error TS2305: Module '"@/types"' has no exported member 'DeviceType'.
+src/shared/services/session/analytics.service.ts(118,26): error TS2339: Property 'deviceInfo' does not exist on type 'ISession & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/session/analytics.service.ts(119,27): error TS2339: Property 'geoInfo' does not exist on type 'ISession & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/session/analytics.service.ts(119,55): error TS2339: Property 'geoInfo' does not exist on type 'ISession & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/session/analytics.service.ts(121,33): error TS2339: Property 'lastAccessedAt' does not exist on type 'ISession & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/session/analytics.service.ts(123,28): error TS2339: Property 'securityInfo' does not exist on type 'ISession & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/session/analytics.service.ts(124,27): error TS2339: Property 'isActive' does not exist on type 'ISession & Required<{ _id: ObjectId; }> & { __v: number; }'.
+src/shared/services/session/core.service.ts(11,10): error TS2305: Module '"@/types"' has no exported member 'SessionStatus'.
+src/shared/services/session/core.service.ts(43,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, and 'deviceInfo' does not exist in type '{ userId?: ObjectIdQueryTypeCasting | undefined; token?: StringQueryTypeCasting | undefined; device?: { ip?: string | undefined; userAgent?: string | undefined; type?: DeviceType | undefined; os?: string | undefined; browser?: string | undefined; } | undefined; ... 63 more ...; validateSync?: { ...; } | undefined; }'.
+src/shared/services/session/core.service.ts(94,15): error TS2339: Property 'lastAccessedAt' does not exist on type 'Document<unknown, {}, ISession, {}, DefaultSchemaOptions> & ISession & Required<{ _id: ObjectId; }> & { ...; } & { ...; }'.
+src/shared/services/session/management.service.ts(9,10): error TS2305: Module '"@/types"' has no exported member 'LoginMethod'.
+src/shared/services/session/management.service.ts(9,23): error TS2305: Module '"@/types"' has no exported member 'SessionStatus'.
+src/shared/services/session/management.service.ts(9,38): error TS2305: Module '"@/types"' has no exported member 'ResourceType'.
+src/shared/services/session/management.service.ts(9,52): error TS2305: Module '"@/types"' has no exported member 'ActionType'.
+src/shared/services/session/management.service.ts(13,32): error TS2307: Cannot find module '@/shared/services/activity.service' or its corresponding type declarations.
+src/shared/services/session/management.service.ts(64,17): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/services/session/types.ts(6,10): error TS2305: Module '"@/types"' has no exported member 'RiskLevel'.
+src/shared/services/session/types.ts(6,21): error TS2305: Module '"@/types"' has no exported member 'SessionStatus'.
+src/shared/services/session/types.ts(6,36): error TS2305: Module '"@/types"' has no exported member 'LoginMethod'.
+src/shared/services/session/utils.ts(6,10): error TS2305: Module '"@/types"' has no exported member 'SessionStatus'.
+src/shared/services/ump/user-management.service.ts(4,10): error TS2305: Module '"@/types"' has no exported member 'UserStatus'.
+src/shared/services/ump/user-management.service.ts(95,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Type 'string' is not assignable to type 'UserStatus | undefined'.
+src/shared/services/ump/user-management.service.ts(100,20): error TS2339: Property '_id' does not exist on type 'never'.
+src/shared/services/ump/user-management.service.ts(101,7): error TS2769: No overload matches this call.
+  The last overload gave the following error.
+    Object literal may only specify known properties, but 'registeredBy' does not exist in type '{ userId?: StringQueryTypeCasting | undefined; email?: StringQueryTypeCasting | undefined; role?: UserRole | undefined; ... 62 more ...; validateSync?: { ...; } | undefined; }'. Did you mean to write 'registeredAt'?
+src/shared/services/ump/user-management.service.ts(158,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(filter?: _QueryFilter<{ password: string; toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 314 more ...; "schema.virtualpath": (name: string) => VirtualType<...> | null; }> | undefined, options?: (CountOptions & ... 2 more ... & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<UserStatus>> | undefined'.
+  Overload 2 of 2, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, options?: (CountOptions & Pick<QueryOptions<IUser>, "timestamps" | ... 1 more ... | "lean"> & { ...; } & Abortable) | null | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/shared/services/ump/user-management.service.ts(159,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(filter?: _QueryFilter<{ password: string; toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 314 more ...; "schema.virtualpath": (name: string) => VirtualType<...> | null; }> | undefined, options?: (CountOptions & ... 2 more ... & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<UserStatus>> | undefined'.
+  Overload 2 of 2, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, options?: (CountOptions & Pick<QueryOptions<IUser>, "timestamps" | ... 1 more ... | "lean"> & { ...; } & Abortable) | null | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/shared/services/ump/user-management.service.ts(160,29): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(filter?: _QueryFilter<{ password: string; toJSON: { (options: ToObjectOptions<unknown, Document<unknown, {}, unknown, {}, DefaultSchemaOptions> & { _id: ObjectId; } & { __v: number; } & { id: string; }> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): any; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): FlattenMaps<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): { ...; }; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): Omit<...>; (options: ToObjectOptions<...> & { ...; }): any; (options?: ToObjectOptions<...> | undefined): any; <T>(options?: ToObjectOptions<...> | undefined): Require_id<...> & { ...; }; }; ... 314 more ...; "schema.virtualpath": (name: string) => VirtualType<...> | null; }> | undefined, options?: (CountOptions & ... 2 more ... & Abortable) | ... 1 more ... | undefined): Query<...>', gave the following error.
+    Type 'string' is not assignable to type 'Condition<ApplyBasicQueryCasting<UserStatus>> | undefined'.
+  Overload 2 of 2, '(filter?: Query<any, any, {}, unknown, "find", Record<string, never>> | undefined, options?: (CountOptions & Pick<QueryOptions<IUser>, "timestamps" | ... 1 more ... | "lean"> & { ...; } & Abortable) | null | undefined): Query<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type 'Query<any, any, {}, unknown, "find", Record<string, never>>'.
+src/shared/services/ump/user-management.service.ts(189,5): error TS2322: Type '"active" | "inactive"' is not assignable to type 'UserStatus'.
+  Type '"active"' is not assignable to type 'UserStatus'.
+src/shared/services/ump/user-management.service.ts(189,19): error TS2367: This comparison appears to be unintentional because the types 'UserStatus' and 'string' have no overlap.
+src/shared/types/api/responses.ts(6,15): error TS2305: Module '"@/types"' has no exported member 'ValidationError'.
+src/shared/types/user.types.ts(7,29): error TS2307: Cannot find module '@/types/base.types' or its corresponding type declarations.

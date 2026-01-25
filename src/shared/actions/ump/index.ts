@@ -18,21 +18,21 @@ import type { UpdateResponse, DeleteResponse } from '@/types/api';
  * Activate a user account
  */
 export async function activateUserAction(userId: string): Promise<UpdateResponse<IUser>> {
-    return UMPService.activateUser(userId);
+  return UMPService.activateUser(userId);
 }
 
 /**
  * Deactivate a user account
  */
 export async function deactivateUserAction(userId: string): Promise<UpdateResponse<IUser>> {
-    return UMPService.deactivateUser(userId);
+  return UMPService.deactivateUser(userId);
 }
 
 /**
  * Get user management data
  */
 export async function getUserManagementData() {
-    return UMPService.getUserManagementData();
+  return UMPService.getUserManagementData();
 }
 
 // ==========================================
@@ -42,15 +42,18 @@ export async function getUserManagementData() {
 /**
  * Assign role to user
  */
-export async function assignRoleToUserAction(userId: string, roleId: string): Promise<UpdateResponse<IUser>> {
-    return UMPService.assignRoleToUser(userId, roleId);
+export async function assignRoleToUserAction(
+  userId: string,
+  roleId: string
+): Promise<UpdateResponse<IUser>> {
+  return UMPService.assignRoleToUser(userId, roleId);
 }
 
 /**
  * Remove role from user
  */
 export async function removeRoleFromUserAction(userId: string): Promise<UpdateResponse<IUser>> {
-    return UMPService.removeRoleFromUser(userId);
+  return UMPService.removeRoleFromUser(userId);
 }
 
 // ==========================================
@@ -61,17 +64,17 @@ export async function removeRoleFromUserAction(userId: string): Promise<UpdateRe
  * Update user permissions
  */
 export async function updateUserPermissionsAction(
-    userId: string, 
-    permissions: string[]
+  userId: string,
+  permissions: string[]
 ): Promise<UpdateResponse<IUser>> {
-    return UMPService.updateUserPermissions(userId, permissions);
+  return UMPService.updateUserPermissions(userId, permissions);
 }
 
 /**
  * Reset user permissions to role defaults
  */
 export async function resetUserPermissionsAction(userId: string): Promise<UpdateResponse<IUser>> {
-    return UMPService.resetUserPermissions(userId);
+  return UMPService.resetUserPermissions(userId);
 }
 
 // ==========================================
@@ -82,19 +85,21 @@ export async function resetUserPermissionsAction(userId: string): Promise<Update
  * Bulk activate users
  */
 export async function bulkActivateUsersAction(userIds: string[]): Promise<UpdateResponse<IUser[]>> {
-    return UMPService.bulkActivateUsers(userIds);
+  return UMPService.bulkActivateUsers(userIds);
 }
 
 /**
  * Bulk deactivate users
  */
-export async function bulkDeactivateUsersAction(userIds: string[]): Promise<UpdateResponse<IUser[]>> {
-    return UMPService.bulkDeactivateUsers(userIds);
+export async function bulkDeactivateUsersAction(
+  userIds: string[]
+): Promise<UpdateResponse<IUser[]>> {
+  return UMPService.bulkDeactivateUsers(userIds);
 }
 
 /**
  * Bulk delete users (soft delete)
  */
 export async function bulkDeleteUsersAction(userIds: string[]): Promise<DeleteResponse> {
-    return UMPService.bulkDeleteUsers(userIds);
+  return UMPService.bulkDeleteUsers(userIds);
 }

@@ -1,5 +1,5 @@
-import { env } from "./env";
-import { TENANCY } from "./site";
+import { env } from './env';
+import { TENANCY } from './site';
 
 export const SESSION = {
   // Security
@@ -16,11 +16,11 @@ export const SESSION = {
     // Cookie Settings (Passed to cookies().set())
     OPTIONS: {
       httpOnly: true, // Prevents XSS
-      secure: env.NODE_ENV === "production", // HTTPS only in prod
-      sameSite: "lax", // Allows auth redirects
+      secure: env.NODE_ENV === 'production', // HTTPS only in prod
+      sameSite: 'lax', // Allows auth redirects
       // expires: new Date(),
       domain: TENANCY.COOKIE_DOMAIN, // Vital for Multi-tenancy
-      path: "/",
+      path: '/',
     } as const,
   },
 };

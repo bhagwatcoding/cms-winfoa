@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/core/db";
-import { User } from "@/models";
-import { createSession, setSessionCookie } from "@/core/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/core/db';
+import { User } from '@/models';
+import { createSession, setSessionCookie } from '@/core/auth';
+import { UserStatus } from '@/core/db/enums';
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,59 +13,39 @@ export async function POST(request: NextRequest) {
 
     // Validate input
     if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password are required" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
     // Find user with password field
-    const user = await User.findOne({ email: email.toLowerCase() }).select(
-      "+password",
-    );
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
 
     if (!user) {
-      return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: "Invalid email or password" },
-        { status: 401 },
-      );
+      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
 
     // Check if user is active
-    if (!user.isActive || user.status !== "active") {
-      return NextResponse.json(
-        { error: "Account is inactive or suspended" },
-        { status: 403 },
-      );
+    if (!user.isActive || user.status !== UserStatus.Active) {
+      return NextResponse.json({ error: 'Account is inactive or suspended' }, { status: 403 });
     }
 
     // Create session
-    const userAgent = request.headers.get("user-agent") || undefined;
+    const userAgent = request.headers.get('user-agent') || undefined;
     const ipAddress =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      undefined;
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
 
-    const session = await createSession(
-      user._id.toString(),
-      userAgent,
-      ipAddress,
-    );
+    const token = await createSession(user._id.toString(), userAgent, ipAddress);
 
     // Set session cookie
-    await setSessionCookie(session.token, session.expiresAt);
+    await setSessionCookie(token);
 
     // Update user login info
-    user.lastLogin = new Date();
+    user.lastLoginAt = new Date();
     await user.save();
 
     // Return user data (excluding sensitive information)
@@ -80,26 +61,23 @@ export async function POST(request: NextRequest) {
         avatar: user.avatar,
         walletBalance: user.walletBalance,
       },
-      message: "Login successful",
+      message: 'Login successful',
     });
   } catch (error) {
-    console.error("Login error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
+    console.error('Login error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
 // Handle unsupported methods
 export async function GET() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
 export async function PUT() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
 export async function DELETE() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }

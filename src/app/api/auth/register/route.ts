@@ -1,62 +1,56 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/core/db";
-import { User } from "@/models";
-import { createSession, setSessionCookie } from "@/core/auth";
+import { NextRequest, NextResponse, userAgent } from 'next/server';
+import { connectDB } from '@/core/db';
+import { User } from '@/models';
+import { SessionService } from '@/core/services';
+import { REGEX } from '@/config';
+import { CookieService } from '@/core/services/cookie.service';
+import { HeaderService } from '@/core/services/header.service';
+import { UserStatus } from '@/core/types';
 
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
     const body = await request.json();
-    const { name, email, password, confirmPassword, role = "user" } = body;
+    const { name, email, password, confirmPassword, role = 'user' } = body;
 
     // Validate input
     if (!name || !email || !password) {
       return NextResponse.json(
-        { error: "Name, email, and password are required" },
-        { status: 400 },
+        { error: 'Name, email, and password are required' },
+        { status: 400 }
       );
     }
 
     if (password !== confirmPassword) {
-      return NextResponse.json(
-        { error: "Passwords do not match" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Passwords do not match' }, { status: 400 });
     }
 
     if (password.length < 6) {
       return NextResponse.json(
-        { error: "Password must be at least 6 characters long" },
-        { status: 400 },
+        { error: 'Password must be at least 6 characters long' },
+        { status: 400 }
       );
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Please provide a valid email address" },
-        { status: 400 },
-      );
+    if (!REGEX.EMAIL.test(email)) {
+      return NextResponse.json({ error: 'Please provide a valid email address' }, { status: 400 });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return NextResponse.json(
-        { error: "An account with this email already exists" },
-        { status: 409 },
+        { error: 'An account with this email already exists' },
+        { status: 409 }
       );
     }
 
     // Validate role (only allow certain roles for self-registration)
-    const allowedRoles = ["user", "student"];
+    const allowedRoles = ['user', 'student'];
     if (!allowedRoles.includes(role)) {
-      return NextResponse.json(
-        { error: "Invalid role specified" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid role specified' }, { status: 400 });
     }
 
     // Create new user
@@ -65,9 +59,9 @@ export async function POST(request: NextRequest) {
       email: email.toLowerCase().trim(),
       password,
       role,
-      status: "active", // Auto-activate for development
+      status: UserStatus.Active, // Auto-activate for development
       isActive: true,
-      emailVerified: process.env.NODE_ENV === "development",
+      emailVerified: true,
       walletBalance: 0,
     });
 
@@ -77,20 +71,11 @@ export async function POST(request: NextRequest) {
     console.log(`📝 New user registered: ${user.email} (${user.role})`);
 
     // Create session for auto-login after registration
-    const userAgent = request.headers.get("user-agent") || undefined;
-    const ipAddress =
-      request.headers.get("x-forwarded-for") ||
-      request.headers.get("x-real-ip") ||
-      undefined;
-
-    const session = await createSession(
-      user._id.toString(),
-      userAgent,
-      ipAddress,
-    );
+    const headers = await HeaderService.getMetadata(request);
+    const session = await SessionService.create(user._id.toString(), headers.device, headers.geo);
 
     // Set session cookie
-    await setSessionCookie(session.token, session.expiresAt);
+    await CookieService.startSession(session.token);
 
     // Return success response (excluding sensitive data)
     return NextResponse.json({
@@ -104,55 +89,37 @@ export async function POST(request: NextRequest) {
         emailVerified: user.emailVerified,
         walletBalance: user.walletBalance,
       },
-      message: "Registration successful! You are now logged in.",
+      message: 'Registration successful! You are now logged in.',
     });
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error('Registration error:', error);
 
     // Handle specific MongoDB errors
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      error.code === 11000
-    ) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
       return NextResponse.json(
-        { error: "An account with this email already exists" },
-        { status: 409 },
+        { error: 'An account with this email already exists' },
+        { status: 409 }
       );
     }
 
-    if (
-      error &&
-      typeof error === "object" &&
-      "name" in error &&
-      error.name === "ValidationError"
-    ) {
-      const validationErrors = Object.values((error as any).errors).map(
-        (err: { message: string }) => err.message,
-      );
-      return NextResponse.json(
-        { error: `Validation error: ${validationErrors.join(", ")}` },
-        { status: 400 },
-      );
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ValidationError') {
+      const validationErrors = Object.values(error).join(', ');
+      return NextResponse.json({ error: `Validation error: ${validationErrors}` }, { status: 400 });
     }
 
-    return NextResponse.json(
-      { error: "Registration failed. Please try again." },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Registration failed. Please try again.' }, { status: 500 });
   }
 }
 
 // Handle unsupported methods
 export async function GET() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
 export async function PUT() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
 export async function DELETE() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }

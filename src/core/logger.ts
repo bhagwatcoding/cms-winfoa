@@ -1,7 +1,7 @@
 /**
  * Professional Logger Service
  * Structured logging for enterprise applications
- * 
+ *
  * @module Logger
  */
 
@@ -27,9 +27,9 @@ class LoggerService {
     return LoggerService.instance;
   }
 
-  private formatMessage(level: LogLevel, message: string, meta?: any): string {
+  private formatMessage(level: LogLevel, message: string, meta?: Record<string, unknown>): string {
     const timestamp = new Date().toISOString();
-    
+
     if (this.isDevelopment) {
       // Pretty print for development
       const metaStr = meta ? `\n${JSON.stringify(meta, null, 2)}` : '';
@@ -41,13 +41,13 @@ class LoggerService {
       timestamp,
       level,
       message,
-      ...meta
+      ...meta,
     });
   }
 
-  private log(level: LogLevel, message: string, meta?: any) {
+  private log(level: LogLevel, message: string, meta?: Record<string, unknown>) {
     const output = this.formatMessage(level, message, meta);
-    
+
     switch (level) {
       case 'error':
         console.error(output);
@@ -69,23 +69,23 @@ class LoggerService {
     }
   }
 
-  public error(message: string, meta?: any) {
+  public error(message: string, meta?: Record<string, unknown>) {
     this.log('error', message, meta);
   }
 
-  public warn(message: string, meta?: any) {
+  public warn(message: string, meta?: Record<string, unknown>) {
     this.log('warn', message, meta);
   }
 
-  public info(message: string, meta?: any) {
+  public info(message: string, meta?: Record<string, unknown>) {
     this.log('info', message, meta);
   }
 
-  public http(message: string, meta?: any) {
+  public http(message: string, meta?: Record<string, unknown>) {
     this.log('http', message, meta);
   }
 
-  public debug(message: string, meta?: any) {
+  public debug(message: string, meta?: Record<string, unknown>) {
     this.log('debug', message, meta);
   }
 }

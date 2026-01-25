@@ -5,4 +5,4 @@ export {
   transferMoney,
   withdrawMoney,
   payBill,
-} from "@/shared/actions/wallet";
+} from '@/shared/actions/wallet';

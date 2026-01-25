@@ -3,7 +3,7 @@
  * Real-time performance metrics, error tracking, and system health monitoring
  */
 
-import { NextRequest } from "next/server";
+import { NextRequest } from 'next/server';
 
 // Types
 export interface PerformanceMetric {
@@ -20,11 +20,11 @@ export interface ErrorMetric {
   endpoint: string;
   userId?: string;
   timestamp: Date;
-  severity: "low" | "medium" | "high" | "critical";
+  severity: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface SystemHealth {
-  status: "healthy" | "degraded" | "down";
+  status: 'healthy' | 'degraded' | 'down';
   uptime: number;
   memory: {
     used: number;
@@ -38,7 +38,7 @@ export interface SystemHealth {
   };
   services: {
     [serviceName: string]: {
-      status: "up" | "down" | "degraded";
+      status: 'up' | 'down' | 'degraded';
       responseTime?: number;
       lastCheck: Date;
     };
@@ -121,9 +121,7 @@ class MetricsStore {
       errorMetrics: this.errorMetrics.length,
       apiMetrics: this.apiMetrics.length,
       totalMetrics:
-        this.performanceMetrics.length +
-        this.errorMetrics.length +
-        this.apiMetrics.length,
+        this.performanceMetrics.length + this.errorMetrics.length + this.apiMetrics.length,
     };
   }
 }
@@ -135,12 +133,7 @@ const metricsStore = new MetricsStore();
 export class PerformanceMonitor {
   private static startTime = Date.now();
 
-  static recordMetric(
-    name: string,
-    value: number,
-    unit: string,
-    tags?: Record<string, string>,
-  ) {
+  static recordMetric(name: string, value: number, unit: string, tags?: Record<string, string>) {
     metricsStore.addPerformanceMetric({
       name,
       value,
@@ -150,20 +143,16 @@ export class PerformanceMonitor {
     });
   }
 
-  static recordExecutionTime(
-    name: string,
-    startTime: number,
-    tags?: Record<string, string>,
-  ) {
+  static recordExecutionTime(name: string, startTime: number, tags?: Record<string, string>) {
     const executionTime = Date.now() - startTime;
-    this.recordMetric(name, executionTime, "ms", tags);
+    this.recordMetric(name, executionTime, 'ms', tags);
     return executionTime;
   }
 
   static async measureAsync<T>(
     name: string,
     asyncOperation: Promise<T>,
-    tags?: Record<string, string>,
+    tags?: Record<string, string>
   ): Promise<T> {
     const startTime = Date.now();
     try {
@@ -176,11 +165,7 @@ export class PerformanceMonitor {
     }
   }
 
-  static measure<T>(
-    name: string,
-    operation: () => T,
-    tags?: Record<string, string>,
-  ): T {
+  static measure<T>(name: string, operation: () => T, tags?: Record<string, string>): T {
     const startTime = Date.now();
     try {
       const result = operation();
@@ -203,7 +188,7 @@ export class ErrorTracker {
     error: Error,
     endpoint: string,
     userId?: string,
-    severity: ErrorMetric["severity"] = "medium",
+    severity: ErrorMetric['severity'] = 'medium'
   ) {
     metricsStore.addErrorMetric({
       error: error.message,
@@ -215,7 +200,7 @@ export class ErrorTracker {
     });
 
     // Log to console in development
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === 'development') {
       console.error(`🚨 [${severity.toUpperCase()}] ${endpoint}:`, error);
     }
   }
@@ -224,7 +209,7 @@ export class ErrorTracker {
     message: string,
     endpoint: string,
     userId?: string,
-    severity: ErrorMetric["severity"] = "medium",
+    severity: ErrorMetric['severity'] = 'medium'
   ) {
     metricsStore.addErrorMetric({
       error: message,
@@ -245,7 +230,7 @@ export class ErrorTracker {
 
   static getTopErrors(
     hours: number = 24,
-    limit: number = 10,
+    limit: number = 10
   ): Array<{ error: string; count: number; lastSeen: Date }> {
     const errors = metricsStore.getErrorMetrics(hours);
     const errorCounts = new Map<string, { count: number; lastSeen: Date }>();
@@ -278,7 +263,7 @@ export class ApiMetricsTracker {
     statusCode: number,
     responseTime: number,
     request?: NextRequest,
-    userId?: string,
+    userId?: string
   ) {
     metricsStore.addApiMetric({
       endpoint,
@@ -286,11 +271,9 @@ export class ApiMetricsTracker {
       statusCode,
       responseTime,
       userId,
-      userAgent: request?.headers.get("user-agent") || undefined,
+      userAgent: request?.headers.get('user-agent') || undefined,
       ipAddress:
-        request?.headers.get("x-forwarded-for") ||
-        request?.headers.get("x-real-ip") ||
-        undefined,
+        request?.headers.get('x-forwarded-for') || request?.headers.get('x-real-ip') || undefined,
       timestamp: new Date(),
     });
   }
@@ -304,10 +287,7 @@ export class ApiMetricsTracker {
 
     if (metrics.length === 0) return 0;
 
-    const totalTime = metrics.reduce(
-      (sum, metric) => sum + metric.responseTime,
-      0,
-    );
+    const totalTime = metrics.reduce((sum, metric) => sum + metric.responseTime, 0);
     return totalTime / metrics.length;
   }
 
@@ -323,8 +303,7 @@ export class ApiMetricsTracker {
     const distribution: Record<number, number> = {};
 
     metrics.forEach((metric) => {
-      distribution[metric.statusCode] =
-        (distribution[metric.statusCode] || 0) + 1;
+      distribution[metric.statusCode] = (distribution[metric.statusCode] || 0) + 1;
     });
 
     return distribution;
@@ -332,17 +311,14 @@ export class ApiMetricsTracker {
 
   static getSlowestEndpoints(
     hours: number = 24,
-    limit: number = 10,
+    limit: number = 10
   ): Array<{
     endpoint: string;
     avgResponseTime: number;
     requestCount: number;
   }> {
     const metrics = metricsStore.getApiMetrics(hours);
-    const endpointStats = new Map<
-      string,
-      { totalTime: number; count: number }
-    >();
+    const endpointStats = new Map<string, { totalTime: number; count: number }>();
 
     metrics.forEach((metric) => {
       const key = `${metric.method} ${metric.endpoint}`;
@@ -372,7 +348,7 @@ export class SystemHealthMonitor {
     const memoryUsage = process.memoryUsage();
 
     return {
-      status: "healthy",
+      status: 'healthy',
       uptime: PerformanceMonitor.getUptime(),
       memory: {
         used: memoryUsage.heapUsed,
@@ -386,16 +362,16 @@ export class SystemHealthMonitor {
       },
       services: {
         api: {
-          status: "up",
+          status: 'up',
           responseTime: ApiMetricsTracker.getAverageResponseTime(),
           lastCheck: new Date(),
         },
         email: {
-          status: "up",
+          status: 'up',
           lastCheck: new Date(),
         },
         fileUpload: {
-          status: "up",
+          status: 'up',
           lastCheck: new Date(),
         },
       },
@@ -404,8 +380,7 @@ export class SystemHealthMonitor {
 
   static isHealthy(): boolean {
     const memoryUsage = process.memoryUsage();
-    const memoryPercentage =
-      (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
+    const memoryPercentage = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
     const errorRate = ErrorTracker.getErrorRate(1);
 
     // System is unhealthy if:
@@ -417,9 +392,7 @@ export class SystemHealthMonitor {
 
 // Middleware for automatic API monitoring
 export function createMonitoringMiddleware() {
-  return (
-    handler: (req: NextRequest, ...args: unknown[]) => Promise<Response>,
-  ) => {
+  return (handler: (req: NextRequest, ...args: unknown[]) => Promise<Response>) => {
     return async (req: NextRequest, ...args: unknown[]): Promise<Response> => {
       const startTime = Date.now();
       const endpoint = new URL(req.url).pathname;
@@ -428,31 +401,19 @@ export function createMonitoringMiddleware() {
         const response = await handler(req, ...args);
         const responseTime = Date.now() - startTime;
 
-        ApiMetricsTracker.recordApiCall(
-          endpoint,
-          req.method,
-          response.status,
-          responseTime,
-          req,
-        );
+        ApiMetricsTracker.recordApiCall(endpoint, req.method, response.status, responseTime, req);
 
         return response;
       } catch (error) {
         const responseTime = Date.now() - startTime;
 
-        ApiMetricsTracker.recordApiCall(
-          endpoint,
-          req.method,
-          500,
-          responseTime,
-          req,
-        );
+        ApiMetricsTracker.recordApiCall(endpoint, req.method, 500, responseTime, req);
 
         ErrorTracker.recordError(
           error instanceof Error ? error : new Error(String(error)),
           endpoint,
           undefined,
-          "high",
+          'high'
         );
 
         throw error;
@@ -472,21 +433,21 @@ export class AlertSystem {
   static checkAlerts(): Array<{
     type: string;
     message: string;
-    severity: "warning" | "critical";
+    severity: 'warning' | 'critical';
   }> {
     const alerts: Array<{
       type: string;
       message: string;
-      severity: "warning" | "critical";
+      severity: 'warning' | 'critical';
     }> = [];
 
     // Check error rate
     const errorRate = ErrorTracker.getErrorRate(1);
     if (errorRate > this.alertThresholds.errorRate) {
       alerts.push({
-        type: "high_error_rate",
+        type: 'high_error_rate',
         message: `Error rate is ${errorRate.toFixed(2)}% (threshold: ${this.alertThresholds.errorRate}%)`,
-        severity: errorRate > 20 ? "critical" : "warning",
+        severity: errorRate > 20 ? 'critical' : 'warning',
       });
     }
 
@@ -494,21 +455,20 @@ export class AlertSystem {
     const avgResponseTime = ApiMetricsTracker.getAverageResponseTime();
     if (avgResponseTime > this.alertThresholds.avgResponseTime) {
       alerts.push({
-        type: "slow_response_time",
+        type: 'slow_response_time',
         message: `Average response time is ${avgResponseTime.toFixed(0)}ms (threshold: ${this.alertThresholds.avgResponseTime}ms)`,
-        severity: avgResponseTime > 10000 ? "critical" : "warning",
+        severity: avgResponseTime > 10000 ? 'critical' : 'warning',
       });
     }
 
     // Check memory usage
     const memoryUsage = process.memoryUsage();
-    const memoryPercentage =
-      (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
+    const memoryPercentage = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
     if (memoryPercentage > this.alertThresholds.memoryUsage) {
       alerts.push({
-        type: "high_memory_usage",
+        type: 'high_memory_usage',
         message: `Memory usage is ${memoryPercentage.toFixed(1)}% (threshold: ${this.alertThresholds.memoryUsage}%)`,
-        severity: memoryPercentage > 95 ? "critical" : "warning",
+        severity: memoryPercentage > 95 ? 'critical' : 'warning',
       });
     }
 
@@ -519,7 +479,7 @@ export class AlertSystem {
 // Metrics aggregation and reporting
 export class MetricsReporter {
   static generateReport(hours: number = 24) {
-    const performanceMetrics = metricsStore.getPerformanceMetrics(hours);
+    // const performanceMetrics = metricsStore.getPerformanceMetrics(hours);
     const errorMetrics = metricsStore.getErrorMetrics(hours);
     const apiMetrics = metricsStore.getApiMetrics(hours);
 
@@ -532,20 +492,13 @@ export class MetricsReporter {
       summary: {
         totalRequests: apiMetrics.length,
         totalErrors: errorMetrics.length,
-        errorRate:
-          apiMetrics.length > 0
-            ? (errorMetrics.length / apiMetrics.length) * 100
-            : 0,
-        averageResponseTime: ApiMetricsTracker.getAverageResponseTime(
-          undefined,
-          hours,
-        ),
+        errorRate: apiMetrics.length > 0 ? (errorMetrics.length / apiMetrics.length) * 100 : 0,
+        averageResponseTime: ApiMetricsTracker.getAverageResponseTime(undefined, hours),
         requestsPerMinute: ApiMetricsTracker.getRequestsPerMinute(hours),
       },
       topErrors: ErrorTracker.getTopErrors(hours),
       slowestEndpoints: ApiMetricsTracker.getSlowestEndpoints(hours),
-      statusCodeDistribution:
-        ApiMetricsTracker.getStatusCodeDistribution(hours),
+      statusCodeDistribution: ApiMetricsTracker.getStatusCodeDistribution(hours),
       systemHealth: {
         uptime: PerformanceMonitor.getUptime(),
         memoryUsage: process.memoryUsage(),
@@ -555,24 +508,23 @@ export class MetricsReporter {
     };
   }
 
-  static exportMetrics(format: "json" | "csv" = "json", hours: number = 24) {
+  static exportMetrics(format: 'json' | 'csv' = 'json', hours: number = 24) {
     const report = this.generateReport(hours);
 
-    if (format === "json") {
+    if (format === 'json') {
       return JSON.stringify(report, null, 2);
     }
 
     // Simple CSV export for API metrics
-    if (format === "csv") {
+    if (format === 'csv') {
       const apiMetrics = metricsStore.getApiMetrics(hours);
-      const csvHeader =
-        "timestamp,endpoint,method,statusCode,responseTime,userId\n";
+      const csvHeader = 'timestamp,endpoint,method,statusCode,responseTime,userId\n';
       const csvRows = apiMetrics
         .map(
           (metric) =>
-            `${metric.timestamp.toISOString()},${metric.endpoint},${metric.method},${metric.statusCode},${metric.responseTime},${metric.userId || ""}`,
+            `${metric.timestamp.toISOString()},${metric.endpoint},${metric.method},${metric.statusCode},${metric.responseTime},${metric.userId || ''}`
         )
-        .join("\n");
+        .join('\n');
 
       return csvHeader + csvRows;
     }
@@ -591,10 +543,7 @@ export class MonitoringDashboard {
       realtime: {
         requestsPerMinute: ApiMetricsTracker.getRequestsPerMinute(1 / 60), // Last minute
         errorRate: ErrorTracker.getErrorRate(1 / 60),
-        averageResponseTime: ApiMetricsTracker.getAverageResponseTime(
-          undefined,
-          1 / 60,
-        ),
+        averageResponseTime: ApiMetricsTracker.getAverageResponseTime(undefined, 1 / 60),
         activeAlerts: AlertSystem.checkAlerts(),
       },
       hourly: lastHour.summary,
@@ -614,7 +563,7 @@ export class MonitoringDashboard {
 }
 
 // Export all monitoring components
-export default {
+const Monitoring = {
   PerformanceMonitor,
   ErrorTracker,
   ApiMetricsTracker,
@@ -624,3 +573,5 @@ export default {
   MonitoringDashboard,
   createMonitoringMiddleware,
 };
+
+export default Monitoring;

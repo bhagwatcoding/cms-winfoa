@@ -1,7 +1,7 @@
 /**
  * Professional API Handler Wrapper
  * Higher-order function for consistent error handling and database connection
- * 
+ *
  * @module ApiHandler
  */
 
@@ -12,7 +12,7 @@ import { logger } from '@/core/logger';
 
 type ApiHandlerFunction = (
   req: NextRequest,
-  context: { params: any }
+  context: { params: Record<string, string | string[]> }
 ) => Promise<NextResponse>;
 
 /**
@@ -20,7 +20,7 @@ type ApiHandlerFunction = (
  * 1. Database connection
  * 2. Error handling (try/catch)
  * 3. Logging
- * 
+ *
  * @example
  * export const GET = apiHandler(async (req) => {
  *   const users = await User.find();
@@ -28,7 +28,7 @@ type ApiHandlerFunction = (
  * });
  */
 export function apiHandler(handler: ApiHandlerFunction): ApiHandlerFunction {
-  return async (req: NextRequest, context: { params: any }) => {
+  return async (req: NextRequest, context: { params: Record<string, string | string[]> }) => {
     const startTime = Date.now();
     const method = req.method;
     const url = req.nextUrl.pathname;
@@ -44,11 +44,10 @@ export function apiHandler(handler: ApiHandlerFunction): ApiHandlerFunction {
       const response = await handler(req, context);
 
       // 4. Log Success
-      const duration = Date.now() - startTime;
+      // const duration = Date.now() - startTime;
       // logger.info(`[API] ${method} ${url} - ${response.status} (${duration}ms)`);
 
       return response;
-
     } catch (error) {
       // 5. Handle Errors
       const duration = Date.now() - startTime;

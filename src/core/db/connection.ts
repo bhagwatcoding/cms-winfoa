@@ -1,7 +1,7 @@
 /**
  * Professional MongoDB Connection Manager
  * Handles database connection with caching, pooling, and event monitoring
- * 
+ *
  * @module DatabaseConnection
  */
 
@@ -18,7 +18,6 @@ interface MongooseCache {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var mongoose: MongooseCache | undefined;
 }
 
@@ -33,11 +32,11 @@ if (!MONGODB_URI) {
 }
 
 // Initialize global cache for hot reloading
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
+if (!global.mongoose) {
+  global.mongoose = { conn: null, promise: null };
 }
+
+const cached: MongooseCache = global.mongoose;
 
 // =============================================================================
 // CONNECTION MANAGER
@@ -110,4 +109,5 @@ export function isConnected(): boolean {
   return mongoose.connection.readyState === 1;
 }
 
+// Alias for backward compatibility (lowercase version)
 export default connectDB;

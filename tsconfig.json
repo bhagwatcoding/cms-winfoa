@@ -1,29 +1,14 @@
-/**
- * Professional TypeScript Configuration
- * Enterprise-grade TypeScript setup for multi-subdomain applications
- * 
- * @module TypeScriptConfig
- * @description Optimized TypeScript configuration for performance and type safety
- */ {
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    // =============================================================================
-    // TARGET & MODULE CONFIGURATION
-    // =============================================================================
     "target": "ES2022",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "ES2022"
-    ],
+    "lib": ["dom", "dom.iterable", "ES2022"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    // =============================================================================
-    // STRICT TYPE CHECKING
-    // =============================================================================
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -37,149 +22,92 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": false,
-    // =============================================================================
-    // ADVANCED TYPE CHECKING
-    // =============================================================================
     "exactOptionalPropertyTypes": false,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": false,
     "noUncheckedSideEffectImports": true,
-    // =============================================================================
-    // MODULE RESOLUTION
-    // =============================================================================
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/apps/*": [
-        "./src/apps/*"
-      ],
-      "@/core/*": [
-        "./src/core/*"
-      ],
-      "@/features/*": [
-        "./src/features/*"
-      ],
-      "@/shared/*": [
-        "./src/shared/*"
-      ],
-      "@/types": [
-        "./src/shared/types/index.ts"
-      ],
-      "@/types/*": [
-        "./src/shared/types/*"
-      ],
-      "@/components/*": [
-        "./src/shared/components/*"
-      ],
-      "@ui/*": [
-        "./src/shared/components/ui/*"
-      ],
-      "@/ui": [
-        "./src/shared/components/ui/index.tsx"
-      ],
-      "@/ui/*": [
-        "./src/shared/components/ui/*"
-      ],
-      "@/lib/*": [
-        "./src/core/*"
-      ],
-      "@/models": [
-        "./src/core/db/models/index.ts"
-      ],
-      "@/models/*": [
-        "./src/core/db/models/*"
-      ],
-      "@/services": [
-        "./src/shared/services/index.ts"
-      ],
-      "@/services/*": [
-        "./src/shared/services/*"
-      ],
-      "@/hooks/*": [
-        "./src/shared/hooks/*"
-      ],
-      "@/utils": [
-        "./src/core/utils/index.ts"
-      ],
-      "@/utils/*": [
-        "./src/core/utils/*"
-      ],
-      "@/config/*": [
-        "./src/config/*"
-      ],
-      "@/constants/*": [
-        "./src/shared/constants/*"
-      ],
-      "@/styles/*": [
-        "./src/shared/styles/*"
-      ],
-      "@/assets/*": [
-        "./src/shared/assets/*"
-      ],
-      "@/actions": [
-        "./src/shared/actions/index.ts"
-      ],
-      "@/actions/*": [
-        "./src/shared/actions/*"
-      ],
-      "@/config": [
-        "./src/config/index.ts"
-      ]
+      "@/*": ["./src/*"],
+      "@/apps/*": ["./src/apps/*"],
+      // core import access
+      "@/core/*": ["./src/core/*"],
+      // core all types import
+      "@/core/types": ["./src/core/types/index.ts"],
+      "@/core/types/*": ["./src/core/types/*"],
+
+      // core all interfaces import
+      "@/core/interfaces": ["./src/core/types/interfaces/index.ts"],
+      "@/core/interfaces/*": ["./src/core/types/interfaces/*"],
+      // core all enums import
+      "@/core/enums": ["./src/core/types/enums/index.ts"],
+      "@/core/enums/*": ["./src/core/types/enums/*"],
+
+      // core all models import
+      "@/core/models": ["./src/core/models/index.ts"],
+      "@/core/models/*": ["./src/core/models/*"],
+      // core all utils import
+      "@/core/utils": ["./src/core/utils/index.ts"],
+      "@/core/utils/*": ["./src/core/utils/*"],
+      // core all db import
+      "@/core/db": ["./src/core/db/index.ts"],
+      "@/core/db/*": ["./src/core/db/*"],
+      "@/core/db/models": ["./src/core/db/models/index.ts"],
+      "@/core/db/models/*": ["./src/core/db/models/*"],
+      // core all services import
+      "@/core/services": ["./src/core/services/index.ts"],
+      "@/core/services/*": ["./src/core/services/*"],
+      // core all hooks import
+      "@/core/hooks": ["./src/core/hooks/index.ts"],
+      "@/core/hooks/*": ["./src/core/hooks/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/types": ["./src/core/types/index.ts"],
+      "@/types/*": ["./src/core/types/*"],
+      "@/components/*": ["./src/shared/components/*"],
+      "@ui/*": ["./src/shared/components/ui/*"],
+      "@/ui": ["./src/shared/components/ui/index.tsx"],
+      "@/ui/*": ["./src/shared/components/ui/*"],
+      "@/lib/*": ["./src/core/*"],
+      "@/models": ["./src/core/db/models/index.ts"],
+      "@/models/*": ["./src/core/db/models/*"],
+      "@/services": ["./src/shared/services/index.ts"],
+      "@/services/*": ["./src/shared/services/*"],
+      "@/hooks/*": ["./src/shared/hooks/*"],
+      "@/utils": ["./src/core/utils/index.ts"],
+      "@/utils/*": ["./src/core/utils/*"],
+      "@/config/*": ["./src/config/*"],
+      "@/constants/*": ["./src/shared/constants/*"],
+      "@/styles/*": ["./src/shared/styles/*"],
+      "@/assets/*": ["./src/shared/assets/*"],
+      "@/actions": ["./src/shared/actions/index.ts"],
+      "@/actions/*": ["./src/shared/actions/*"],
+      "@/config": ["./src/config/index.ts"]
     },
-    // =============================================================================
-    // JSX & REACT CONFIGURATION
-    // =============================================================================
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    // =============================================================================
-    // DECORATORS & METADATA
-    // =============================================================================
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    // =============================================================================
-    // SOURCE MAPS & DEBUGGING
-    // =============================================================================
     "sourceMap": true,
     "inlineSources": true,
     "declaration": true,
     "declarationMap": true,
-    // =============================================================================
-    // IMPORT & EXPORT CONFIGURATION
-    // =============================================================================
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    // =============================================================================
-    // PERFORMANCE OPTIMIZATIONS
-    // =============================================================================
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsbuildinfo.json",
     "preserveWatchOutput": true,
-    // =============================================================================
-    // ADVANCED CONFIGURATION
-    // =============================================================================
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "noEmitHelpers": true,
     "importHelpers": true,
     "downlevelIteration": true,
     "useDefineForClassFields": true,
-    // =============================================================================
-    // NEXT.JS SPECIFIC
-    // =============================================================================
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
+    "plugins": [{ "name": "next" }],
     "allowJs": true
   },
-  // =============================================================================
-  // INCLUDE & EXCLUDE PATTERNS
-  // =============================================================================
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -203,9 +131,6 @@
     "**/*.stories.ts",
     "**/*.stories.tsx"
   ],
-  // =============================================================================
-  // COMPILER OPTIONS FOR DIFFERENT ENVIRONMENTS
-  // =============================================================================
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"

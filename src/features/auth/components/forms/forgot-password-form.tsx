@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { useState } from "react";
+import Link from 'next/link';
+import { useState } from 'react';
 import {
   Button,
   Label,
@@ -14,18 +14,12 @@ import {
   CardTitle,
   Alert,
   AlertDescription,
-} from "@/ui";
-import {
-  Loader2,
-  Mail,
-  Send,
-  ArrowLeft,
-  CheckCircle2,
-} from "lucide-react";
-import { motion } from "framer-motion";
+} from '@/ui';
+import { Loader2, Mail, Send, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export function ForgotPasswordForm() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,16 +32,16 @@ export function ForgotPasswordForm() {
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError("Please enter a valid email address");
+      setError('Please enter a valid email address');
       setLoading(false);
       return;
     }
 
     try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
       });
@@ -57,10 +51,10 @@ export function ForgotPasswordForm() {
       if (response.ok) {
         setSubmitted(true);
       } else {
-        setError(data.error || "Failed to send reset email. Please try again.");
+        setError(data.error || 'Failed to send reset email. Please try again.');
       }
-    } catch (e) {
-      setError("An unexpected error occurred. Please try again.");
+    } catch {
+      setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -70,10 +64,7 @@ export function ForgotPasswordForm() {
     return (
       <Card className="border-2 shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
         <CardContent className="pt-8 pb-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
             <div className="w-20 h-20 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-12 h-12 text-green-600 dark:text-green-400" />
             </div>
@@ -81,15 +72,16 @@ export function ForgotPasswordForm() {
               Check Your Email
             </h3>
             <p className="text-slate-600 dark:text-slate-400 mb-6 text-lg">
-              We&apos;ve sent password reset instructions to<br />
+              We&apos;ve sent password reset instructions to
+              <br />
               <strong className="text-slate-900 dark:text-white">{email}</strong>
             </p>
             <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
-              Didn&apos;t receive the email? Check your spam folder or{" "}
+              Didn&apos;t receive the email? Check your spam folder or{' '}
               <button
                 onClick={() => {
                   setSubmitted(false);
-                  setEmail("");
+                  setEmail('');
                 }}
                 className="text-blue-600 hover:text-blue-700 font-semibold underline transition-colors"
               >
@@ -110,9 +102,7 @@ export function ForgotPasswordForm() {
   return (
     <Card className="border-2 shadow-2xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl">
       <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="text-2xl font-bold text-center">
-          Reset Password
-        </CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">Reset Password</CardTitle>
         <CardDescription className="text-center">
           Enter your email address and we&apos;ll send you a link to reset your password
         </CardDescription>
@@ -122,9 +112,7 @@ export function ForgotPasswordForm() {
         <CardContent className="space-y-5">
           {error && (
             <Alert variant="destructive" className="border-2">
-              <AlertDescription className="font-medium">
-                {error}
-              </AlertDescription>
+              <AlertDescription className="font-medium">{error}</AlertDescription>
             </Alert>
           )}
 

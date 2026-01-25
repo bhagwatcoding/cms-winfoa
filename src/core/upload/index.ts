@@ -12,15 +12,19 @@ import { v4 as uuidv4 } from 'uuid';
 export const UPLOAD_CONFIG = {
   maxFileSize: 10 * 1024 * 1024, // 10MB
   allowedImageTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-  allowedDocumentTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  allowedDocumentTypes: [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ],
   allowedVideoTypes: ['video/mp4', 'video/webm', 'video/ogg'],
   uploadDir: './public/uploads',
   avatarSizes: {
     thumbnail: { width: 64, height: 64 },
     small: { width: 128, height: 128 },
     medium: { width: 256, height: 256 },
-    large: { width: 512, height: 512 }
-  }
+    large: { width: 512, height: 512 },
+  },
 };
 
 export interface UploadResult {
@@ -67,7 +71,7 @@ export function validateFile(
     if (buffer.length > UPLOAD_CONFIG.maxFileSize) {
       return {
         isValid: false,
-        error: `File size exceeds maximum limit of ${UPLOAD_CONFIG.maxFileSize / (1024 * 1024)}MB`
+        error: `File size exceeds maximum limit of ${UPLOAD_CONFIG.maxFileSize / (1024 * 1024)}MB`,
       };
     }
 
@@ -76,7 +80,7 @@ export function validateFile(
     if (!extension) {
       return {
         isValid: false,
-        error: 'File must have an extension'
+        error: 'File must have an extension',
       };
     }
 
@@ -85,7 +89,7 @@ export function validateFile(
     if (!mimeType) {
       return {
         isValid: false,
-        error: 'Unable to determine file type'
+        error: 'Unable to determine file type',
       };
     }
 
@@ -93,7 +97,7 @@ export function validateFile(
     if (!allowedTypes.includes(mimeType)) {
       return {
         isValid: false,
-        error: `File type ${mimeType} is not allowed. Allowed types: ${allowedTypes.join(', ')}`
+        error: `File type ${mimeType} is not allowed. Allowed types: ${allowedTypes.join(', ')}`,
       };
     }
 
@@ -102,14 +106,13 @@ export function validateFile(
       fileInfo: {
         size: buffer.length,
         type: mimeType,
-        extension
-      }
+        extension,
+      },
     };
-
-  } catch (error) {
+  } catch {
     return {
       isValid: false,
-      error: 'File validation failed'
+      error: 'File validation failed',
     };
   }
 }
@@ -120,8 +123,8 @@ export function validateFile(
 function detectMimeType(buffer: Buffer): string | null {
   // Check for common file signatures
   const signatures: { [key: string]: number[] } = {
-    'image/jpeg': [0xFF, 0xD8, 0xFF],
-    'image/png': [0x89, 0x50, 0x4E, 0x47],
+    'image/jpeg': [0xff, 0xd8, 0xff],
+    'image/png': [0x89, 0x50, 0x4e, 0x47],
     'image/gif': [0x47, 0x49, 0x46],
     'image/webp': [0x52, 0x49, 0x46, 0x46],
     'application/pdf': [0x25, 0x50, 0x44, 0x46],
@@ -156,9 +159,7 @@ export function generateFileName(originalName: string, prefix?: string): string 
  * Ensure upload directory exists
  */
 export async function ensureUploadDir(subDir?: string): Promise<string> {
-  const uploadPath = subDir
-    ? path.join(UPLOAD_CONFIG.uploadDir, subDir)
-    : UPLOAD_CONFIG.uploadDir;
+  const uploadPath = subDir ? path.join(UPLOAD_CONFIG.uploadDir, subDir) : UPLOAD_CONFIG.uploadDir;
 
   try {
     await fs.access(uploadPath);
@@ -201,13 +202,7 @@ export async function processImage(
     fit?: 'cover' | 'contain' | 'fill';
   } = {}
 ): Promise<Buffer> {
-  const {
-    width,
-    height,
-    quality = 80,
-    format = 'jpeg',
-    fit = 'cover'
-  } = options;
+  const { width, height, quality = 80, format = 'jpeg', fit = 'cover' } = options;
 
   let processor = sharp(buffer);
 
@@ -253,7 +248,7 @@ export async function uploadAvatar(
         fileSize: 0,
         mimeType: '',
         url: '',
-        error: validation.error
+        error: validation.error,
       };
     }
 
@@ -262,14 +257,14 @@ export async function uploadAvatar(
     const subDir = `avatars/${userId}`;
 
     // Create variants
-    const variants: any = {};
+    const variants: NonNullable<UploadResult['variants']> = {};
 
     for (const [sizeName, dimensions] of Object.entries(UPLOAD_CONFIG.avatarSizes)) {
       const processedBuffer = await processImage(buffer, {
         width: dimensions.width,
         height: dimensions.height,
         format: 'jpeg',
-        quality: 85
+        quality: 85,
       });
 
       const fileName = `${baseFileName}_${sizeName}.jpg`;
@@ -280,14 +275,14 @@ export async function uploadAvatar(
         filePath,
         url,
         width: dimensions.width,
-        height: dimensions.height
+        height: dimensions.height,
       };
     }
 
     // Save original (optimized)
     const originalProcessed = await processImage(buffer, {
       format: 'jpeg',
-      quality: 90
+      quality: 90,
     });
 
     const originalFileName = `${baseFileName}_original.jpg`;
@@ -306,9 +301,8 @@ export async function uploadAvatar(
       fileSize: originalProcessed.length,
       mimeType: 'image/jpeg',
       url: originalUrl,
-      variants
+      variants,
     };
-
   } catch (error) {
     console.error('Avatar upload error:', error);
     return {
@@ -320,7 +314,7 @@ export async function uploadAvatar(
       fileSize: 0,
       mimeType: '',
       url: '',
-      error: 'Failed to process avatar upload'
+      error: 'Failed to process avatar upload',
     };
   }
 }
@@ -361,7 +355,7 @@ export async function uploadCourseMaterial(
         fileSize: 0,
         mimeType: '',
         url: '',
-        error: validation.error
+        error: validation.error,
       };
     }
 
@@ -376,7 +370,7 @@ export async function uploadCourseMaterial(
       processedBuffer = await processImage(buffer, {
         width: 1920, // Max width for course images
         quality: 85,
-        format: 'jpeg'
+        format: 'jpeg',
       });
     }
 
@@ -390,9 +384,8 @@ export async function uploadCourseMaterial(
       filePath,
       fileSize: processedBuffer.length,
       mimeType: validation.fileInfo!.type,
-      url
+      url,
     };
-
   } catch (error) {
     console.error('Course material upload error:', error);
     return {
@@ -404,7 +397,7 @@ export async function uploadCourseMaterial(
       fileSize: 0,
       mimeType: '',
       url: '',
-      error: 'Failed to upload course material'
+      error: 'Failed to upload course material',
     };
   }
 }
@@ -418,7 +411,10 @@ export async function uploadCertificateTemplate(
   templateId?: string
 ): Promise<UploadResult> {
   try {
-    const allowedTypes = [...UPLOAD_CONFIG.allowedImageTypes, ...UPLOAD_CONFIG.allowedDocumentTypes];
+    const allowedTypes = [
+      ...UPLOAD_CONFIG.allowedImageTypes,
+      ...UPLOAD_CONFIG.allowedDocumentTypes,
+    ];
 
     // Validate file
     const validation = validateFile(buffer, originalName, allowedTypes);
@@ -432,7 +428,7 @@ export async function uploadCertificateTemplate(
         fileSize: 0,
         mimeType: '',
         url: '',
-        error: validation.error
+        error: validation.error,
       };
     }
 
@@ -450,9 +446,8 @@ export async function uploadCertificateTemplate(
       filePath,
       fileSize: buffer.length,
       mimeType: validation.fileInfo!.type,
-      url
+      url,
     };
-
   } catch (error) {
     console.error('Certificate template upload error:', error);
     return {
@@ -464,7 +459,7 @@ export async function uploadCertificateTemplate(
       fileSize: 0,
       mimeType: '',
       url: '',
-      error: 'Failed to upload certificate template'
+      error: 'Failed to upload certificate template',
     };
   }
 }
@@ -516,7 +511,7 @@ export async function getFileInfo(filePath: string): Promise<{
     return {
       exists: true,
       size: stats.size,
-      mtime: stats.mtime
+      mtime: stats.mtime,
     };
   } catch {
     return { exists: false };
@@ -557,7 +552,7 @@ export async function cleanupOldFiles(
   return { deleted, errors };
 }
 
-export default {
+const UploadService = {
   validateFile,
   generateFileName,
   ensureUploadDir,
@@ -570,5 +565,7 @@ export default {
   deleteFileWithVariants,
   getFileInfo,
   cleanupOldFiles,
-  UPLOAD_CONFIG
+  UPLOAD_CONFIG,
 };
+
+export default UploadService;

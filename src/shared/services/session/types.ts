@@ -3,7 +3,8 @@
  * TypeScript interfaces and types for session services
  */
 
-import { RiskLevel, SessionStatus, LoginMethod } from "@/types";
+import { RiskLevel, SessionStatus } from '@/types';
+import { IDeviceInfo, IGeoInfo, ISecurityInfo, ISession } from '@/core/db/interfaces';
 
 // ===== SESSION ANALYTICS TYPES =====
 
@@ -107,15 +108,15 @@ export interface SessionCreateOptions {
     userAgent?: string;
     ipAddress?: string;
     rememberMe?: boolean;
-    deviceInfo?: any;
-    geoInfo?: any;
-    securityInfo?: any;
+    deviceInfo?: IDeviceInfo;
+    geoInfo?: IGeoInfo;
+    securityInfo?: ISecurityInfo;
   };
 }
 
 export interface SessionValidationResult {
   isValid: boolean;
-  session?: any;
+  session?: ISession;
   error?: string;
 }
 

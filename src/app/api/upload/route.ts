@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/core/db";
-import { requireAuth, requireRole } from "@/core/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/core/db';
+import { requireAuth, requireRole } from '@/core/auth';
 import {
   uploadAvatar,
   uploadCourseMaterial,
   uploadCertificateTemplate,
-  UPLOAD_CONFIG
-} from "@/core/upload";
+  UPLOAD_CONFIG,
+} from '@/core/upload';
 
 // POST /api/upload - Universal file upload endpoint
 export async function POST(request: NextRequest) {
@@ -21,15 +21,12 @@ export async function POST(request: NextRequest) {
     const materialType = formData.get('materialType') as string;
 
     if (!file) {
-      return NextResponse.json(
-        { error: "No file provided" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     if (!uploadType) {
       return NextResponse.json(
-        { error: "Upload type is required (avatar, course-material, certificate-template)" },
+        { error: 'Upload type is required (avatar, course-material, certificate-template)' },
         { status: 400 }
       );
     }
@@ -55,13 +52,13 @@ export async function POST(request: NextRequest) {
       case 'course-material':
         if (!targetId) {
           return NextResponse.json(
-            { error: "Course ID is required for course material upload" },
+            { error: 'Course ID is required for course material upload' },
             { status: 400 }
           );
         }
 
         // Check if user can upload to this course
-        const isAdmin = ['admin', 'super-admin', 'staff'].includes(currentUser.role);
+        const isAdmin = ['admin', 'super-admin', 'staff'].includes(currentUser.role || '');
         if (!isAdmin) {
           // TODO: Check if user is instructor of this course
           // For now, only allow admins to upload course materials
@@ -72,6 +69,7 @@ export async function POST(request: NextRequest) {
           buffer,
           file.name,
           targetId,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (materialType as any) || 'document'
         );
         break;
@@ -85,16 +83,16 @@ export async function POST(request: NextRequest) {
 
       default:
         return NextResponse.json(
-          { error: "Invalid upload type. Supported types: avatar, course-material, certificate-template" },
+          {
+            error:
+              'Invalid upload type. Supported types: avatar, course-material, certificate-template',
+          },
           { status: 400 }
         );
     }
 
     if (!result.success) {
-      return NextResponse.json(
-        { error: result.error || "File upload failed" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: result.error || 'File upload failed' }, { status: 400 });
     }
 
     // Log upload
@@ -112,37 +110,31 @@ export async function POST(request: NextRequest) {
         variants: result.variants,
         uploadType,
         uploadedBy: currentUser.id,
-        uploadedAt: new Date().toISOString()
+        uploadedAt: new Date().toISOString(),
       },
-      message: "File uploaded successfully"
+      message: 'File uploaded successfully',
     });
+  } catch (error: unknown) {
+    const err = error as Error;
+    console.error('File upload error:', err);
 
-  } catch (error: any) {
-    console.error("File upload error:", error);
-
-    if (error.message === "Unauthorized - Please login") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+    if (err.message === 'Unauthorized - Please login') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (err.message.includes('Access denied') || err.message.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions for this upload type" },
+        { error: 'Insufficient permissions for this upload type' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "File upload failed" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'File upload failed' }, { status: 500 });
   }
 }
 
 // GET /api/upload - Get upload configuration and limits
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     await requireAuth();
 
@@ -152,7 +144,7 @@ export async function GET(request: NextRequest) {
       allowedTypes: {
         images: UPLOAD_CONFIG.allowedImageTypes,
         documents: UPLOAD_CONFIG.allowedDocumentTypes,
-        videos: UPLOAD_CONFIG.allowedVideoTypes
+        videos: UPLOAD_CONFIG.allowedVideoTypes,
       },
       avatarSizes: UPLOAD_CONFIG.avatarSizes,
       supportedUploadTypes: [
@@ -161,7 +153,7 @@ export async function GET(request: NextRequest) {
           description: 'Profile picture upload',
           allowedFormats: UPLOAD_CONFIG.allowedImageTypes,
           maxSize: '5MB',
-          generates: 'Multiple sizes (thumbnail, small, medium, large)'
+          generates: 'Multiple sizes (thumbnail, small, medium, large)',
         },
         {
           type: 'course-material',
@@ -169,49 +161,43 @@ export async function GET(request: NextRequest) {
           allowedFormats: [
             ...UPLOAD_CONFIG.allowedImageTypes,
             ...UPLOAD_CONFIG.allowedDocumentTypes,
-            ...UPLOAD_CONFIG.allowedVideoTypes
+            ...UPLOAD_CONFIG.allowedVideoTypes,
           ],
           maxSize: '10MB',
-          generates: 'Optimized version'
+          generates: 'Optimized version',
         },
         {
           type: 'certificate-template',
           description: 'Certificate template upload',
           allowedFormats: [
             ...UPLOAD_CONFIG.allowedImageTypes,
-            ...UPLOAD_CONFIG.allowedDocumentTypes
+            ...UPLOAD_CONFIG.allowedDocumentTypes,
           ],
           maxSize: '5MB',
-          generates: 'Original file'
-        }
-      ]
+          generates: 'Original file',
+        },
+      ],
     };
 
     return NextResponse.json({
       success: true,
-      data: config
+      data: config,
     });
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    if (error.message === "Unauthorized - Please login") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+    if (error.message === 'Unauthorized - Please login') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    return NextResponse.json(
-      { error: "Failed to fetch upload configuration" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch upload configuration' }, { status: 500 });
   }
 }
 
 // Handle unsupported methods
 export async function PUT() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
 
 export async function DELETE() {
-  return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }

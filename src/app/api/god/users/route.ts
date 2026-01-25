@@ -4,56 +4,56 @@ import { User } from '@/models';
 import { getSession } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
-    try {
-        const { user } = await getSession();
+  try {
+    const { user } = await getSession();
 
-        if (!user || user.role !== 'super-admin') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        await connectDB();
-
-        const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '20');
-        const role = searchParams.get('role');
-
-        const skip = (page - 1) * limit;
-        const query: Record<string, unknown> = {};
-
-        if (role && role !== 'all') query.role = role;
-
-        const [users, total] = await Promise.all([
-            User.find(query).select('-password').sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-            User.countDocuments(query),
-        ]);
-
-        return NextResponse.json({
-            users,
-            pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
-        });
-    } catch (error: unknown) {
-        console.error('Failed to fetch users:', error);
-        return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
+    if (!user || user.role !== 'super-admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    await connectDB();
+
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const role = searchParams.get('role');
+
+    const skip = (page - 1) * limit;
+    const query: Record<string, unknown> = {};
+
+    if (role && role !== 'all') query.role = role;
+
+    const [users, total] = await Promise.all([
+      User.find(query).select('-password').sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      User.countDocuments(query),
+    ]);
+
+    return NextResponse.json({
+      users,
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+    });
+  } catch (error: unknown) {
+    console.error('Failed to fetch users:', error);
+    return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
+  }
 }
 
 export async function POST(request: NextRequest) {
-    try {
-        const { user } = await getSession();
+  try {
+    const { user } = await getSession();
 
-        if (!user || user.role !== 'super-admin') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        await connectDB();
-
-        const body = await request.json();
-        const newUser = await User.create(body);
-
-        return NextResponse.json({ ...newUser.toObject(), password: undefined }, { status: 201 });
-    } catch (error: unknown) {
-        console.error('Failed to create user:', error);
-        return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+    if (!user || user.role !== 'super-admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    await connectDB();
+
+    const body = await request.json();
+    const newUser = await User.create(body);
+
+    return NextResponse.json({ ...newUser.toObject(), password: undefined }, { status: 201 });
+  } catch (error: unknown) {
+    console.error('Failed to create user:', error);
+    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+  }
 }

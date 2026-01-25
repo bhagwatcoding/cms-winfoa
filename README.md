@@ -13,17 +13,17 @@ A comprehensive full-stack web development platform featuring specialized subdom
 
 The Winfoa platform consists of **8 specialized subdomains**, each serving a specific purpose:
 
-| Subdomain | URL | Purpose | Key Features |
-|-----------|-----|---------|-------------|
-| **Main** | `localhost:3000` | Landing & Dashboard | Platform overview, subdomain navigation |
-| **Auth** | `auth.localhost:3000` | Authentication Portal | Login, Registration, Password Reset, OAuth |
-| **Academy** | `academy.localhost:3000` | Learning Platform | Course Management, Student Portal, Certificates |
-| **API** | `api.localhost:3000` | API Gateway | REST Endpoints, Documentation, Rate Limiting |
-| **UMP** | `ump.localhost:3000` | User Management | User Administration, Role Management, Permissions |
-| **Provider** | `provider.localhost:3000` | Provider Portal | Service Management, Client Relations, Analytics |
-| **MyAccount** | `myaccount.localhost:3000` | Account Management | Profile Settings, Privacy Controls, Security |
-| **Wallet** | `wallet.localhost:3000` | Digital Payments | Payment Processing, Transaction History, Billing |
-| **Developer** | `developer.localhost:3000` | Developer Tools | API Documentation, SDK Downloads, Testing Tools |
+| Subdomain     | URL                        | Purpose               | Key Features                                      |
+| ------------- | -------------------------- | --------------------- | ------------------------------------------------- |
+| **Main**      | `localhost:3000`           | Landing & Dashboard   | Platform overview, subdomain navigation           |
+| **Auth**      | `auth.localhost:3000`      | Authentication Portal | Login, Registration, Password Reset, OAuth        |
+| **Academy**   | `academy.localhost:3000`   | Learning Platform     | Course Management, Student Portal, Certificates   |
+| **API**       | `api.localhost:3000`       | API Gateway           | REST Endpoints, Documentation, Rate Limiting      |
+| **UMP**       | `ump.localhost:3000`       | User Management       | User Administration, Role Management, Permissions |
+| **Provider**  | `provider.localhost:3000`  | Provider Portal       | Service Management, Client Relations, Analytics   |
+| **MyAccount** | `myaccount.localhost:3000` | Account Management    | Profile Settings, Privacy Controls, Security      |
+| **Wallet**    | `wallet.localhost:3000`    | Digital Payments      | Payment Processing, Transaction History, Billing  |
+| **Developer** | `developer.localhost:3000` | Developer Tools       | API Documentation, SDK Downloads, Testing Tools   |
 
 ## 🚀 Getting Started
 
@@ -37,38 +37,43 @@ The Winfoa platform consists of **8 specialized subdomains**, each serving a spe
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd winfoa
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Environment Setup**
+
    ```bash
    cp .env.example .env.local
    ```
 
 4. **Configure environment variables**
+
    ```env
    # Database
    MONGODB_URI=mongodb://localhost:27017/winfoa
-   
+
    # Authentication
    NEXTAUTH_SECRET=your-secret-key
    NEXTAUTH_URL=http://localhost:3000
-   
+
    # API Configuration
    API_BASE_URL=http://api.localhost:3000
-   
+
    # Payment Gateway
    PAYMENT_GATEWAY_KEY=your-payment-key
    ```
 
 5. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -119,6 +124,7 @@ winfoa/
 ## 🔧 Technology Stack
 
 ### Frontend
+
 - **Next.js 16.1.1** - React framework with App Router
 - **React 19.2.3** - UI library with latest features
 - **TypeScript 5.0** - Type-safe development
@@ -127,6 +133,7 @@ winfoa/
 - **Radix UI** - Accessible component primitives
 
 ### Backend
+
 - **Next.js API Routes** - Serverless API endpoints
 - **MongoDB** - Document database
 - **Mongoose** - MongoDB object modeling
@@ -134,6 +141,7 @@ winfoa/
 - **JWT** - Authentication tokens
 
 ### Development Tools
+
 - **ESLint** - Code linting
 - **Prettier** - Code formatting
 - **Turbopack** - Fast bundler
@@ -142,30 +150,35 @@ winfoa/
 ## 🛠️ Key Features
 
 ### 🔐 Multi-Domain Authentication
+
 - Centralized authentication across all subdomains
 - JWT-based session management
 - OAuth integration support
 - Role-based access control (RBAC)
 
 ### 📚 Learning Management System
+
 - Course creation and management
 - Student enrollment and tracking
 - Certificate generation and verification
 - Exam and assessment system
 
 ### 👥 User Administration
+
 - Comprehensive user management
 - Role and permission system
 - Employee management
 - Activity logging and audit trails
 
 ### 💳 Digital Wallet System
+
 - Secure payment processing
 - Transaction history and tracking
 - Multi-currency support
 - Refund and dispute management
 
 ### 🔌 Developer API Gateway
+
 - RESTful API endpoints
 - Rate limiting and throttling
 - API key management
@@ -173,6 +186,7 @@ winfoa/
 - SDK generation and downloads
 
 ### 🏢 Provider Management
+
 - Service provider onboarding
 - Client relationship management
 - Business analytics and reporting
@@ -230,6 +244,7 @@ The platform uses a comprehensive design system built with:
 - **Custom themes** - Consistent branding across subdomains
 
 ### Component Categories
+
 - **Layout Components** - Headers, footers, navigation
 - **Form Components** - Inputs, buttons, validation
 - **Data Display** - Tables, cards, statistics
@@ -239,12 +254,14 @@ The platform uses a comprehensive design system built with:
 ## 🔒 Security Features
 
 ### Authentication & Authorization
+
 - JWT-based authentication
 - Role-based access control (RBAC)
 - Permission-based route protection
 - Session management across subdomains
 
 ### Data Protection
+
 - Input validation and sanitization
 - SQL injection prevention
 - XSS protection
@@ -252,6 +269,7 @@ The platform uses a comprehensive design system built with:
 - Rate limiting and DDoS protection
 
 ### Payment Security
+
 - PCI DSS compliance
 - Encrypted payment processing
 - Secure tokenization
@@ -260,6 +278,7 @@ The platform uses a comprehensive design system built with:
 ## 📊 Performance & Scalability
 
 ### Optimization Features
+
 - **Server-Side Rendering (SSR)** - Fast initial page loads
 - **Static Site Generation (SSG)** - Optimized static content
 - **Code Splitting** - Lazy loading of components
@@ -267,6 +286,7 @@ The platform uses a comprehensive design system built with:
 - **Caching Strategy** - Multi-layer caching system
 
 ### Monitoring & Analytics
+
 - Real-time performance monitoring
 - Error tracking and reporting
 - User behavior analytics
@@ -276,6 +296,7 @@ The platform uses a comprehensive design system built with:
 ## 🚀 Deployment
 
 ### Development
+
 ```bash
 npm run dev          # Start development server
 npm run build        # Build production bundle
@@ -287,6 +308,7 @@ npm run type-check   # TypeScript checking
 ### Production Deployment
 
 #### Vercel (Recommended)
+
 ```bash
 # Install Vercel CLI
 npm i -g vercel
@@ -296,6 +318,7 @@ vercel --prod
 ```
 
 #### Docker Deployment
+
 ```dockerfile
 # Dockerfile included for containerized deployment
 docker build -t winfoa-platform .
@@ -303,6 +326,7 @@ docker run -p 3000:3000 winfoa-platform
 ```
 
 #### Traditional Hosting
+
 ```bash
 # Build and export
 npm run build
@@ -314,6 +338,7 @@ npm run export
 ## 🔧 Configuration
 
 ### Subdomain Configuration
+
 The middleware automatically handles subdomain routing. To add new subdomains:
 
 1. Add subdomain configuration in `src/middleware.ts`
@@ -322,14 +347,16 @@ The middleware automatically handles subdomain routing. To add new subdomains:
 4. Update API routes if needed
 
 ### Database Configuration
+
 ```javascript
 // MongoDB connection configuration
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/winfoa'
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/winfoa';
 
 // Database models are located in src/shared/lib/db/models/
 ```
 
 ### Environment Variables
+
 ```env
 # Required Environment Variables
 NODE_ENV=development|production
@@ -347,11 +374,13 @@ STORAGE_BUCKET=your-storage-bucket
 ## 📚 Documentation
 
 ### API Documentation
+
 - Interactive API docs available at: `http://api.localhost:3000/docs`
 - Postman collection: `http://api.localhost:3000/postman`
 - SDK documentation: `http://developer.localhost:3000/sdk`
 
 ### Development Guides
+
 - [Subdomain Development Guide](docs/subdomain-development.md)
 - [API Integration Guide](docs/api-integration.md)
 - [Component Library Guide](docs/component-library.md)
@@ -366,6 +395,7 @@ STORAGE_BUCKET=your-storage-bucket
 5. **Open a Pull Request**
 
 ### Development Guidelines
+
 - Follow TypeScript best practices
 - Use conventional commit messages
 - Add tests for new features
@@ -379,12 +409,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🆘 Support
 
 ### Getting Help
+
 - **Documentation**: Comprehensive guides in `/docs`
 - **API Support**: `http://developer.localhost:3000/support`
 - **Community**: GitHub Discussions
 - **Issues**: GitHub Issues
 
 ### Contact Information
+
 - **Email**: support@winfoa.com
 - **Website**: https://winfoa.com
 - **Developer Portal**: `http://developer.localhost:3000`
@@ -400,7 +432,7 @@ npm run dev
 # Access different subdomains
 open http://localhost:3000                    # Main platform
 open http://auth.localhost:3000               # Authentication
-open http://academy.localhost:3000            # Learning platform  
+open http://academy.localhost:3000            # Learning platform
 open http://api.localhost:3000                # API gateway
 open http://ump.localhost:3000                # User management
 open http://provider.localhost:3000           # Provider portal
@@ -413,4 +445,4 @@ open http://developer.localhost:3000          # Developer tools
 
 ---
 
-*This is a comprehensive full-stack web development platform showcasing modern web technologies, microservice architecture, and enterprise-grade features. Perfect for educational institutions, service providers, and multi-tenant applications.*# cms-winfoa
+_This is a comprehensive full-stack web development platform showcasing modern web technologies, microservice architecture, and enterprise-grade features. Perfect for educational institutions, service providers, and multi-tenant applications._# cms-winfoa

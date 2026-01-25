@@ -3,18 +3,12 @@
  * Subdomain routing and security configuration for the proxy server
  */
 
-import { SESSION, TENANCY, VALIDATION, env, SUBDOMAIN_CONFIG } from "@/config";
+import { SESSION, TENANCY, VALIDATION, env, SUBDOMAIN_CONFIG } from '@/config';
 // import { SUBDOMAIN_CONFIG } from "@/lib/constants";
 
 // ==========================================
 // HELPER FUNCTIONS
 // ==========================================
-
-const getEnv = (key: string, defaultVal?: string): string => {
-  const val = process.env[key] || defaultVal;
-  if (!val) throw new Error(`CRITICAL ERROR: Missing Env Variable ${key}`);
-  return val;
-};
 
 // ==========================================
 // PROXY CONFIG
@@ -37,13 +31,12 @@ export const PROXY_CONFIG = {
 
   // Bank-Grade Security Headers
   HEADERS: {
-    "X-Frame-Options": "DENY",
-    "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload",
-    "X-XSS-Protection": "1; mode=block",
-    "Permissions-Policy":
-      "camera=(), microphone=(), geolocation=(), payment=()",
+    'X-Frame-Options': 'DENY',
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+    'X-XSS-Protection': '1; mode=block',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
   },
 
   // Routing Map - Using centralized subdomain config
@@ -56,15 +49,15 @@ export const PROXY_CONFIG = {
 
   // Public Access Lists
   PUBLIC_PATHS: new Set([
-    "/",
-    "/login",
-    "/signup",
-    "/register",
-    "/verify-email",
-    "/forgot-password",
-    "/reset-password",
+    '/',
+    '/login',
+    '/signup',
+    '/register',
+    '/verify-email',
+    '/forgot-password',
+    '/reset-password',
   ]),
-  ASSETS: ["/_next", "/favicon.ico", "/images", "/api/public", "/public"],
+  ASSETS: ['/_next', '/favicon.ico', '/images', '/api/public', '/public'],
 } as const;
 
 // Legacy export for backward compatibility

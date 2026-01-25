@@ -11,10 +11,12 @@
 ### 1. **Unwanted Files Removed** ✅
 
 #### System Files
+
 - **9 `.DS_Store` files** - macOS system metadata files (non-essential)
   - Removed from root, src/, src/app, src/app/api, src/app/api/auth directories
 
 #### Deleted Git Files (Staged for Removal)
+
 - **250 deleted files** - Already marked in git status as deleted
   - `.agent/` directory documentation (12 files)
   - `.env.example` and `.env.oauth.example`
@@ -26,6 +28,7 @@
     - student, teachers, transcript, etc.
 
 #### Build & Cache Artifacts Cleaned
+
 - `.next/` - Next.js build output
 - `node_modules/.cache/` - npm cache
 - `coverage/` - test coverage reports
@@ -34,7 +37,9 @@
 ### 2. **Project Structure Analysis**
 
 #### Active Subdomains
+
 ✅ Currently implemented and active:
+
 - `auth/` - Authentication subdomain
 - `god/` - Super-admin/system management
 - `myaccount/` - User account management
@@ -43,12 +48,15 @@
 - `api/` - API routes
 
 #### Abandoned/Referenced but Not Implemented
+
 ⚠️ Referenced in code but no active routes:
+
 - `academy/` - Learning Management (250+ abandoned files removed)
 - `developer/` - Developer portal (references exist but no implementation)
 - `provider/` - Service provider (references exist but no implementation)
 
 **Status:** These are referenced in:
+
 - `src/shared/actions/auth/signup.form.ts` (subdomain validation list)
 - `README.md` (documentation)
 - Database email templates
@@ -62,14 +70,16 @@
 #### Critical Issues by Category:
 
 **1. Missing Exports & Modules (35+ errors)**
+
 ```
 - @/auth/lib/oauth/providers - not exported
-- @/services/auth/session.service - not exported  
+- @/services/auth/session.service - not exported
 - @/models/core/Role - not exported
 - @/services/index.ts - broken barrel exports
 ```
 
 **2. Data Model Mismatches (80+ errors)**
+
 ```
 IUser model missing properties:
   - isActive, name, walletBalance
@@ -77,13 +87,14 @@ IUser model missing properties:
 
 IApiKey model missing methods:
   - verifyKey(), incrementRequests()
-  
+
 Session model properties missing
 
 Authentication state inconsistencies
 ```
 
 **3. Configuration Issues (15+ errors)**
+
 ```
 next.config.ts:
   - 'turbo' not in experimental config (line 53)
@@ -92,6 +103,7 @@ next.config.ts:
 ```
 
 **4. Service & Type Mismatches (60+ errors)**
+
 ```
 - SessionCoreService methods: getSession, destroySession missing
 - setSessionCookie not exported from @/core/auth
@@ -101,6 +113,7 @@ next.config.ts:
 ```
 
 **5. Schema Validation Issues (40+ errors)**
+
 ```
 - Property name, token, expiresAt on wrong types
 - Enum casing inconsistencies (SNAKE_CASE vs PascalCase)
@@ -149,14 +162,14 @@ next.config.ts:
 
 ## Project Health Metrics
 
-| Metric | Status | Details |
-|--------|--------|---------|
-| Build Output | ✅ Cleaned | .next, cache, dist directories removed |
-| System Files | ✅ Removed | All .DS_Store files deleted |
-| Git Status | ⚠️ Partial | 250 files staged for deletion |
-| TypeScript | ❌ Broken | 459 compilation errors |
-| Lint Status | ⚠️ Unknown | Need to run `npm run lint` |
-| Type Coverage | ❌ Low | Missing exports and type mismatches |
+| Metric        | Status     | Details                                |
+| ------------- | ---------- | -------------------------------------- |
+| Build Output  | ✅ Cleaned | .next, cache, dist directories removed |
+| System Files  | ✅ Removed | All .DS_Store files deleted            |
+| Git Status    | ⚠️ Partial | 250 files staged for deletion          |
+| TypeScript    | ❌ Broken  | 459 compilation errors                 |
+| Lint Status   | ⚠️ Unknown | Need to run `npm run lint`             |
+| Type Coverage | ❌ Low     | Missing exports and type mismatches    |
 
 ---
 
@@ -174,6 +187,7 @@ next.config.ts:
 ## Next Steps
 
 1. **Commit the cleanup changes**
+
    ```bash
    git commit -m "chore: cleanup unwanted files and build artifacts"
    ```
@@ -184,6 +198,7 @@ next.config.ts:
    - Finally type consistency
 
 3. **Run validation suite**
+
    ```bash
    npm run validate    # Full validation
    npm run type-check  # Verify no TS errors
@@ -201,11 +216,13 @@ next.config.ts:
 ## Conclusion
 
 ✅ **Cleanup Completed Successfully:**
+
 - Removed 250+ deleted files from git history
 - Cleaned 9 macOS system files
 - Removed build artifacts (10+ directories)
 
 ⚠️ **Code Issues Discovered:**
+
 - 459 TypeScript compilation errors indicate incomplete refactoring
 - Service architecture has inconsistencies between data models and implementations
 - Enum naming conventions need standardization

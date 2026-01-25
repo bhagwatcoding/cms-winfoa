@@ -1,27 +1,24 @@
-"use server";
+'use server';
 
-import { createHmac, randomBytes, timingSafeEqual } from "crypto";
-import { SESSION } from "@/config";
+import { createHmac, randomBytes, timingSafeEqual } from 'crypto';
+import { SESSION } from '@/config';
 // Load secrets from .env
-const SECRETS = SESSION.SECRET.split(",")
+const SECRETS = SESSION.SECRET.split(',')
   .map((s) => s.trim())
   .filter(Boolean);
 
-if (SECRETS.length === 0)
-  throw new Error("DataSealer: SESSION_SECRET is missing in .env");
+if (SECRETS.length === 0) throw new Error('DataSealer: SESSION_SECRET is missing in .env');
 
 export class DataSealer {
   private static SECRETS: typeof SECRETS;
-  private static ALGORITHM: "sha256";
-  private static ENCODING: "base64url";
+  private static ALGORITHM: 'sha256';
+  private static ENCODING: 'base64url';
   /**
    * Seal a value (Sign it).
    * Output: `value.signature`
    */
   static seal(value: string): string {
-    const signature = createHmac(this.ALGORITHM, SECRETS[0])
-      .update(value)
-      .digest(this.ENCODING);
+    const signature = createHmac(this.ALGORITHM, SECRETS[0]).update(value).digest(this.ENCODING);
     return `${value}.${signature}`;
   }
 
@@ -31,7 +28,7 @@ export class DataSealer {
   static unseal(sealedValue: string | undefined | null): string | null {
     if (!sealedValue) return null;
 
-    const lastDot = sealedValue.lastIndexOf(".");
+    const lastDot = sealedValue.lastIndexOf('.');
     if (lastDot < 1) return null;
 
     const value = sealedValue.slice(0, lastDot);
@@ -46,15 +43,10 @@ export class DataSealer {
 
     // Check against all secrets (Rotation)
     for (const secret of SECRETS) {
-      const expected = createHmac(this.ALGORITHM, secret)
-        .update(value)
-        .digest(this.ENCODING);
+      const expected = createHmac(this.ALGORITHM, secret).update(value).digest(this.ENCODING);
       const expectedBuf = Buffer.from(expected, this.ENCODING);
 
-      if (
-        providedBuf.length === expectedBuf.length &&
-        timingSafeEqual(providedBuf, expectedBuf)
-      ) {
+      if (providedBuf.length === expectedBuf.length && timingSafeEqual(providedBuf, expectedBuf)) {
         return value;
       }
     }
@@ -66,10 +58,7 @@ export class DataSealer {
     return this.seal(`${name}=${value}`);
   }
 
-  static unsealCookie(
-    name: string,
-    sealedValue: string | undefined,
-  ): string | null {
+  static unsealCookie(name: string, sealedValue: string | undefined): string | null {
     const unsealed = this.unseal(sealedValue);
     const prefix = `${name}=`;
     return unsealed?.startsWith(prefix) ? unsealed.slice(prefix.length) : null;

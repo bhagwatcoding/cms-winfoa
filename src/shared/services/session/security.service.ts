@@ -4,12 +4,11 @@
  * Handles risk analysis, device detection, and security scoring
  */
 
-import "server-only";
-import { User } from "@/models";
-import { RequestDetective } from "@/lib/detector";
-import { DeviceType, RiskLevel, LoginMethod } from "@/types";
-import { Session } from "@/models";
-import { connectDB } from "@/lib/db";
+import 'server-only';
+import { User, Session } from '@/models';
+import { IDeviceInfo, IGeoInfo } from '@/core/db/interfaces';
+import { DeviceType, RiskLevel, LoginMethod } from '@/core/db/enums';
+import { connectDB } from '@/lib/db';
 
 export class SessionSecurityService {
   /**
@@ -17,48 +16,48 @@ export class SessionSecurityService {
    */
   static async calculateRisk(
     userId: string,
-    deviceInfo: any,
-    geoInfo: any
+    device: IDeviceInfo,
+    location: IGeoInfo
   ): Promise<{ riskScore: number; riskLevel: RiskLevel }> {
     let riskScore = 0;
-    
+
     try {
       await connectDB();
       const user = await User.findById(userId);
-      
+
       if (!user) {
         return { riskScore: 100, riskLevel: RiskLevel.Critical };
       }
 
       // Device-based risk factors
-      if (deviceInfo.type === DeviceType.Unknown) riskScore += 20;
-      if (!deviceInfo.name) riskScore += 15;
-      if (!deviceInfo.os) riskScore += 10;
+      if (device.type === DeviceType.Unknown) riskScore += 20;
+      if (!device.browser) riskScore += 15;
+      if (!device.os) riskScore += 10;
 
       // Location-based risk factors
-      if (!geoInfo.country) riskScore += 25;
-      if (!geoInfo.ip) riskScore += 20;
+      if (!location.country) riskScore += 25;
+      if (!location.ip) riskScore += 20;
 
       // User history-based risk factors
       const recentSessions = await Session.find({
         userId,
-        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
+        createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
       });
 
       // Check for new device
-      const isNewDevice = !recentSessions.some(session => 
-        session.deviceInfo?.deviceId === (deviceInfo as any).deviceId &&
-        session.deviceInfo?.os === (deviceInfo as any).os
+      const isNewDevice = !recentSessions.some(
+        (session) =>
+          session.deviceInfo?.userAgent === device.userAgent && session.deviceInfo?.os === device.os
       );
-      
+
       if (isNewDevice) riskScore += 30;
 
       // Check for new location
-      const isNewLocation = !recentSessions.some(session =>
-        session.geoInfo?.country === (geoInfo as any).country &&
-        session.geoInfo?.city === (geoInfo as any).city
+      const isNewLocation = !recentSessions.some(
+        (session) =>
+          session.geoInfo?.country === location.country && session.geoInfo?.city === location.city
       );
-      
+
       if (isNewLocation) riskScore += 25;
 
       // Determine risk level
@@ -70,7 +69,7 @@ export class SessionSecurityService {
 
       return { riskScore, riskLevel };
     } catch (error) {
-      console.error("Risk calculation error:", error);
+      console.error('Risk calculation error:', error);
       return { riskScore: 50, riskLevel: RiskLevel.Medium };
     }
   }
@@ -78,7 +77,7 @@ export class SessionSecurityService {
   /**
    * Analyze device security
    */
-  static async analyzeDevice(deviceInfo: any): Promise<{
+  static async analyzeDevice(deviceInfo: IDeviceInfo): Promise<{
     isTrusted: boolean;
     riskScore: number;
     recommendations: string[];
@@ -89,38 +88,26 @@ export class SessionSecurityService {
     // Device type analysis
     if (deviceInfo.type === DeviceType.Unknown) {
       riskScore += 20;
-      recommendations.push("Device type could not be determined");
+      recommendations.push('Device type could not be determined');
     }
 
     // OS analysis
     if (!deviceInfo.os) {
       riskScore += 15;
-      recommendations.push("Operating system information missing");
-    }
-
-    // Screen resolution analysis
-    if (!deviceInfo.screenResolution) {
-      riskScore += 10;
-      recommendations.push("Screen resolution not detected");
-    }
-
-    // Language analysis
-    if (!deviceInfo.language) {
-      riskScore += 5;
-      recommendations.push("Browser language not detected");
+      recommendations.push('Operating system information missing');
     }
 
     return {
       isTrusted: riskScore < 30,
       riskScore,
-      recommendations
+      recommendations,
     };
   }
 
   /**
    * Analyze location security
    */
-  static async analyzeLocation(geoInfo: any): Promise<{
+  static async analyzeLocation(geoInfo: IGeoInfo): Promise<{
     isTrusted: boolean;
     riskScore: number;
     recommendations: string[];
@@ -131,51 +118,51 @@ export class SessionSecurityService {
     // Country analysis
     if (!geoInfo.country) {
       riskScore += 25;
-      recommendations.push("Country could not be determined");
+      recommendations.push('Country could not be determined');
     }
 
     // IP analysis
     if (!geoInfo.ip) {
       riskScore += 20;
-      recommendations.push("IP address not detected");
+      recommendations.push('IP address not detected');
     }
 
     // Timezone analysis
     if (!geoInfo.timezone) {
       riskScore += 10;
-      recommendations.push("Timezone not detected");
+      recommendations.push('Timezone not detected');
     }
 
     // Coordinate analysis
-    if (!geoInfo.lat || !geoInfo.lon) {
+    if (!geoInfo.coordinates?.latitude || !geoInfo.coordinates?.longitude) {
       riskScore += 15;
-      recommendations.push("Geographic coordinates not available");
+      recommendations.push('Geographic coordinates not available');
     }
 
     return {
       isTrusted: riskScore < 30,
       riskScore,
-      recommendations
+      recommendations,
     };
   }
 
   /**
    * Check if device is trusted for user
    */
-  static async isTrustedDevice(userId: string, deviceInfo: any): Promise<boolean> {
+  static async isTrustedDevice(userId: string, deviceInfo: IDeviceInfo): Promise<boolean> {
     try {
       await connectDB();
-      
+
       const recentSessions = await Session.find({
         userId,
         createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }, // 30 days
         'deviceInfo.name': deviceInfo.name,
-        'deviceInfo.os': deviceInfo.os
+        'deviceInfo.os': deviceInfo.os,
       });
 
       return recentSessions.length > 0;
     } catch (error) {
-      console.error("Trusted device check error:", error);
+      console.error('Trusted device check error:', error);
       return false;
     }
   }
@@ -183,20 +170,20 @@ export class SessionSecurityService {
   /**
    * Check if location is trusted for user
    */
-  static async isTrustedLocation(userId: string, geoInfo: any): Promise<boolean> {
+  static async isTrustedLocation(userId: string, geoInfo: IGeoInfo): Promise<boolean> {
     try {
       await connectDB();
-      
+
       const recentSessions = await Session.find({
         userId,
         createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }, // 30 days
         'geoInfo.country': geoInfo.country,
-        'geoInfo.city': geoInfo.city
+        'geoInfo.city': geoInfo.city,
       });
 
       return recentSessions.length > 0;
     } catch (error) {
-      console.error("Trusted location check error:", error);
+      console.error('Trusted location check error:', error);
       return false;
     }
   }
@@ -205,8 +192,8 @@ export class SessionSecurityService {
    * Generate security recommendations
    */
   static generateSecurityRecommendations(
-    deviceAnalysis: any,
-    locationAnalysis: any,
+    deviceAnalysis: { isTrusted: boolean; recommendations: string[] },
+    locationAnalysis: { isTrusted: boolean; recommendations: string[] },
     riskLevel: RiskLevel
   ): string[] {
     const recommendations: string[] = [];
@@ -223,8 +210,8 @@ export class SessionSecurityService {
 
     // Risk level recommendations
     if (riskLevel === RiskLevel.High || riskLevel === RiskLevel.Critical) {
-      recommendations.push("Consider enabling two-factor authentication");
-      recommendations.push("Review recent account activity");
+      recommendations.push('Consider enabling two-factor authentication');
+      recommendations.push('Review recent account activity');
     }
 
     if (riskLevel === RiskLevel.Critical) {
@@ -242,14 +229,14 @@ export class SessionSecurityService {
     riskScore: number,
     riskLevel: RiskLevel,
     failedAttempts: number = 0
-  ): any {
+  ): Record<string, unknown> {
     return {
       loginMethod,
       riskScore,
       riskLevel,
       isVerified: riskLevel === RiskLevel.Low,
       failedAttempts,
-      lastSecurityCheck: new Date()
+      lastSecurityCheck: new Date(),
     };
   }
 }

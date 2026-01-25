@@ -1,10 +1,19 @@
 /**
  * Constants - Central Export
  * All application constants organized and exported
+ *
+ * NOTE: For runtime configuration (env-based), use:
+ *   import { ... } from "@/config"
+ *
+ * This module exports STATIC constants only:
+ * - Routes
+ * - Messages
+ * - Database enums/labels
+ * - Subdomain types (re-exported from config)
  */
 
 // ==========================================
-// APPLICATION CONSTANTS
+// STATIC APPLICATION CONSTANTS
 // ==========================================
 
 export * from './app';
@@ -16,42 +25,13 @@ export * from './app';
 export * from './routes';
 
 // ==========================================
-// SUBDOMAINS
+// SUBDOMAINS (Re-exports from config for convenience)
 // ==========================================
 
 export * from './subdomains';
-
-// ==========================================
-// DATABASE ENUMS & LABELS
-// ==========================================
-
-export * from './database';
 
 // ==========================================
 // MESSAGES
 // ==========================================
 
 export * from './messages';
-
-// ==========================================
-// RE-EXPORTS FOR CONVENIENCE
-// ==========================================
-
-export { ROUTES } from './routes';
-export {
-    SUBDOMAIN_TYPES,
-    SUBDOMAIN_CONFIG,
-    type SubDomainType,
-} from './subdomains';
-export {
-    USER_ROLES,
-    USER_STATUS,
-    TRANSACTION_TYPES,
-    TRANSACTION_STATUS_MAP,
-} from './database';
-export {
-    SUCCESS_MESSAGES,
-    ERROR_MESSAGES,
-    INFO_MESSAGES,
-    VALIDATION_MESSAGES,
-} from './messages';

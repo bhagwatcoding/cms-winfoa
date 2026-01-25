@@ -1,35 +1,19 @@
-import "./globals.css";
-import { Toaster, ErrorBoundary } from "@/shared/components/ui";
-import { ThemeProvider } from "@/shared/components/providers/theme-provider";
+import { CookieService } from '@/core/services/cookie.service';
+import './globals.css';
 
-export const metadata = {
-  title: {
-    template: "%s - Education Management System",
-    default: "Winfoa - Education Management System"
-  },
-  description: "Comprehensive cms management platform with multi-subdomain architecture",
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookie = await CookieService.getSessionToken();
+  const cookie2 = await CookieService.getSessionToken();
+  console.log('cookie', cookie);
+  console.log('cookie2', cookie2);
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ErrorBoundary>
-            <Toaster />
-            {children}
-          </ErrorBoundary>
-        </ThemeProvider>
-      </body>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

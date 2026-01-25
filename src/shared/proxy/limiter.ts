@@ -1,5 +1,5 @@
 // lib/proxy/limiter.ts
-import { CONFIG } from "./config";
+import { CONFIG } from './config';
 
 interface LimitResult {
   success: boolean;
@@ -32,10 +32,7 @@ class MemoryRateLimiter {
     record.count++;
 
     const success = record.count <= CONFIG.RATE_LIMIT.MAX_REQUESTS;
-    const remaining = Math.max(
-      0,
-      CONFIG.RATE_LIMIT.MAX_REQUESTS - record.count,
-    );
+    const remaining = Math.max(0, CONFIG.RATE_LIMIT.MAX_REQUESTS - record.count);
     const resetAfter = Math.ceil((record.expires - now) / 1000);
 
     return { success, remaining, resetAfter };

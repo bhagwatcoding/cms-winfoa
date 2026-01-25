@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { LoginForm } from "@/features/auth/components/forms/login-form";
-import { Shield } from "lucide-react";
-import { motion } from "framer-motion";
+import Link from 'next/link';
+import { LoginForm } from '@/features/auth/components/forms/login-form';
+import { Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function AuthLandingPage() {
   return (
@@ -41,11 +41,8 @@ export default function AuthLandingPage() {
         transition={{ delay: 0.3 }}
         className="text-center text-sm text-slate-500 mt-6"
       >
-        By signing in, you agree to our{" "}
-        <Link
-          href="#"
-          className="text-blue-600 hover:text-blue-700 font-semibold underline"
-        >
+        By signing in, you agree to our{' '}
+        <Link href="#" className="text-blue-600 hover:text-blue-700 font-semibold underline">
           Terms of Service
         </Link>
       </motion.p>

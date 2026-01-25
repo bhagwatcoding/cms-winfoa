@@ -1,11 +1,12 @@
-/**
- * Professional Multi-Subdomain Application Setup Guide
- * Complete deployment and configuration guide
- * 
- * @module SetupGuide
- * @description Comprehensive setup guide for enterprise deployment
- * @version 3.0.0
- */
+/\*\*
+
+- Professional Multi-Subdomain Application Setup Guide
+- Complete deployment and configuration guide
+-
+- @module SetupGuide
+- @description Comprehensive setup guide for enterprise deployment
+- @version 3.0.0
+  \*/
 
 # 🚀 Professional Multi-Subdomain Application Setup Guide
 
@@ -565,4 +566,4 @@ Happy coding! 🚀
 
 ---
 
-*For more information, visit our [documentation](https://docs.winfoa.com) or [GitHub repository](https://github.com/winfoa/cms-winfoa).*
+_For more information, visit our [documentation](https://docs.winfoa.com) or [GitHub repository](https://github.com/winfoa/cms-winfoa)._

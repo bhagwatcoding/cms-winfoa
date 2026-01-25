@@ -1,74 +1,74 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/core/db";
-import { User } from "@/models";
-import { requireAuth } from "@/core/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/core/db';
+import { User } from '@/models';
+import { requireAuth } from '@/core/auth';
 
 // GET /api/users/roles - Get available roles and permissions
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const currentUser = await requireAuth();
     await connectDB();
 
     // Define role hierarchy and permissions
     const roleDefinitions = {
-      "super-admin": {
-        name: "Super Administrator",
-        description: "Full system access with all permissions",
+      'super-admin': {
+        name: 'Super Administrator',
+        description: 'Full system access with all permissions',
         level: 100,
         permissions: [
-          "users.create",
-          "users.read",
-          "users.update",
-          "users.delete",
-          "users.manage-roles",
-          "academy.full-access",
-          "wallet.full-access",
-          "api.full-access",
-          "system.settings",
-          "system.maintenance"
+          'users.create',
+          'users.read',
+          'users.update',
+          'users.delete',
+          'users.manage-roles',
+          'academy.full-access',
+          'wallet.full-access',
+          'api.full-access',
+          'system.settings',
+          'system.maintenance',
         ],
-        subdomains: ["auth", "api", "ump", "myaccount", "wallet"]
+        subdomains: ['auth', 'api', 'ump', 'myaccount', 'wallet'],
       },
-      "admin": {
-        name: "Administrator",
-        description: "Administrative access to most features",
+      admin: {
+        name: 'Administrator',
+        description: 'Administrative access to most features',
         level: 90,
         permissions: [
-          "users.create",
-          "users.read",
-          "users.update",
-          "academy.manage",
-          "wallet.manage",
-          "api.manage"
+          'users.create',
+          'users.read',
+          'users.update',
+          'academy.manage',
+          'wallet.manage',
+          'api.manage',
         ],
-        subdomains: ["auth", "api", "ump", "myaccount", "wallet"]
+        subdomains: ['auth', 'api', 'ump', 'myaccount', 'wallet'],
       },
-      "user": {
-        name: "Regular User",
-        description: "Basic user access",
+      user: {
+        name: 'Regular User',
+        description: 'Basic user access',
         level: 20,
-        permissions: [
-          "profile.view",
-          "profile.update",
-          "wallet.view-balance"
-        ],
-        subdomains: ["auth", "myaccount"]
-      }
+        permissions: ['profile.view', 'profile.update', 'wallet.view-balance'],
+        subdomains: ['auth', 'myaccount'],
+      },
     };
 
     // Filter roles based on current user permissions
-    let availableRoles: any = roleDefinitions;
+    let availableRoles: Record<string, unknown> = roleDefinitions;
 
-    if (currentUser.role !== "super-admin") {
+    if (currentUser.role !== 'super-admin') {
       // Non-super-admins cannot see or assign super-admin role
-      const { "super-admin": removed, ...filteredRoles } = roleDefinitions;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { 'super-admin': _removed, ...filteredRoles } = roleDefinitions;
       availableRoles = filteredRoles;
 
       // Regular admins can only assign roles below their level
-      if (currentUser.role === "admin") {
+      if (currentUser.role === 'admin') {
         const currentLevel = roleDefinitions.admin.level;
         availableRoles = Object.fromEntries(
-          Object.entries(availableRoles).filter(([_, role]: [string, any]) => role.level <= currentLevel)
+          Object.entries(availableRoles).filter(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ([, role]: [string, any]) => role.level <= (currentLevel as number)
+          )
         );
       }
     }
@@ -77,22 +77,22 @@ export async function GET(request: NextRequest) {
     const roleStats = await User.aggregate([
       {
         $group: {
-          _id: "$role",
+          _id: '$role',
           count: { $sum: 1 },
           active: {
             $sum: {
-              $cond: [{ $eq: ["$status", "active"] }, 1, 0]
-            }
-          }
-        }
-      }
+              $cond: [{ $eq: ['$status', 'active'] }, 1, 0],
+            },
+          },
+        },
+      },
     ]);
 
     const statsMap = roleStats.reduce((acc, stat) => {
       acc[stat._id] = {
         total: stat.count,
         active: stat.active,
-        inactive: stat.count - stat.active
+        inactive: stat.count - stat.active,
       };
       return acc;
     }, {});
@@ -103,25 +103,20 @@ export async function GET(request: NextRequest) {
         roles: availableRoles,
         statistics: statsMap,
         currentUserRole: currentUser.role,
-        canManageRoles: currentUser.role ? ["super-admin", "admin"].includes(currentUser.role) : false
+        canManageRoles: currentUser.role
+          ? ['super-admin', 'admin'].includes(currentUser.role)
+          : false,
       },
-      message: "Roles fetched successfully"
+      message: 'Roles fetched successfully',
     });
-
   } catch (error: any) {
-    console.error("Get roles error:", error);
+    console.error('Get roles error:', error);
 
-    if (error.message === "Unauthorized - Please login") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+    if (error.message === 'Unauthorized - Please login') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    return NextResponse.json(
-      { error: "Failed to fetch roles" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch roles' }, { status: 500 });
   }
 }
 
@@ -129,11 +124,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const currentUser = await requireAuth();
-    if (!currentUser.role || !["admin", "super-admin"].includes(currentUser.role)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
+    if (!currentUser.role || !['admin', 'super-admin'].includes(currentUser.role)) {
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
     await connectDB();
 
@@ -141,36 +133,32 @@ export async function POST(request: NextRequest) {
     const { userId, role, reason } = body;
 
     if (!userId || !role) {
-      return NextResponse.json(
-        { error: "User ID and role are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'User ID and role are required' }, { status: 400 });
     }
 
     // Find target user
     const targetUser = await User.findById(userId);
     if (!targetUser) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Check if current user can assign this role
-    const validRoles = ["user", "student", "staff", "center", "provider", "admin"];
+    const validRoles = ['user', 'student', 'staff', 'center', 'provider', 'admin'];
 
-    if (currentUser.role !== "super-admin") {
+    if (currentUser.role !== 'super-admin') {
       // Non-super-admin cannot assign super-admin role
-      if (role === "super-admin") {
+      if (role === 'super-admin') {
         return NextResponse.json(
-          { error: "Only super-admin can assign super-admin role" },
+          { error: 'Only super-admin can assign super-admin role' },
           { status: 403 }
         );
       }
 
       // Admin cannot modify other admins or super-admins
-      if (targetUser.role === "super-admin" ||
-          (targetUser.role === "admin" && currentUser.role === "admin")) {
+      if (
+        targetUser.role === 'super-admin' ||
+        (targetUser.role === 'admin' && currentUser.role === 'admin')
+      ) {
         return NextResponse.json(
           { error: "Insufficient permissions to modify this user's role" },
           { status: 403 }
@@ -178,11 +166,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    if (!validRoles.includes(role) && role !== "super-admin") {
-      return NextResponse.json(
-        { error: "Invalid role specified" },
-        { status: 400 }
-      );
+    if (!validRoles.includes(role) && role !== 'super-admin') {
+      return NextResponse.json({ error: 'Invalid role specified' }, { status: 400 });
     }
 
     // Store previous role for audit
@@ -194,19 +179,21 @@ export async function POST(request: NextRequest) {
     await targetUser.save();
 
     // Log the role change
-    console.log(`🔄 Role changed: ${targetUser.email} from ${previousRole} to ${role} by ${currentUser.email}`);
+    console.log(
+      `🔄 Role changed: ${targetUser.email} from ${previousRole} to ${role} by ${currentUser.email}`
+    );
 
     // Create audit log (you might want to store this in a separate collection)
     const auditLog = {
-      action: "role_change",
+      action: 'role_change',
       targetUserId: targetUser._id,
       targetUserEmail: targetUser.email,
       performedBy: currentUser._id,
       performedByEmail: currentUser.email,
       previousRole,
       newRole: role,
-      reason: reason || "No reason provided",
-      timestamp: new Date()
+      reason: reason || 'No reason provided',
+      timestamp: new Date(),
     };
 
     return NextResponse.json({
@@ -216,32 +203,25 @@ export async function POST(request: NextRequest) {
         email: targetUser.email,
         previousRole,
         newRole: role,
-        auditLog
+        auditLog,
       },
-      message: `Role changed from ${previousRole} to ${role} successfully`
+      message: `Role changed from ${previousRole} to ${role} successfully`,
     });
-
   } catch (error: any) {
-    console.error("Assign role error:", error);
+    console.error('Assign role error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions to assign roles" },
+        { error: 'Insufficient permissions to assign roles' },
         { status: 403 }
       );
     }
 
-    if (error.message === "Unauthorized - Please login") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+    if (error.message === 'Unauthorized - Please login') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    return NextResponse.json(
-      { error: "Failed to assign role" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to assign role' }, { status: 500 });
   }
 }
 
@@ -249,11 +229,8 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const currentUser = await requireAuth();
-    if (currentUser.role !== "super-admin") {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
+    if (currentUser.role !== 'super-admin') {
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
     await connectDB();
 
@@ -261,35 +238,23 @@ export async function PUT(request: NextRequest) {
     const { userIds, role, reason } = body;
 
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-      return NextResponse.json(
-        { error: "User IDs array is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'User IDs array is required' }, { status: 400 });
     }
 
     if (!role) {
-      return NextResponse.json(
-        { error: "Role is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Role is required' }, { status: 400 });
     }
 
-    const validRoles = ["user", "student", "staff", "center", "provider", "admin", "super-admin"];
+    const validRoles = ['user', 'student', 'staff', 'center', 'provider', 'admin', 'super-admin'];
     if (!validRoles.includes(role)) {
-      return NextResponse.json(
-        { error: "Invalid role specified" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid role specified' }, { status: 400 });
     }
 
     // Find all target users
     const targetUsers = await User.find({ _id: { $in: userIds } });
 
     if (targetUsers.length !== userIds.length) {
-      return NextResponse.json(
-        { error: "Some users were not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Some users were not found' }, { status: 404 });
     }
 
     // Update all users
@@ -298,38 +263,36 @@ export async function PUT(request: NextRequest) {
       {
         $set: {
           role: role,
-          updatedAt: new Date()
-        }
+          updatedAt: new Date(),
+        },
       }
     );
 
     // Log bulk role change
-    console.log(`🔄 Bulk role change: ${result.modifiedCount} users changed to ${role} by ${currentUser.email}`);
+    console.log(
+      `🔄 Bulk role change: ${result.modifiedCount} users changed to ${role} by ${currentUser.email}`
+    );
 
     return NextResponse.json({
       success: true,
       data: {
         usersUpdated: result.modifiedCount,
         newRole: role,
-        reason: reason || "Bulk role assignment"
+        reason: reason || 'Bulk role assignment',
       },
-      message: `Successfully updated ${result.modifiedCount} users to ${role} role`
+      message: `Successfully updated ${result.modifiedCount} users to ${role} role`,
     });
-
   } catch (error: any) {
-    console.error("Bulk role assignment error:", error);
+    console.error('Bulk role assignment error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions for bulk role assignment" },
+        { error: 'Insufficient permissions for bulk role assignment' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to assign roles" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to assign roles' }, { status: 500 });
   }
 }
 
@@ -337,37 +300,30 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const currentUser = await requireAuth();
-    if (!currentUser.role || !["admin", "super-admin"].includes(currentUser.role)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
+    if (!currentUser.role || !['admin', 'super-admin'].includes(currentUser.role)) {
+      return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
     }
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+    const userId = searchParams.get('userId');
 
     if (!userId) {
-      return NextResponse.json(
-        { error: "User ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
     // Find target user
     const targetUser = await User.findById(userId);
     if (!targetUser) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     // Check permissions
-    if (currentUser.role !== "super-admin") {
-      if (targetUser.role === "super-admin" ||
-          (targetUser.role === "admin" && currentUser.role === "admin")) {
+    if (currentUser.role !== 'super-admin') {
+      if (
+        targetUser.role === 'super-admin' ||
+        (targetUser.role === 'admin' && currentUser.role === 'admin')
+      ) {
         return NextResponse.json(
           { error: "Insufficient permissions to modify this user's role" },
           { status: 403 }
@@ -376,7 +332,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const previousRole = targetUser.role;
-    const defaultRole = "user";
+    const defaultRole = 'user';
 
     // Reset to default role
     targetUser.role = defaultRole;
@@ -384,7 +340,9 @@ export async function DELETE(request: NextRequest) {
     await targetUser.save();
 
     // Log the role reset
-    console.log(`🔄 Role reset: ${targetUser.email} from ${previousRole} to ${defaultRole} by ${currentUser.email}`);
+    console.log(
+      `🔄 Role reset: ${targetUser.email} from ${previousRole} to ${defaultRole} by ${currentUser.email}`
+    );
 
     return NextResponse.json({
       success: true,
@@ -392,24 +350,20 @@ export async function DELETE(request: NextRequest) {
         userId: targetUser._id,
         email: targetUser.email,
         previousRole,
-        newRole: defaultRole
+        newRole: defaultRole,
       },
-      message: `Role reset from ${previousRole} to ${defaultRole} successfully`
+      message: `Role reset from ${previousRole} to ${defaultRole} successfully`,
     });
-
   } catch (error: any) {
-    console.error("Reset role error:", error);
+    console.error('Reset role error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions to reset roles" },
+        { error: 'Insufficient permissions to reset roles' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to reset role" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to reset role' }, { status: 500 });
   }
 }

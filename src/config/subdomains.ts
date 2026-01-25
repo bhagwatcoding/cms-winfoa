@@ -4,23 +4,20 @@
 // ==========================================
 
 export const SUBDOMAINS = {
-  ROOT: "root", // usually for landing page
-  WWW: "www",
-  AUTH: "auth",
-  API: "api",
-  MYACCOUNT: "myaccount",
-  GOD: "god", // Super admin panel
-  UMP: "ump",
-  WALLET: "wallet",
+  ROOT: 'root', // usually for landing page
+  WWW: 'www',
+  AUTH: 'auth',
+  API: 'api',
+  MYACCOUNT: 'myaccount',
+  GOD: 'god', // Super admin panel
+  UMP: 'ump',
+  WALLET: 'wallet',
 } as const;
 
 export type Subdomain = (typeof SUBDOMAINS)[keyof typeof SUBDOMAINS];
 
 // Define Roles explicitly to prevent typos in keys
-export type UserRole =
-  | "god"
-  | "admin"
-  | "user";
+export type UserRole = 'god' | 'admin' | 'user';
 
 // ==========================================
 // 2. CATEGORIZATION (Flat Arrays)
@@ -52,20 +49,8 @@ export const PROTECTED_SUBDOMAINS: Subdomain[] = [
 // ==========================================
 
 export const SUBDOMAIN_ACCESS_BY_ROLE: Record<UserRole, Subdomain[]> = {
-  god: [
-    SUBDOMAINS.AUTH,
-    SUBDOMAINS.GOD,
-    SUBDOMAINS.UMP,
-    SUBDOMAINS.MYACCOUNT,
-    SUBDOMAINS.WALLET,
-  ],
-  admin: [
-    SUBDOMAINS.AUTH,
-    SUBDOMAINS.API,
-    SUBDOMAINS.UMP,
-    SUBDOMAINS.MYACCOUNT,
-    SUBDOMAINS.WALLET,
-  ],
+  god: [SUBDOMAINS.AUTH, SUBDOMAINS.GOD, SUBDOMAINS.UMP, SUBDOMAINS.MYACCOUNT, SUBDOMAINS.WALLET],
+  admin: [SUBDOMAINS.AUTH, SUBDOMAINS.API, SUBDOMAINS.UMP, SUBDOMAINS.MYACCOUNT, SUBDOMAINS.WALLET],
   user: [SUBDOMAINS.AUTH, SUBDOMAINS.MYACCOUNT, SUBDOMAINS.WALLET],
 };
 

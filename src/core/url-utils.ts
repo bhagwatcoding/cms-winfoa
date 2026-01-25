@@ -1,4 +1,4 @@
-import { env } from "@/config/env";
+import { env } from '@/config/env';
 
 /**
  * Returns the full base URL for a given subdomain.
@@ -7,11 +7,11 @@ import { env } from "@/config/env";
  */
 export function getBaseUrl(subdomain?: string) {
   const rootDomain = env.NEXT_PUBLIC_ROOT_DOMAIN;
-  const protocol = env.NODE_ENV === "production" ? "https" : "http";
-  
-  if (!subdomain || subdomain === "www" || subdomain === "root") {
+  const protocol = env.NODE_ENV === 'production' ? 'https' : 'http';
+
+  if (!subdomain || subdomain === 'www' || subdomain === 'root') {
     return `${protocol}://${rootDomain}`;
   }
-  
+
   return `${protocol}://${subdomain}.${rootDomain}`;
 }

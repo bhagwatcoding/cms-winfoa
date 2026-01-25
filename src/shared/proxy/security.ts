@@ -1,6 +1,6 @@
 // lib/proxy/security.ts
-import { NextRequest, NextResponse } from "next/server";
-import { CONFIG } from "./config";
+import { NextRequest, NextResponse } from 'next/server';
+import { CONFIG } from './config';
 
 export class Security {
   // Patterns for WAF (SQLi, XSS, Path Traversal)
@@ -22,7 +22,7 @@ export class Security {
   }
 
   static getIP(req: NextRequest): string {
-    return req.headers.get("x-forwarded-for")?.split(",")[0] ?? "127.0.0.1";
+    return req.headers.get('x-forwarded-for')?.split(',')[0] ?? '127.0.0.1';
   }
 
   static applyHeaders(res: NextResponse): NextResponse {

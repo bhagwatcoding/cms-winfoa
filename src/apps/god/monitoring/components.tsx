@@ -1,15 +1,21 @@
 /**
  * Monitoring Dashboard UI Components
  * Professional UI components for the monitoring dashboard
- * 
+ *
  * @module MonitoringComponents
  * @description Reusable UI components for enterprise monitoring
  */
 
 import { Badge } from '@/shared/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/shared/components/ui/card';
 import { Button } from '@/shared/components/ui/button';
-import { AlertCircle, CheckCircle, Clock, Database, HardDrive, MemoryStick, Server } from 'lucide-react';
+import { AlertCircle, CheckCircle, Server, Database, HardDrive, MemoryStick } from 'lucide-react';
 
 // =============================================================================
 // TYPES
@@ -47,7 +53,9 @@ export function StatusBadge({ status }: { status: string }) {
   };
 
   return (
-    <Badge variant={variants[status as keyof typeof variants] as any}>
+    <Badge
+      variant={variants[status as keyof typeof variants] as 'default' | 'secondary' | 'destructive'}
+    >
       {icons[status as keyof typeof icons]}
       <span className="ml-1 capitalize">{status}</span>
     </Badge>
@@ -71,9 +79,7 @@ export function MetricCard({ metric }: { metric: Metric }) {
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{metric.name}</CardTitle>
-        <span className={`text-lg ${trendColors[metric.trend]}`}>
-          {trendIcons[metric.trend]}
-        </span>
+        <span className={`text-lg ${trendColors[metric.trend]}`}>{trendIcons[metric.trend]}</span>
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">
@@ -98,24 +104,16 @@ export function HealthCheckCard({ name, result }: { name: string; result: Health
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium flex items-center gap-2">
           {icons[name as keyof typeof icons] || <Server className="h-4 w-4" />}
-          {name.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+          {name.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
         </CardTitle>
         <StatusBadge status={result.status} />
       </CardHeader>
       <CardContent>
-        <div className="text-xs text-muted-foreground">
-          Response Time: {result.responseTime}ms
-        </div>
+        <div className="text-xs text-muted-foreground">Response Time: {result.responseTime}ms</div>
         {result.message && (
-          <div className="text-xs text-muted-foreground mt-1">
-            {result.message}
-          </div>
+          <div className="text-xs text-muted-foreground mt-1">{result.message}</div>
         )}
-        {result.error && (
-          <div className="text-xs text-red-500 mt-1">
-            {result.error}
-          </div>
-        )}
+        {result.error && <div className="text-xs text-red-500 mt-1">{result.error}</div>}
       </CardContent>
     </Card>
   );
@@ -147,12 +145,12 @@ export function ErrorCard({ error, onRetry }: { error: string; onRetry: () => vo
   );
 }
 
-export function SystemInfoCard({ 
-  environment, 
-  version, 
-  uptime, 
-  overallStatus 
-}: { 
+export function SystemInfoCard({
+  environment,
+  version,
+  uptime,
+  overallStatus,
+}: {
   environment: string;
   version: string;
   uptime: number;

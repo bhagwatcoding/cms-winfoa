@@ -1,10 +1,10 @@
 // 👥 UMP FEATURE - Main Export
 
 // Services
-export * from './services'
+export * from './services';
 
 // Types
-export * from './types'
+export * from './types';
 
 // Usage:
 // import { UserManagementService } from '@/features/ump'

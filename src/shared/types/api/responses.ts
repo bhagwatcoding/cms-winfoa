@@ -3,29 +3,29 @@
  * Standardized response types for all API endpoints and server actions
  */
 
-import type { ValidationError } from '@/types';
+import type { ValidationError } from '../base.types';
 
 // ==========================================
 // BASE RESPONSE TYPES
 // ==========================================
 
 export interface BaseResponse {
-    success: boolean;
-    message?: string;
-    error?: string;
+  success: boolean;
+  message?: string;
+  error?: string;
 }
 
 export interface SuccessResponse<T = unknown> extends BaseResponse {
-    success: true;
-    data: T;
-    message?: string;
+  success: true;
+  data: T;
+  message?: string;
 }
 
 export interface ErrorResponse extends BaseResponse {
-    success: false;
-    error: string;
-    errors?: ValidationError[];
-    code?: string;
+  success: false;
+  error: string;
+  errors?: ValidationError[];
+  code?: string;
 }
 
 export type ApiResponse<T = unknown> = SuccessResponse<T> | ErrorResponse;
@@ -35,32 +35,32 @@ export type ApiResponse<T = unknown> = SuccessResponse<T> | ErrorResponse;
 // ==========================================
 
 export interface AuthUser {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    image?: string;
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  image?: string;
 }
 
 export interface LoginResponse extends BaseResponse {
-    success: boolean;
-    redirectUrl?: string;
-    user?: AuthUser;
-    error?: string;
-    errors?: ValidationError[];
+  success: boolean;
+  redirectUrl?: string;
+  user?: AuthUser;
+  error?: string;
+  errors?: ValidationError[];
 }
 
 export interface SignupResponse extends BaseResponse {
-    success: boolean;
-    redirectUrl?: string;
-    user?: AuthUser;
-    error?: string;
-    errors?: ValidationError[];
+  success: boolean;
+  redirectUrl?: string;
+  user?: AuthUser;
+  error?: string;
+  errors?: ValidationError[];
 }
 
 export interface LogoutResponse extends BaseResponse {
-    success: boolean;
-    error?: string;
+  success: boolean;
+  error?: string;
 }
 
 // ==========================================
@@ -68,19 +68,19 @@ export interface LogoutResponse extends BaseResponse {
 // ==========================================
 
 export interface PaginationMeta {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
 export interface PaginatedResponse<T> extends BaseResponse {
-    success: boolean;
-    data: T[];
-    pagination: PaginationMeta;
-    error?: string;
+  success: boolean;
+  data: T[];
+  pagination: PaginationMeta;
+  error?: string;
 }
 
 // ==========================================
@@ -88,29 +88,29 @@ export interface PaginatedResponse<T> extends BaseResponse {
 // ==========================================
 
 export interface CreateResponse<T = unknown> extends BaseResponse {
-    success: boolean;
-    data?: T;
-    error?: string;
-    errors?: ValidationError[];
+  success: boolean;
+  data?: T;
+  error?: string;
+  errors?: ValidationError[];
 }
 
 export interface UpdateResponse<T = unknown> extends BaseResponse {
-    success: boolean;
-    data?: T;
-    error?: string;
-    errors?: ValidationError[];
+  success: boolean;
+  data?: T;
+  error?: string;
+  errors?: ValidationError[];
 }
 
 export interface DeleteResponse extends BaseResponse {
-    success: boolean;
-    deletedCount?: number;
-    error?: string;
+  success: boolean;
+  deletedCount?: number;
+  error?: string;
 }
 
 export interface BulkOperationResponse extends BaseResponse {
-    success: boolean;
-    affectedCount?: number;
-    error?: string;
+  success: boolean;
+  affectedCount?: number;
+  error?: string;
 }
 
 // ==========================================
@@ -118,17 +118,17 @@ export interface BulkOperationResponse extends BaseResponse {
 // ==========================================
 
 export interface FetchOneResponse<T = unknown> extends BaseResponse {
-    success: boolean;
-    data?: T;
-    error?: string;
+  success: boolean;
+  data?: T;
+  error?: string;
 }
 
 export interface FetchManyResponse<T = unknown> extends BaseResponse {
-    success: boolean;
-    data?: T[];
-    total?: number;
-    pagination?: PaginationMeta;
-    error?: string;
+  success: boolean;
+  data?: T[];
+  total?: number;
+  pagination?: PaginationMeta;
+  error?: string;
 }
 
 // ==========================================
@@ -136,9 +136,9 @@ export interface FetchManyResponse<T = unknown> extends BaseResponse {
 // ==========================================
 
 export interface StatisticsResponse extends BaseResponse {
-    success: boolean;
-    data?: Record<string, unknown>;
-    error?: string;
+  success: boolean;
+  data?: Record<string, unknown>;
+  error?: string;
 }
 
 // ==========================================
@@ -146,11 +146,11 @@ export interface StatisticsResponse extends BaseResponse {
 // ==========================================
 
 export interface FileUploadResponse extends BaseResponse {
-    success: boolean;
-    url?: string;
-    filename?: string;
-    size?: number;
-    error?: string;
+  success: boolean;
+  url?: string;
+  filename?: string;
+  size?: number;
+  error?: string;
 }
 
 // ==========================================
@@ -158,8 +158,8 @@ export interface FileUploadResponse extends BaseResponse {
 // ==========================================
 
 export interface ValidationResponse extends BaseResponse {
-    success: boolean;
-    valid?: boolean;
-    errors?: ValidationError[];
-    error?: string;
+  success: boolean;
+  valid?: boolean;
+  errors?: ValidationError[];
+  error?: string;
 }

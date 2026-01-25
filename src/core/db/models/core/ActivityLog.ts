@@ -1,27 +1,18 @@
-import mongoose, { Schema, Document, Model, model, models } from "mongoose";
-import { ActionType, ResourceType } from "@/types";
+/**
+ * Activity Log Model
+ * Combines schema with model export
+ */
 
-export interface IActivityLog extends Document {
-  actorId: mongoose.Types.ObjectId;
-  action: ActionType;
-  resource: ResourceType;
-  resourceId?: string;
-  details?: string;
-  metadata?: Record<string, unknown>;
-  createdAt: Date;
-}
+import { Model, model, models } from 'mongoose';
+import { ActivityLogSchema } from '@/core/db/schemas/activitylog.schema';
+import { IActivityLog, ResourceType } from '@/core/db/interfaces/activitylog.interface';
 
-const ActivityLogSchema = new Schema<IActivityLog>(
-  {
-    actorId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    action: { type: Number, enum: ActionType, required: true },
-    resource: { type: Number, enum: ResourceType, required: true },
-    resourceId: { type: String },
-    details: String,
-    metadata: Schema.Types.Mixed,
-  },
-  { timestamps: { createdAt: true, updatedAt: false } },
-);
+// ==========================================
+// EXPORT
+// ==========================================
+
+export type { IActivityLog };
+export { ResourceType };
 
 export default (models.ActivityLog as Model<IActivityLog>) ||
-  model<IActivityLog>("ActivityLog", ActivityLogSchema);
+  model<IActivityLog>('ActivityLog', ActivityLogSchema);

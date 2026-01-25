@@ -5,13 +5,13 @@
  */
 
 // ===== MAIN SESSION SERVICE =====
-export { SessionCoreService as SessionService } from "./core.service";
+export { SessionCoreService as SessionService } from './core.service';
 
 // ===== SPECIALIZED SERVICE MODULES =====
-export { SessionCoreService } from "./core.service";
-export { SessionSecurityService } from "./security.service";
-export { SessionAnalyticsService } from "./analytics.service";
-export { SessionManagementService } from "./management.service";
+export { SessionCoreService } from './core.service';
+export { SessionSecurityService } from './security.service';
+export { SessionAnalyticsService } from './analytics.service';
+export { SessionManagementService } from './management.service';
 
 // ===== TYPES AND INTERFACES =====
 export type {
@@ -19,13 +19,13 @@ export type {
   DeviceAnalytics,
   LocationAnalytics,
   SecurityAnalytics,
-  SessionDashboard
-} from "./types";
+  SessionDashboard,
+} from './types';
 
 // ===== UTILITY FUNCTIONS =====
 export {
   generateSessionToken,
   validateSessionDuration,
   isSessionExpired,
-  formatSessionData
-} from "./utils";
+  formatSessionData,
+} from './utils';

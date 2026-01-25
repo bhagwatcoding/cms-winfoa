@@ -1,13 +1,10 @@
 // lib/proxy/router.ts
-import { NextRequest, NextResponse } from "next/server";
-import { CONFIG } from "./config";
-import { ProxyUtils } from "./utils";
+import { NextRequest, NextResponse } from 'next/server';
+import { CONFIG } from './config';
+import { ProxyUtils } from './utils';
 
 export class AppRouter extends ProxyUtils {
-  static async handle(
-    req: NextRequest,
-    subdomain: string | null,
-  ): Promise<NextResponse> {
+  static async handle(req: NextRequest, subdomain: string | null): Promise<NextResponse> {
     const path = req.nextUrl.pathname;
     const PUBLIC_PATHS = CONFIG.PUBLIC_PATHS;
     const APP = CONFIG.SUBDOMAINS.APP as readonly string[];
@@ -16,7 +13,7 @@ export class AppRouter extends ProxyUtils {
 
     // 1. API Handling in if url not found then return 404 and {status: 404, message: "Not Found"}
     if (subdomain === API) {
-      const apiUrl = this.buildUrl(req, `/api${path}`);   
+      const apiUrl = this.buildUrl(req, `/api${path}`);
       return NextResponse.rewrite(apiUrl);
     }
 
@@ -30,8 +27,8 @@ export class AppRouter extends ProxyUtils {
 
       // Force Login
       if (!isAuthed && !isPublic) {
-        const loginUrl = this.buildUrl(req, "/login", "auth");
-        loginUrl.searchParams.set("redirect", req.url);
+        const loginUrl = this.buildUrl(req, '/login', 'auth');
+        loginUrl.searchParams.set('redirect', req.url);
         return NextResponse.redirect(loginUrl);
       }
 
@@ -40,7 +37,7 @@ export class AppRouter extends ProxyUtils {
     }
 
     // 4. Root Domain (Landing Page)
-    if (!subdomain || subdomain === "www") return NextResponse.next();
+    if (!subdomain || subdomain === 'www') return NextResponse.next();
 
     // 404 for unknown subdomains
     return new NextResponse(null, { status: 404 });

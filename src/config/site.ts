@@ -1,13 +1,13 @@
-import { env } from "./env";
-import { SUBDOMAIN_CONFIG } from "./subdomains";
+import { env } from './env';
+import { SUBDOMAIN_CONFIG } from './subdomains';
 
 const ROOT_DOMAIN = env.NEXT_PUBLIC_ROOT_DOMAIN;
-const IS_PROD = env.NODE_ENV === "production";
+const IS_PROD = env.NODE_ENV === 'production';
 
 export const SITE = {
-  NAME: "Winfoa",
-  DESCRIPTION: "Modern Multi-Tenant Education Portal",
-  VERSION: "1.0.0",
+  NAME: 'Winfoa',
+  DESCRIPTION: 'Modern Multi-Tenant Education Portal',
+  VERSION: '1.0.0',
   // Dynamic URL construction
   URL: IS_PROD ? `https://${ROOT_DOMAIN}` : `http://${ROOT_DOMAIN}`,
 } as const;

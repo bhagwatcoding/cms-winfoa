@@ -36,7 +36,8 @@ class MemoryCache {
   private maxSize: number;
   private defaultTTL: number;
 
-  constructor(maxSize = 1000, defaultTTL = 300000) { // 5 minutes default TTL
+  constructor(maxSize = 1000, defaultTTL = 300000) {
+    // 5 minutes default TTL
     this.maxSize = maxSize;
     this.defaultTTL = defaultTTL;
   }
@@ -52,7 +53,7 @@ class MemoryCache {
       timestamp: Date.now(),
       ttl: ttl || this.defaultTTL,
       hits: 0,
-      key
+      key,
     };
 
     this.cache.set(key, entry);
@@ -104,16 +105,14 @@ class MemoryCache {
   getStats() {
     const entries = Array.from(this.cache.values());
     const totalHits = entries.reduce((sum, entry) => sum + entry.hits, 0);
-    const expired = entries.filter(entry =>
-      Date.now() - entry.timestamp > entry.ttl
-    ).length;
+    const expired = entries.filter((entry) => Date.now() - entry.timestamp > entry.ttl).length;
 
     return {
       totalEntries: this.cache.size,
       totalHits,
       expiredEntries: expired,
       memoryUsage: this.calculateMemoryUsage(),
-      hitRate: totalHits > 0 ? (totalHits / (totalHits + expired)) * 100 : 0
+      hitRate: totalHits > 0 ? (totalHits / (totalHits + expired)) * 100 : 0,
     };
   }
 
@@ -163,7 +162,7 @@ export class DatabaseOptimizer {
       executionTime,
       timestamp: new Date(),
       collection,
-      resultCount
+      resultCount,
     });
 
     // Keep only recent queries
@@ -174,7 +173,7 @@ export class DatabaseOptimizer {
 
   static getSlowQueries(thresholdMs = 1000): DatabaseQueryStats[] {
     return this.queryStats
-      .filter(stat => stat.executionTime > thresholdMs)
+      .filter((stat) => stat.executionTime > thresholdMs)
       .sort((a, b) => b.executionTime - a.executionTime);
   }
 
@@ -189,13 +188,13 @@ export class DatabaseOptimizer {
         averageTime: 0,
         slowQueries: 0,
         totalQueries: 0,
-        suggestions: []
+        suggestions: [],
       };
     }
 
     const totalTime = this.queryStats.reduce((sum, stat) => sum + stat.executionTime, 0);
     const averageTime = totalTime / this.queryStats.length;
-    const slowQueries = this.queryStats.filter(stat => stat.executionTime > 1000).length;
+    const slowQueries = this.queryStats.filter((stat) => stat.executionTime > 1000).length;
 
     const suggestions: string[] = [];
 
@@ -208,14 +207,13 @@ export class DatabaseOptimizer {
     }
 
     const collections = new Map<string, number>();
-    this.queryStats.forEach(stat => {
+    this.queryStats.forEach((stat) => {
       if (stat.collection) {
         collections.set(stat.collection, (collections.get(stat.collection) || 0) + 1);
       }
     });
 
-    const mostQueriedCollection = Array.from(collections.entries())
-      .sort((a, b) => b[1] - a[1])[0];
+    const mostQueriedCollection = Array.from(collections.entries()).sort((a, b) => b[1] - a[1])[0];
 
     if (mostQueriedCollection && mostQueriedCollection[1] > this.queryStats.length * 0.5) {
       suggestions.push(`Consider caching results for ${mostQueriedCollection[0]} collection`);
@@ -225,7 +223,7 @@ export class DatabaseOptimizer {
       averageTime,
       slowQueries,
       totalQueries: this.queryStats.length,
-      suggestions
+      suggestions,
     };
   }
 
@@ -290,8 +288,8 @@ export class ResponseCache {
           return NextResponse.json(cached, {
             headers: {
               'X-Cache': 'HIT',
-              'Cache-Control': `public, max-age=${ttlSeconds}`
-            }
+              'Cache-Control': `public, max-age=${ttlSeconds}`,
+            },
           });
         }
 
@@ -302,7 +300,7 @@ export class ResponseCache {
           try {
             const responseData = await response.clone().json();
             this.set(cacheKey, responseData, ttlSeconds);
-          } catch (_error) {
+          } catch {
             // Non-JSON responses can't be cached
           }
         }
@@ -351,11 +349,7 @@ export class QueryCache {
   }
 
   // Database query wrapper with caching
-  static async withCache<T>(
-    key: string,
-    queryFn: () => Promise<T>,
-    ttlSeconds = 600
-  ): Promise<T> {
+  static async withCache<T>(key: string, queryFn: () => Promise<T>, ttlSeconds = 600): Promise<T> {
     // Check cache first
     const cached = await this.get<T>(key);
     if (cached !== null) {
@@ -404,7 +398,7 @@ export class MemoryOptimizer {
       heapUsagePercentage: (usedHeap / totalHeap) * 100,
       external: usage.external,
       arrayBuffers: usage.arrayBuffers,
-      rss: usage.rss
+      rss: usage.rss,
     };
   }
 
@@ -455,7 +449,7 @@ export class MemoryOptimizer {
     return {
       responseCache: responseCacheSize,
       queryCache: queryCacheSize,
-      userSessionCache: sessionCacheSize
+      userSessionCache: sessionCacheSize,
     };
   }
 }
@@ -469,11 +463,13 @@ export class PerformanceOptimizer {
 
     const suggestions: string[] = [
       ...queryAnalysis.suggestions,
-      ...MemoryOptimizer.checkMemoryHealth().suggestions
+      ...MemoryOptimizer.checkMemoryHealth().suggestions,
     ];
 
     if (cacheStats.hitRate < 50) {
-      suggestions.push('Low cache hit rate - consider increasing cache TTL or improving cache keys');
+      suggestions.push(
+        'Low cache hit rate - consider increasing cache TTL or improving cache keys'
+      );
     }
 
     if (memoryStats.heapUsagePercentage > 80) {
@@ -485,7 +481,7 @@ export class PerformanceOptimizer {
       averageQueryTime: queryAnalysis.averageTime,
       slowQueryCount: queryAnalysis.slowQueries,
       memoryUsage: memoryStats.heapUsagePercentage,
-      optimizationSuggestions: suggestions
+      optimizationSuggestions: suggestions,
     };
   }
 
@@ -503,7 +499,7 @@ export class PerformanceOptimizer {
         // Note: In a real implementation, you'd have a method to clear expired entries
         applied.push('Cleared expired cache entries');
       }
-    } catch (_error) {
+    } catch {
       failed.push('Failed to clear expired cache entries');
     }
 
@@ -513,7 +509,7 @@ export class PerformanceOptimizer {
       if (memoryHealth.status === 'warning' && MemoryOptimizer.triggerGarbageCollection()) {
         applied.push('Triggered garbage collection');
       }
-    } catch (_error) {
+    } catch {
       failed.push('Failed to trigger garbage collection');
     }
 
@@ -521,10 +517,13 @@ export class PerformanceOptimizer {
   }
 
   static scheduleOptimizations(intervalMinutes = 30): NodeJS.Timeout {
-    return setInterval(() => {
-      const result = this.applyAutomaticOptimizations();
-      console.log('🔧 Automatic optimizations applied:', result);
-    }, intervalMinutes * 60 * 1000);
+    return setInterval(
+      () => {
+        const result = this.applyAutomaticOptimizations();
+        console.log('🔧 Automatic optimizations applied:', result);
+      },
+      intervalMinutes * 60 * 1000
+    );
   }
 }
 
@@ -555,13 +554,13 @@ export class SessionOptimizer {
 
 // Export optimization utilities
 const OptimizationTools = {
-    MemoryCache,
-    ResponseCache,
-    QueryCache,
-    DatabaseOptimizer,
-    MemoryOptimizer,
-    PerformanceOptimizer,
-    SessionOptimizer
+  MemoryCache,
+  ResponseCache,
+  QueryCache,
+  DatabaseOptimizer,
+  MemoryOptimizer,
+  PerformanceOptimizer,
+  SessionOptimizer,
 };
 
 export default OptimizationTools;

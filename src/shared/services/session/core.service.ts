@@ -4,13 +4,14 @@
  * Handles basic session operations like creation, validation, and retrieval
  */
 
-import "server-only";
-import { cookies } from "next/headers";
-import { Session } from "@/models";
-import { DataSealer } from "@/lib/sealer";
-import { SessionStatus } from "@/types";
-import { connectDB } from "@/lib/db";
-import { SESSION } from "@/config";
+import 'server-only';
+import { cookies } from 'next/headers';
+import { Session } from '@/models';
+import { ISession, IDeviceInfo, IGeoInfo, ISecurityInfo } from '@/core/db/interfaces';
+import { DataSealer } from '@/lib/sealer';
+import { SessionStatus } from '@/types';
+import { connectDB } from '@/lib/db';
+import { SESSION } from '@/config';
 
 export class SessionCoreService {
   private static COOKIE_NAME = SESSION.COOKIE.NAME;
@@ -26,9 +27,9 @@ export class SessionCoreService {
       userAgent?: string;
       ipAddress?: string;
       rememberMe?: boolean;
-      deviceInfo?: any;
-      geoInfo?: any;
-      securityInfo?: any;
+      deviceInfo?: IDeviceInfo;
+      geoInfo?: IGeoInfo;
+      securityInfo?: ISecurityInfo;
     }
   ) {
     await connectDB();
@@ -51,16 +52,17 @@ export class SessionCoreService {
     // Set cookie
     const sealedValue = DataSealer.sealCookie(this.COOKIE_NAME, token);
     const cookieStore = await cookies();
-    
+
     cookieStore.set(this.COOKIE_NAME, sealedValue, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
       expires: expiresAt,
-      path: "/",
-      domain: process.env.NODE_ENV === "production" 
-        ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN?.replace(/:\d+$/, "")}` 
-        : undefined,
+      path: '/',
+      domain:
+        process.env.NODE_ENV === 'production'
+          ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN?.replace(/:\d+$/, '')}`
+          : undefined,
     });
 
     return session;
@@ -69,7 +71,7 @@ export class SessionCoreService {
   /**
    * Get current session from cookie
    */
-  static async getCurrentSession(): Promise<any | null> {
+  static async getCurrentSession(): Promise<ISession | null> {
     try {
       await connectDB();
       const cookieStore = await cookies();
@@ -78,12 +80,12 @@ export class SessionCoreService {
       const rawToken = DataSealer.unsealCookie(this.COOKIE_NAME, sealedValue);
       if (!rawToken) return null;
 
-      const session = await Session.findOne({ 
+      const session = await Session.findOne({
         token: rawToken,
         isActive: true,
         status: SessionStatus.Active,
-        expiresAt: { $gt: new Date() }
-      }).populate("userId");
+        expiresAt: { $gt: new Date() },
+      }).populate('userId');
 
       if (!session) {
         return null;
@@ -95,7 +97,7 @@ export class SessionCoreService {
 
       return session;
     } catch (error) {
-      console.error("Session retrieval error:", error);
+      console.error('Session retrieval error:', error);
       return null;
     }
   }
@@ -109,9 +111,9 @@ export class SessionCoreService {
       const session = await Session.findOne({
         token,
         isActive: true,
-        expiresAt: { $gt: new Date() }
+        expiresAt: { $gt: new Date() },
       });
-      
+
       return !!session;
     } catch {
       return false;
@@ -121,7 +123,7 @@ export class SessionCoreService {
   /**
    * Invalidate session (logout)
    */
-  static async invalidateSession(session: any): Promise<void> {
+  static async invalidateSession(session: ISession): Promise<void> {
     try {
       session.status = SessionStatus.Revoked;
       session.isActive = false;
@@ -129,18 +131,19 @@ export class SessionCoreService {
 
       // Clear cookie
       const cookieStore = await cookies();
-      cookieStore.set(this.COOKIE_NAME, "", {
+      cookieStore.set(this.COOKIE_NAME, '', {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
         expires: new Date(0),
-        path: "/",
-        domain: process.env.NODE_ENV === "production" 
-          ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN?.replace(/:\d+$/, "")}` 
-          : undefined,
+        path: '/',
+        domain:
+          process.env.NODE_ENV === 'production'
+            ? `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN?.replace(/:\d+$/, '')}`
+            : undefined,
       });
     } catch (error) {
-      console.error("Session invalidation error:", error);
+      console.error('Session invalidation error:', error);
     }
   }
 
@@ -154,12 +157,12 @@ export class SessionCoreService {
   /**
    * Get session by ID
    */
-  static async getSessionById(sessionId: string): Promise<any | null> {
+  static async getSessionById(sessionId: string): Promise<ISession | null> {
     try {
       await connectDB();
-      return await Session.findById(sessionId).populate("userId");
+      return await Session.findById(sessionId).populate('userId');
     } catch (error) {
-      console.error("Get session by ID error:", error);
+      console.error('Get session by ID error:', error);
       return null;
     }
   }
@@ -167,12 +170,12 @@ export class SessionCoreService {
   /**
    * Get sessions by user ID
    */
-  static async getSessionsByUserId(userId: string): Promise<any[]> {
+  static async getSessionsByUserId(userId: string): Promise<ISession[]> {
     try {
       await connectDB();
       return await Session.find({ userId }).sort({ createdAt: -1 });
     } catch (error) {
-      console.error("Get sessions by user ID error:", error);
+      console.error('Get sessions by user ID error:', error);
       return [];
     }
   }

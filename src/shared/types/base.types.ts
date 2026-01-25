@@ -17,21 +17,14 @@ export type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
 };
 
-export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<
-  T,
-  Exclude<keyof T, Keys>
-> &
+export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
   {
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
 
-export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<
-  T,
-  Exclude<keyof T, Keys>
-> &
+export type RequireOnlyOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
   {
-    [K in Keys]-?: Required<Pick<T, K>> &
-      Partial<Record<Exclude<Keys, K>, undefined>>;
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Record<Exclude<Keys, K>, undefined>>;
   }[Keys];
 
 // ==========================================
@@ -77,7 +70,7 @@ export interface TableProps<T = unknown> {
   columns: TableColumn<T>[];
   data: T[];
   loading?: boolean;
-  onSort?: (key: string, order: "asc" | "desc") => void;
+  onSort?: (key: string, order: 'asc' | 'desc') => void;
   onRowClick?: (row: T) => void;
 }
 
@@ -96,7 +89,7 @@ export interface ModalProps {
 // TOAST TYPES
 // ==========================================
 
-export type ToastType = "success" | "error" | "warning" | "info";
+export type ToastType = 'success' | 'error' | 'warning' | 'info';
 
 export interface ToastMessage {
   id: string;

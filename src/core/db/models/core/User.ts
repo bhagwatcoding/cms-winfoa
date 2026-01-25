@@ -1,15 +1,15 @@
-import mongoose, { Schema, Document, Model, model, models } from "mongoose";
-import bcrypt from "bcryptjs";
+import mongoose, { Schema, Model, model, models } from 'mongoose';
+import bcrypt from 'bcryptjs';
+import { IUser, ILoginHistory, ILinkedAccount } from '@/core/db/interfaces';
 import {
-  IUser,
-  ISoftDelete,
-  ILoginHistory,
-  ILinkedAccount,
-  IUserProfile,
-  IUserPreferences,
-  ITwoFactorSettings
-} from "@/shared/types/models/core.interface";
-import { UserRole, UserStatus } from "@/shared/types";
+  UserStatus,
+  ThemeMode,
+  OAuthProvider,
+  LoginMethod,
+  getNumericEnumValues,
+  EnumHelper,
+  Gender,
+} from '@/core/db/enums';
 
 // ==========================================
 // USER MODEL - Advanced Enterprise Grade
@@ -19,9 +19,7 @@ import { UserRole, UserStatus } from "@/shared/types";
 // INTERFACES & TYPES
 // ==========================================
 
-// Interfaces moved to centralized types (@/types/models)
-
-// Static Methods
+// Interface for Static Methods
 interface IUserModel extends Model<IUser> {
   findByEmail(email: string): Promise<IUser | null>;
   findActive(): Promise<IUser[]>;
@@ -46,8 +44,11 @@ const LoginHistorySchema = new Schema<ILoginHistory>(
     browser: String,
     os: String,
     loginAt: { type: Date, default: Date.now },
-    sessionId: { type: Schema.Types.ObjectId, ref: "Session" },
-    loginMethod: String,
+    sessionId: { type: Schema.Types.ObjectId, ref: 'Session' },
+    loginMethod: {
+      type: Number,
+      enum: getNumericEnumValues(LoginMethod), // Or just check against values if we can get them
+    },
   },
   { _id: true }
 );
@@ -55,8 +56,8 @@ const LoginHistorySchema = new Schema<ILoginHistory>(
 const LinkedAccountSchema = new Schema<ILinkedAccount>(
   {
     provider: {
-      type: String,
-      enum: ["google", "github", "microsoft", "apple"],
+      type: Number,
+      enum: getNumericEnumValues(OAuthProvider),
       required: true,
     },
     providerId: { type: String, required: true },
@@ -74,23 +75,23 @@ const UserSchema = new Schema<IUser>(
     // Core Identity
     firstName: {
       type: String,
-      required: [true, "First name is required"],
+      required: [true, 'First name is required'],
       trim: true,
       maxlength: 50,
     },
     lastName: {
       type: String,
-      required: [true, "Last name is required"],
+      required: [true, 'Last name is required'],
       trim: true,
       maxlength: 50,
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: [true, 'Email is required'],
       unique: true,
       lowercase: true,
       trim: true,
-      index: true,
+      // index: true, // Removed: unique creates index
     },
     password: {
       type: String,
@@ -106,8 +107,8 @@ const UserSchema = new Schema<IUser>(
     // Role & Permissions
     roleId: {
       type: Schema.Types.ObjectId,
-      ref: "Role",
-      required: [true, "Role is required"],
+      ref: 'Role',
+      required: [true, 'Role is required'],
       index: true,
     },
     customPermissions: {
@@ -122,10 +123,25 @@ const UserSchema = new Schema<IUser>(
       type: [String],
       default: [],
     },
+    // Stored as number (if UserRole is numeric, otherwise Boolean is fine if it's just a flag,
+    // but typical RBAC might use a high level role. The schema says "isGod" is Boolean)
     isGod: {
       type: Boolean,
       default: false,
       index: true,
+    },
+
+    // UMP Integration
+    umpUserId: {
+      type: String,
+      index: true,
+      sparse: true,
+    },
+
+    // Wallet
+    walletBalance: {
+      type: Number,
+      default: 0,
     },
 
     // Profile
@@ -135,7 +151,7 @@ const UserSchema = new Schema<IUser>(
       dateOfBirth: Date,
       gender: {
         type: String,
-        enum: ["male", "female", "other", "prefer_not_to_say"],
+        enum: EnumHelper.numericValues(Gender),
       },
       address: {
         street: String,
@@ -153,9 +169,13 @@ const UserSchema = new Schema<IUser>(
     },
 
     preferences: {
-      language: { type: String, default: "en" },
-      timezone: { type: String, default: "UTC" },
-      theme: { type: String, enum: ["light", "dark", "system"], default: "system" },
+      language: { type: String, default: 'en' },
+      timezone: { type: String, default: 'UTC' },
+      theme: {
+        type: Number,
+        enum: getNumericEnumValues(ThemeMode),
+        default: ThemeMode.SYSTEM,
+      },
       emailNotifications: { type: Boolean, default: true },
       pushNotifications: { type: Boolean, default: true },
       smsNotifications: { type: Boolean, default: false },
@@ -177,7 +197,10 @@ const UserSchema = new Schema<IUser>(
       backupCodes: { type: [String], select: false },
       enabledAt: Date,
       lastUsedAt: Date,
-      method: { type: String, enum: ["totp", "sms", "email"] },
+      method: {
+        type: Number,
+        enum: getNumericEnumValues(LoginMethod),
+      },
     },
 
     // Account Security
@@ -212,16 +235,16 @@ const UserSchema = new Schema<IUser>(
     lastActiveAt: Date,
     lastLoginIp: String,
 
-    // Status
+    // Status - Updated to Numeric Enum
     status: {
-      type: String,
-      enum: ["active", "inactive", "suspended", "pending"],
-      default: "active",
+      type: Number,
+      enum: getNumericEnumValues(UserStatus),
+      default: UserStatus.Active,
       index: true,
     },
     statusReason: String,
     statusChangedAt: Date,
-    statusChangedBy: { type: Schema.Types.ObjectId, ref: "User" },
+    statusChangedBy: { type: Schema.Types.ObjectId, ref: 'User' },
 
     // Soft Delete
     isDeleted: { type: Boolean, default: false, index: true },
@@ -247,31 +270,31 @@ const UserSchema = new Schema<IUser>(
 UserSchema.index({ email: 1, isDeleted: 1 });
 UserSchema.index({ status: 1, isDeleted: 1 });
 UserSchema.index({ roleId: 1, status: 1 });
-UserSchema.index({ "profile.address.country": 1 });
+UserSchema.index({ 'profile.address.country': 1 });
 
 // Text index for search
 UserSchema.index(
-  { firstName: "text", lastName: "text", email: "text" },
-  { name: "user_search_index" }
+  { firstName: 'text', lastName: 'text', email: 'text' },
+  { name: 'user_search_index' }
 );
 
 // ==========================================
 // VIRTUALS
 // ==========================================
 
-UserSchema.virtual("fullName").get(function () {
+UserSchema.virtual('fullName').get(function (this: IUser) {
   return `${this.firstName} ${this.lastName}`;
 });
 
-UserSchema.virtual("initials").get(function () {
+UserSchema.virtual('initials').get(function (this: IUser) {
   return `${this.firstName.charAt(0)}${this.lastName.charAt(0)}`.toUpperCase();
 });
 
-UserSchema.virtual("displayName").get(function () {
-  return this.fullName || this.email.split("@")[0];
+UserSchema.virtual('displayName').get(function (this: IUser) {
+  return this.fullName || this.email.split('@')[0];
 });
 
-UserSchema.virtual("role").get(function () {
+UserSchema.virtual('role').get(function (this: IUser) {
   if (this.roleId && typeof this.roleId === 'object' && 'slug' in this.roleId) {
     return (this.roleId as { slug: string }).slug;
   }
@@ -279,19 +302,19 @@ UserSchema.virtual("role").get(function () {
 });
 
 // Compatibility virtuals
-UserSchema.virtual("name").get(function () {
+UserSchema.virtual('name').get(function (this: IUser) {
   return `${this.firstName} ${this.lastName}`;
 });
 
-UserSchema.virtual("id").get(function () {
+UserSchema.virtual('id').get(function (this: IUser) {
   return this._id.toString();
 });
 
-UserSchema.virtual("isActive").get(function () {
-  return this.status === "active" && !this.accountLocked;
+UserSchema.virtual('isActive').get(function (this: IUser) {
+  return this.status === UserStatus.Active && !this.accountLocked;
 });
 
-UserSchema.virtual("joinedAt").get(function () {
+UserSchema.virtual('joinedAt').get(function (this: IUser) {
   return this.createdAt;
 });
 
@@ -300,8 +323,8 @@ UserSchema.virtual("joinedAt").get(function () {
 // ==========================================
 
 // Hash password before saving
-UserSchema.pre("save", async function () {
-  if (!this.isModified("password") || !this.password) return;
+UserSchema.pre('save', async function () {
+  if (!this.isModified('password') || !this.password) return;
 
   try {
     // Store old password in history
@@ -318,26 +341,32 @@ UserSchema.pre("save", async function () {
     this.password = await bcrypt.hash(this.password, salt);
     this.lastPasswordChangeAt = new Date();
   } catch (err) {
-    console.error("Password hashing error:", err);
+    console.error('Password hashing error:', err);
     throw err;
   }
 });
 
 // Auto-unlock expired lockouts
-UserSchema.pre("find", function () {
-  this.where({ isDeleted: { $ne: true } });
+UserSchema.pre('find', function () {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const query = this as any;
+  query.where({ isDeleted: { $ne: true } });
+});
+
+UserSchema.pre('findOne', function () {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const query = this as any;
+  query.where({ isDeleted: { $ne: true } });
 });
 
 // ==========================================
 // INSTANCE METHODS
 // ==========================================
 
-UserSchema.methods.comparePassword = async function (
-  candidatePassword: string
-): Promise<boolean> {
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   if (!this.password) {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("⚠️ comparePassword called but password field was not selected.");
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️ comparePassword called but password field was not selected.');
     }
     return false;
   }
@@ -386,8 +415,8 @@ UserSchema.methods.recordFailedLogin = async function (): Promise<IUser> {
 };
 
 UserSchema.methods.recordSuccessfulLogin = async function (
-  ip?: string,
-  sessionId?: mongoose.Types.ObjectId
+  ip?: string
+  // _sessionId?: mongoose.Types.ObjectId
 ): Promise<IUser> {
   this.failedLoginAttempts = 0;
   this.lastLoginAt = new Date();
@@ -410,8 +439,8 @@ UserSchema.methods.addToLoginHistory = async function (
   entry: Partial<ILoginHistory>
 ): Promise<IUser> {
   const historyEntry: ILoginHistory = {
-    ip: entry.ip || "unknown",
-    device: entry.device || "unknown",
+    ip: entry.ip || 'unknown',
+    device: entry.device || 'unknown',
     loginAt: entry.loginAt || new Date(),
     ...entry,
   };
@@ -436,7 +465,7 @@ UserSchema.methods.enable2FA = async function (
   this.twoFactor.secret = secret;
   this.twoFactor.backupCodes = backupCodes;
   this.twoFactor.enabledAt = new Date();
-  this.twoFactor.method = "totp";
+  this.twoFactor.method = LoginMethod.MfaTotp; // Default to TOTP
   return this.save();
 };
 
@@ -452,25 +481,19 @@ UserSchema.methods.disable2FA = async function (): Promise<IUser> {
 UserSchema.methods.verify2FA = function (code: string): boolean {
   // This would integrate with a TOTP library like 'speakeasy'
   // For now, return false as placeholder
-  console.log("2FA verification for code:", code);
+  console.log('2FA verification for code:', code);
   return false;
 };
 
-UserSchema.methods.changePassword = async function (
-  newPassword: string
-): Promise<IUser> {
+UserSchema.methods.changePassword = async function (newPassword: string): Promise<IUser> {
   this.password = newPassword;
   this.requirePasswordChange = false;
   return this.save();
 };
 
-UserSchema.methods.linkAccount = async function (
-  account: ILinkedAccount
-): Promise<IUser> {
+UserSchema.methods.linkAccount = async function (account: ILinkedAccount): Promise<IUser> {
   // Check if account already linked
-  const existing = this.linkedAccounts.find(
-    (a: ILinkedAccount) => a.provider === account.provider
-  );
+  const existing = this.linkedAccounts.find((a: ILinkedAccount) => a.provider === account.provider);
 
   if (existing) {
     Object.assign(existing, account, { lastUsedAt: new Date() });
@@ -482,11 +505,9 @@ UserSchema.methods.linkAccount = async function (
 };
 
 UserSchema.methods.unlinkAccount = async function (
-  provider: string
+  provider: number // Changed to number
 ): Promise<IUser> {
-  this.linkedAccounts = this.linkedAccounts.filter(
-    (a: ILinkedAccount) => a.provider !== provider
-  );
+  this.linkedAccounts = this.linkedAccounts.filter((a: ILinkedAccount) => a.provider !== provider);
   return this.save();
 };
 
@@ -499,12 +520,10 @@ UserSchema.statics.findByEmail = function (email: string): Promise<IUser | null>
 };
 
 UserSchema.statics.findActive = function (): Promise<IUser[]> {
-  return this.find({ status: "active", isDeleted: false });
+  return this.find({ status: UserStatus.Active, isDeleted: false });
 };
 
-UserSchema.statics.findByRole = function (
-  roleId: mongoose.Types.ObjectId
-): Promise<IUser[]> {
+UserSchema.statics.findByRole = function (roleId: mongoose.Types.ObjectId): Promise<IUser[]> {
   return this.find({ roleId, isDeleted: false });
 };
 
@@ -516,24 +535,19 @@ UserSchema.statics.findGods = function (): Promise<IUser[]> {
   return this.find({ isGod: true, isDeleted: false });
 };
 
-UserSchema.statics.search = function (
-  query: string,
-  limit = 20
-): Promise<IUser[]> {
+UserSchema.statics.search = function (query: string, limit = 20): Promise<IUser[]> {
   return this.find(
     { $text: { $search: query }, isDeleted: false },
-    { score: { $meta: "textScore" } }
+    { score: { $meta: 'textScore' } }
   )
-    .sort({ score: { $meta: "textScore" } })
+    .sort({ score: { $meta: 'textScore' } })
     .limit(limit);
 };
 
-UserSchema.statics.countByStatus = async function (): Promise<
-  Record<string, number>
-> {
+UserSchema.statics.countByStatus = async function (): Promise<Record<string, number>> {
   const result = await this.aggregate([
     { $match: { isDeleted: false } },
-    { $group: { _id: "$status", count: { $sum: 1 } } },
+    { $group: { _id: '$status', count: { $sum: 1 } } },
   ]);
 
   const counts: Record<string, number> = {};
@@ -562,5 +576,4 @@ UserSchema.statics.cleanupLockedAccounts = async function (): Promise<number> {
 // EXPORT
 // ==========================================
 
-export default (models.User as IUserModel) ||
-  model<IUser, IUserModel>("User", UserSchema);
+export default (models.User as IUserModel) || model<IUser, IUserModel>('User', UserSchema);

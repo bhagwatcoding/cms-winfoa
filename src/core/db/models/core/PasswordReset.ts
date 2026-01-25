@@ -1,5 +1,5 @@
-import mongoose, { Schema, Document, Model, model, models } from "mongoose";
-import crypto from "crypto";
+import mongoose, { Schema, Document, Model, model, models } from 'mongoose';
+import crypto from 'crypto';
 
 // ==========================================
 // PASSWORD RESET MODEL
@@ -7,85 +7,85 @@ import crypto from "crypto";
 // ==========================================
 
 export interface IPasswordReset extends Document {
-    userId: mongoose.Types.ObjectId;
-    email: string; // Stored for reference
+  userId: mongoose.Types.ObjectId;
+  email: string; // Stored for reference
 
-    // Token (stored as hash)
-    tokenHash: string;
+  // Token (stored as hash)
+  tokenHash: string;
 
-    // Timing
-    expiresAt: Date;
-    usedAt?: Date;
+  // Timing
+  expiresAt: Date;
+  usedAt?: Date;
 
-    // Request context
-    requestedFromIp?: string;
-    requestedFromDevice?: string;
-    requestedFromCountry?: string;
+  // Request context
+  requestedFromIp?: string;
+  requestedFromDevice?: string;
+  requestedFromCountry?: string;
 
-    // Status
-    isUsed: boolean;
-    isRevoked: boolean;
+  // Status
+  isUsed: boolean;
+  isRevoked: boolean;
 
-    // Timestamps
-    createdAt: Date;
+  // Timestamps
+  createdAt: Date;
 }
 
 // Static methods
 interface IPasswordResetModel extends Model<IPasswordReset> {
-    createToken(
-        userId: mongoose.Types.ObjectId,
-        email: string,
-        ip?: string,
-        device?: string
-    ): Promise<{ token: string; record: IPasswordReset }>;
-    findByToken(token: string): Promise<IPasswordReset | null>;
-    invalidateAllForUser(userId: mongoose.Types.ObjectId): Promise<void>;
-    cleanupExpired(): Promise<number>;
+  createToken(
+    userId: mongoose.Types.ObjectId,
+    email: string,
+    ip?: string,
+    device?: string
+  ): Promise<{ token: string; record: IPasswordReset }>;
+  findByToken(token: string): Promise<IPasswordReset | null>;
+  invalidateAllForUser(userId: mongoose.Types.ObjectId): Promise<void>;
+  cleanupExpired(): Promise<number>;
 }
 
 const PasswordResetSchema = new Schema<IPasswordReset>(
-    {
-        userId: {
-            type: Schema.Types.ObjectId,
-            ref: "User",
-            required: [true, "User ID is required"],
-            index: true,
-        },
-        email: {
-            type: String,
-            required: [true, "Email is required"],
-            lowercase: true,
-            trim: true,
-        },
-        tokenHash: {
-            type: String,
-            required: true,
-            unique: true,
-        },
-        expiresAt: {
-            type: Date,
-            required: true,
-            index: true,
-        },
-        usedAt: Date,
-
-        requestedFromIp: String,
-        requestedFromDevice: String,
-        requestedFromCountry: String,
-
-        isUsed: {
-            type: Boolean,
-            default: false,
-        },
-        isRevoked: {
-            type: Boolean,
-            default: false,
-        },
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'User ID is required'],
+      index: true,
     },
-    {
-        timestamps: { createdAt: true, updatedAt: false },
-        collection: "password_resets",
-    }
+    email: {
+      type: String,
+      required: [true, 'Email is required'],
+      lowercase: true,
+      trim: true,
+    },
+    tokenHash: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    expiresAt: {
+      type: Date,
+      required: true,
+      index: true,
+    },
+    usedAt: Date,
+
+    requestedFromIp: String,
+    requestedFromDevice: String,
+    requestedFromCountry: String,
+
+    isUsed: {
+      type: Boolean,
+      default: false,
+    },
+    isRevoked: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: { createdAt: true, updatedAt: false },
+    collection: 'password_resets',
+  }
 );
 
 // ==========================================
@@ -103,11 +103,11 @@ PasswordResetSchema.index({ userId: 1, isUsed: 1, isRevoked: 1 });
 // ==========================================
 
 function hashToken(token: string): string {
-    return crypto.createHash("sha256").update(token).digest("hex");
+  return crypto.createHash('sha256').update(token).digest('hex');
 }
 
 function generateToken(): string {
-    return crypto.randomBytes(32).toString("hex");
+  return crypto.randomBytes(32).toString('hex');
 }
 
 // ==========================================
@@ -115,62 +115,56 @@ function generateToken(): string {
 // ==========================================
 
 PasswordResetSchema.statics.createToken = async function (
-    userId: mongoose.Types.ObjectId,
-    email: string,
-    ip?: string,
-    device?: string
+  userId: mongoose.Types.ObjectId,
+  email: string,
+  ip?: string,
+  device?: string
 ): Promise<{ token: string; record: IPasswordReset }> {
-    // Invalidate any existing tokens for this user
-    await this.updateMany(
-        { userId, isUsed: false, isRevoked: false },
-        { isRevoked: true }
-    );
+  // Invalidate any existing tokens for this user
+  await this.updateMany({ userId, isUsed: false, isRevoked: false }, { isRevoked: true });
 
-    // Generate new token
-    const token = generateToken();
-    const tokenHash = hashToken(token);
+  // Generate new token
+  const token = generateToken();
+  const tokenHash = hashToken(token);
 
-    const record = await this.create({
-        userId,
-        email,
-        tokenHash,
-        expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
-        requestedFromIp: ip,
-        requestedFromDevice: device,
-    });
+  const record = await this.create({
+    userId,
+    email,
+    tokenHash,
+    expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+    requestedFromIp: ip,
+    requestedFromDevice: device,
+  });
 
-    return { token, record };
+  return { token, record };
 };
 
 PasswordResetSchema.statics.findByToken = async function (
-    token: string
+  token: string
 ): Promise<IPasswordReset | null> {
-    const tokenHash = hashToken(token);
+  const tokenHash = hashToken(token);
 
-    const record = await this.findOne({
-        tokenHash,
-        isUsed: false,
-        isRevoked: false,
-        expiresAt: { $gt: new Date() },
-    });
+  const record = await this.findOne({
+    tokenHash,
+    isUsed: false,
+    isRevoked: false,
+    expiresAt: { $gt: new Date() },
+  });
 
-    return record;
+  return record;
 };
 
 PasswordResetSchema.statics.invalidateAllForUser = async function (
-    userId: mongoose.Types.ObjectId
+  userId: mongoose.Types.ObjectId
 ): Promise<void> {
-    await this.updateMany(
-        { userId, isUsed: false, isRevoked: false },
-        { isRevoked: true }
-    );
+  await this.updateMany({ userId, isUsed: false, isRevoked: false }, { isRevoked: true });
 };
 
 PasswordResetSchema.statics.cleanupExpired = async function (): Promise<number> {
-    const result = await this.deleteMany({
-        expiresAt: { $lt: new Date() },
-    });
-    return result.deletedCount;
+  const result = await this.deleteMany({
+    expiresAt: { $lt: new Date() },
+  });
+  return result.deletedCount;
 };
 
 // ==========================================
@@ -178,13 +172,13 @@ PasswordResetSchema.statics.cleanupExpired = async function (): Promise<number> 
 // ==========================================
 
 PasswordResetSchema.methods.use = async function (): Promise<IPasswordReset> {
-    this.isUsed = true;
-    this.usedAt = new Date();
-    return this.save();
+  this.isUsed = true;
+  this.usedAt = new Date();
+  return this.save();
 };
 
 PasswordResetSchema.methods.isValid = function (): boolean {
-    return !this.isUsed && !this.isRevoked && this.expiresAt > new Date();
+  return !this.isUsed && !this.isRevoked && this.expiresAt > new Date();
 };
 
 // ==========================================
@@ -192,4 +186,4 @@ PasswordResetSchema.methods.isValid = function (): boolean {
 // ==========================================
 
 export default (models.PasswordReset as IPasswordResetModel) ||
-    model<IPasswordReset, IPasswordResetModel>("PasswordReset", PasswordResetSchema);
+  model<IPasswordReset, IPasswordResetModel>('PasswordReset', PasswordResetSchema);

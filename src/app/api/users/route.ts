@@ -1,26 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/core/db";
-import { User } from "@/models";
-import { requireAuth, requireRole } from "@/core/auth";
+import { NextRequest, NextResponse } from 'next/server';
+import { connectDB } from '@/core/db';
+import { User } from '@/models';
+import { requireAuth, requireRole } from '@/core/auth';
 
 // GET /api/users - List all users (Admin only)
 export async function GET(request: NextRequest) {
   try {
     // Require admin role
-    await requireRole(["admin", "super-admin"]);
+    await requireRole(['admin', 'super-admin']);
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
-    const search = searchParams.get("search") || "";
-    const role = searchParams.get("role") || "";
-    const status = searchParams.get("status") || "";
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const search = searchParams.get('search') || '';
+    const role = searchParams.get('role') || '';
+    const status = searchParams.get('status') || '';
+    const sortBy = searchParams.get('sortBy') || 'createdAt';
+    const sortOrder = searchParams.get('sortOrder') || 'desc';
 
     // Build query
-    const query: any = {};
+    const query: Record<string, unknown> = {};
 
     if (role) {
       query.role = role;
@@ -32,9 +32,9 @@ export async function GET(request: NextRequest) {
 
     if (search) {
       query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { umpUserId: { $regex: search, $options: "i" } },
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { umpUserId: { $regex: search, $options: 'i' } },
       ];
     }
 
@@ -44,9 +44,9 @@ export async function GET(request: NextRequest) {
     // Execute query
     const [users, total] = await Promise.all([
       User.find(query)
-        .select("-password")
-        .populate("centerId", "name code")
-        .sort({ [sortBy]: sortOrder === "desc" ? -1 : 1 })
+        .select('-password')
+        .populate('centerId', 'name code')
+        .sort({ [sortBy]: sortOrder === 'desc' ? -1 : 1 })
         .skip(skip)
         .limit(limit)
         .lean(),
@@ -78,28 +78,22 @@ export async function GET(request: NextRequest) {
       },
       message: `Found ${users.length} users`,
     });
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error("Get users error:", error);
+    console.error('Get users error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions. Admin access required." },
+        { error: 'Insufficient permissions. Admin access required.' },
         { status: 403 }
       );
     }
 
-    if (error.message === "Unauthorized - Please login") {
-      return NextResponse.json(
-        { error: "Authentication required" },
-        { status: 401 }
-      );
+    if (error.message === 'Unauthorized - Please login') {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    return NextResponse.json(
-      { error: "Failed to fetch users" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
   }
 }
 
@@ -107,7 +101,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Require admin role
-    const currentUser = await requireRole(["admin", "super-admin"]);
+    const currentUser = await requireRole(['admin', 'super-admin']);
     await connectDB();
 
     const body = await request.json();
@@ -115,57 +109,45 @@ export async function POST(request: NextRequest) {
       name,
       email,
       password,
-      role = "user",
+      role = 'user',
       phone,
-      status = "active",
+      status = 'active',
       centerId,
       isActive = true,
       emailVerified = false,
       walletBalance = 0,
       customPermissions = [],
-      permissionOverrides = []
+      permissionOverrides = [],
     } = body;
 
     // Validate required fields
     if (!name || !email) {
-      return NextResponse.json(
-        { error: "Name and email are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Name and email are required' }, { status: 400 });
     }
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Please provide a valid email address" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Please provide a valid email address' }, { status: 400 });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
-      return NextResponse.json(
-        { error: "User with this email already exists" },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: 'User with this email already exists' }, { status: 409 });
     }
 
     // Validate role permissions
-    const allowedRoles = ["user", "student", "staff", "center", "provider", "admin"];
-    if (currentUser.role !== "super-admin" && role === "super-admin") {
+    const allowedRoles = ['user', 'student', 'staff', 'center', 'provider', 'admin'];
+    if (currentUser.role !== 'super-admin' && role === 'super-admin') {
       return NextResponse.json(
-        { error: "Only super-admin can create super-admin users" },
+        { error: 'Only super-admin can create super-admin users' },
         { status: 403 }
       );
     }
 
-    if (!allowedRoles.includes(role) && role !== "super-admin") {
-      return NextResponse.json(
-        { error: "Invalid role specified" },
-        { status: 400 }
-      );
+    if (!allowedRoles.includes(role) && role !== 'super-admin') {
+      return NextResponse.json({ error: 'Invalid role specified' }, { status: 400 });
     }
 
     // Generate UMP User ID (WIN-YYYY-XXXXXX format)
@@ -199,7 +181,7 @@ export async function POST(request: NextRequest) {
 
     // Populate center info if exists
     if (centerId) {
-      await user.populate("centerId", "name code");
+      await user.populate('centerId', 'name code');
     }
 
     // Log user creation
@@ -210,39 +192,33 @@ export async function POST(request: NextRequest) {
       data: userResponse,
       message: `User created successfully with ID: ${umpUserId}`,
     });
-
   } catch (error: any) {
-    console.error("Create user error:", error);
+    console.error('Create user error:', error);
 
     // Handle specific MongoDB errors
-    if (error.code === 11000) {
+    if (error?.code === 11000) {
       return NextResponse.json(
-        { error: "User with this email or UMP ID already exists" },
+        { error: 'User with this email or UMP ID already exists' },
         { status: 409 }
       );
     }
 
-    if (error.name === "ValidationError") {
-      const validationErrors = Object.values(error.errors).map(
-        (err: any) => err.message
-      );
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors || {}).map((err: any) => err.message);
       return NextResponse.json(
-        { error: `Validation error: ${validationErrors.join(", ")}` },
+        { error: `Validation error: ${validationErrors.join(', ')}` },
         { status: 400 }
       );
     }
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error.message.includes('Access denied') || error.message.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions. Admin access required." },
+        { error: 'Insufficient permissions. Admin access required.' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to create user" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
   }
 }
 
@@ -250,24 +226,18 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     // Require super-admin role for bulk operations
-    await requireRole(["super-admin"]);
+    await requireRole(['super-admin']);
     await connectDB();
 
     const body = await request.json();
     const { userIds, updates } = body;
 
     if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-      return NextResponse.json(
-        { error: "User IDs array is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'User IDs array is required' }, { status: 400 });
     }
 
-    if (!updates || typeof updates !== "object") {
-      return NextResponse.json(
-        { error: "Updates object is required" },
-        { status: 400 }
-      );
+    if (!updates || typeof updates !== 'object') {
+      return NextResponse.json({ error: 'Updates object is required' }, { status: 400 });
     }
 
     // Remove sensitive fields from bulk updates
@@ -291,21 +261,17 @@ export async function PUT(request: NextRequest) {
         modified: result.modifiedCount,
       },
     });
-
   } catch (error: any) {
-    console.error("Bulk update users error:", error);
+    console.error('Bulk update users error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions. Super-admin access required." },
+        { error: 'Insufficient permissions. Super-admin access required.' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to update users" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update users' }, { status: 500 });
   }
 }
 
@@ -313,26 +279,20 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     // Require super-admin role for bulk delete
-    await requireRole(["super-admin"]);
+    await requireRole(['super-admin']);
     await connectDB();
 
     const { searchParams } = new URL(request.url);
-    const userIds = searchParams.get("ids")?.split(",") || [];
+    const userIds = searchParams.get('ids')?.split(',') || [];
 
     if (userIds.length === 0) {
-      return NextResponse.json(
-        { error: "User IDs are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'User IDs are required' }, { status: 400 });
     }
 
     // Check if trying to delete self
     const currentUser = await requireAuth();
     if (userIds.includes(currentUser.id)) {
-      return NextResponse.json(
-        { error: "Cannot delete your own account" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Cannot delete your own account' }, { status: 400 });
     }
 
     // Soft delete - mark as inactive instead of permanent delete
@@ -341,10 +301,10 @@ export async function DELETE(request: NextRequest) {
       {
         $set: {
           isActive: false,
-          status: "inactive",
+          status: 'inactive',
           deletedAt: new Date(),
-          deletedBy: currentUser.id
-        }
+          deletedBy: currentUser.id,
+        },
       }
     );
 
@@ -355,20 +315,16 @@ export async function DELETE(request: NextRequest) {
         deactivated: result.modifiedCount,
       },
     });
-
   } catch (error: any) {
-    console.error("Bulk delete users error:", error);
+    console.error('Bulk delete users error:', error);
 
-    if (error.message.includes("Access denied") || error.message.includes("Forbidden")) {
+    if (error?.message?.includes('Access denied') || error?.message?.includes('Forbidden')) {
       return NextResponse.json(
-        { error: "Insufficient permissions. Super-admin access required." },
+        { error: 'Insufficient permissions. Super-admin access required.' },
         { status: 403 }
       );
     }
 
-    return NextResponse.json(
-      { error: "Failed to delete users" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to delete users' }, { status: 500 });
   }
 }

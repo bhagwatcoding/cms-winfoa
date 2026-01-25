@@ -1,7 +1,7 @@
 /**
  * Monitoring Dashboard Hooks
  * Custom React hooks for monitoring dashboard functionality
- * 
+ *
  * @module MonitoringHooks
  * @description Reusable hooks for monitoring dashboard
  */
@@ -95,6 +95,7 @@ export function useHealthMonitoring(refreshInterval = 5000) {
 
       return () => clearInterval(interval);
     }
+    return undefined;
   }, [refresh, autoRefresh, refreshInterval]);
 
   return {
@@ -177,7 +178,7 @@ export function useMetrics(timeRange: '1h' | '6h' | '24h' | '7d' = '1h') {
     } finally {
       setLoading(false);
     }
-  }, [timeRange]);
+  }, []);
 
   useEffect(() => {
     fetchMetrics();
@@ -196,7 +197,7 @@ export function useMetrics(timeRange: '1h' | '6h' | '24h' | '7d' = '1h') {
 // =============================================================================
 
 export function useAlerts(severity?: 'critical' | 'warning' | 'info') {
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [alerts, setAlerts] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -219,11 +220,11 @@ export function useAlerts(severity?: 'critical' | 'warning' | 'info') {
           timestamp: new Date().toISOString(),
         },
       ];
-      
-      const filteredAlerts = severity 
-        ? mockAlerts.filter(alert => alert.severity === severity)
+
+      const filteredAlerts = severity
+        ? mockAlerts.filter((alert) => alert.severity === severity)
         : mockAlerts;
-        
+
       setAlerts(filteredAlerts);
       setError(null);
     } catch (err) {
@@ -251,7 +252,7 @@ export function useAlerts(severity?: 'critical' | 'warning' | 'info') {
 // =============================================================================
 
 export function usePerformanceMetrics(metricName?: string) {
-  const [performance, setPerformance] = useState<any[]>([]);
+  const [performance, setPerformance] = useState<Record<string, unknown>[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -280,11 +281,11 @@ export function usePerformanceMetrics(metricName?: string) {
           timestamp: new Date().toISOString(),
         },
       ];
-      
+
       const filteredPerformance = metricName
-        ? mockPerformance.filter(p => p.metric === metricName)
+        ? mockPerformance.filter((p) => p.metric === metricName)
         : mockPerformance;
-        
+
       setPerformance(filteredPerformance);
       setError(null);
     } catch (err) {

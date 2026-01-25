@@ -1,5 +1,5 @@
-import BillsPage from "@/features/wallet/bills/form-card";
+import BillsPage from '@/features/wallet/bills/form-card';
 
 export default function WalletBillsPage() {
-    return <BillsPage />
+  return <BillsPage />;
 }

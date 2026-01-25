@@ -1,7 +1,7 @@
 /**
  * Theme Provider Component
  * Wraps the application with next-themes provider
- * 
+ *
  * @module ThemeProvider
  */
 

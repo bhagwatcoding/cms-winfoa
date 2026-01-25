@@ -1,12 +1,12 @@
 /**
  * Professional Multi-Subdomain Next.js Configuration
  * Optimized for performance, security, and scalability
- * 
+ *
  * @module NextConfig
  * @description Enterprise-grade configuration for multi-tenant applications
  */
 
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // =============================================================================
@@ -22,12 +22,23 @@ const nextConfig: NextConfig = {
   // SWC minification enabled by default in Next.js 15
 
   // Optimize images
+  // External packages for server components (moved from experimental in Next.js 16)
+  serverExternalPackages: ['mongoose'],
+
   images: {
-    domains: [
-      'localhost',
-      'vercel.app',
-      'vercel.com',
-      // Add your production domains here
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'vercel.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -39,9 +50,6 @@ const nextConfig: NextConfig = {
   // =============================================================================
 
   experimental: {
-    // Enable React Server Components
-    serverComponentsExternalPackages: ['mongoose'],
-
     // Optimize CSS
     optimizeCss: true,
 
@@ -99,9 +107,7 @@ const nextConfig: NextConfig = {
         new BundleAnalyzerPlugin({
           analyzerMode: 'static',
           openAnalyzer: false,
-          reportFilename: isServer
-            ? '../analyze/server.html'
-            : './analyze/client.html',
+          reportFilename: isServer ? '../analyze/server.html' : './analyze/client.html',
         })
       );
     }
@@ -123,7 +129,11 @@ const nextConfig: NextConfig = {
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Content-Security-Policy', value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';" },
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';",
+          },
 
           // Performance headers
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
@@ -145,9 +155,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
     ];
   },

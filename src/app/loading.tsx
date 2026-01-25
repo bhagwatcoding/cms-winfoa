@@ -1,10 +1,9 @@
-import { Loader2 } from 'lucide-react'
-import { Skeleton, Card, CardContent, CardHeader } from "@/components/ui"
+import { Loader2 } from 'lucide-react';
+import { Skeleton, Card, CardContent, CardHeader } from '@/components/ui';
 
 export default function Loading() {
   return (
     <div className="flex flex-col space-y-6 p-8">
-
       {/* Header Section */}
       <div className="space-y-2">
         <Skeleton className="h-10 w-[250px]" />
@@ -36,13 +35,9 @@ export default function Loading() {
           <Skeleton className="h-[400px] w-full rounded-xl" />
         </div>
       </div>
-
     </div>
-  )
+  );
 }
-
-
-
 
 export function Loading2() {
   return (
@@ -52,5 +47,5 @@ export function Loading2() {
         <p className="text-slate-600 text-lg font-medium">Loading...</p>
       </div>
     </div>
-  )
+  );
 }

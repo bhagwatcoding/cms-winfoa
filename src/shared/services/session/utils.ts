@@ -3,7 +3,8 @@
  * Utility functions for session management
  */
 
-import { SessionStatus } from "@/types";
+import { SessionStatus } from '@/core/db/enums';
+import { ISession } from '@/core/db/interfaces';
 
 /**
  * Generate secure session token
@@ -36,7 +37,7 @@ export function isSessionExpired(expiresAt: Date): boolean {
 /**
  * Format session data for display
  */
-export function formatSessionData(session: any): {
+export function formatSessionData(session: ISession): {
   id: string;
   device: string;
   location: string;
@@ -45,19 +46,18 @@ export function formatSessionData(session: any): {
   status: string;
   isCurrent: boolean;
 } {
-  const now = new Date();
-  const loginAt = new Date(session.loginAt);
+  const loginAt = new Date(session.createdAt);
   const lastAccessedAt = new Date(session.lastAccessedAt);
   const isCurrent = session.isActive && !isSessionExpired(session.expiresAt);
 
   return {
     id: session._id.toString(),
-    device: session.deviceInfo?.name || "Unknown Device",
-    location: session.location || "Unknown Location",
+    device: session.deviceInfo?.name || 'Unknown Device',
+    location: session.geoInfo?.city || session.geoInfo?.country || 'Unknown Location',
     loginAt: formatDateTime(loginAt),
     lastActive: formatDateTime(lastAccessedAt),
     status: getSessionStatus(session.status, session.isActive, session.expiresAt),
-    isCurrent
+    isCurrent,
   };
 }
 
@@ -67,30 +67,30 @@ export function formatSessionData(session: any): {
 function formatDateTime(date: Date): string {
   const now = new Date();
   const diff = now.getTime() - date.getTime();
-  
+
   // Less than 1 minute
   if (diff < 60000) {
-    return "Just now";
+    return 'Just now';
   }
-  
+
   // Less than 1 hour
   if (diff < 3600000) {
     const minutes = Math.floor(diff / 60000);
     return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
   }
-  
+
   // Less than 24 hours
   if (diff < 86400000) {
     const hours = Math.floor(diff / 3600000);
     return `${hours} hour${hours > 1 ? 's' : ''} ago`;
   }
-  
+
   // Less than 7 days
   if (diff < 604800000) {
     const days = Math.floor(diff / 86400000);
     return `${days} day${days > 1 ? 's' : ''} ago`;
   }
-  
+
   // More than 7 days - show date
   return date.toLocaleDateString();
 }
@@ -99,15 +99,19 @@ function formatDateTime(date: Date): string {
  * Get session status display text
  */
 function getSessionStatus(status: SessionStatus, isActive: boolean, expiresAt: Date): string {
-  if (!isActive) return "Revoked";
-  
-  if (isSessionExpired(expiresAt)) return "Expired";
-  
+  if (!isActive) return 'Revoked';
+
+  if (isSessionExpired(expiresAt)) return 'Expired';
+
   switch (status) {
-    case SessionStatus.Active:  return "Active";
-    case SessionStatus.Locked: return "Locked";
-    case SessionStatus.Impersonated: return "Admin Session";
-    default: return "Unknown";
+    case SessionStatus.Active:
+      return 'Active';
+    case SessionStatus.Locked:
+      return 'Locked';
+    case SessionStatus.Revoked:
+      return 'Revoked';
+    default:
+      return 'Unknown';
   }
 }
 
@@ -117,19 +121,19 @@ function getSessionStatus(status: SessionStatus, isActive: boolean, expiresAt: D
 export function getSessionAge(createdAt: Date): string {
   const now = new Date();
   const diff = now.getTime() - createdAt.getTime();
-  
+
   const days = Math.floor(diff / 86400000);
   const hours = Math.floor((diff % 86400000) / 3600000);
   const minutes = Math.floor((diff % 3600000) / 60000);
-  
+
   if (days > 0) {
     return `${days} day${days > 1 ? 's' : ''} ${hours} hour${hours > 1 ? 's' : ''}`;
   }
-  
+
   if (hours > 0) {
     return `${hours} hour${hours > 1 ? 's' : ''} ${minutes} minute${minutes > 1 ? 's' : ''}`;
   }
-  
+
   return `${minutes} minute${minutes > 1 ? 's' : ''}`;
 }
 
@@ -140,60 +144,60 @@ export function shouldRenewSession(lastAccessedAt: Date, expiresAt: Date): boole
   const now = new Date();
   const timeUntilExpiry = expiresAt.getTime() - now.getTime();
   const sessionAge = now.getTime() - lastAccessedAt.getTime();
-  
+
   // Renew if session expires in less than 1 hour
   const renewalThreshold = 60 * 60 * 1000; // 1 hour
-  
+
   return timeUntilExpiry < renewalThreshold && sessionAge > 5 * 60 * 1000; // 5 minutes
 }
 
 /**
  * Validate session metadata
  */
-export function validateSessionMetadata(metadata: any): boolean {
+export function validateSessionMetadata(metadata: Record<string, unknown>): boolean {
   if (!metadata) return true;
-  
+
   // Validate user agent
   if (metadata.userAgent && typeof metadata.userAgent !== 'string') {
     return false;
   }
-  
+
   // Validate IP address
   if (metadata.ipAddress && typeof metadata.ipAddress !== 'string') {
     return false;
   }
-  
+
   // Validate remember me
   if (metadata.rememberMe && typeof metadata.rememberMe !== 'boolean') {
     return false;
   }
-  
+
   return true;
 }
 
 /**
  * Sanitize session data for public display
  */
-export function sanitizeSessionData(session: any): any {
+export function sanitizeSessionData(session: ISession): Record<string, unknown> {
   return {
     id: session._id.toString(),
     deviceInfo: {
       type: session.deviceInfo?.type,
       name: session.deviceInfo?.name,
-      os: session.deviceInfo?.os
+      os: session.deviceInfo?.os,
     },
     geoInfo: {
       country: session.geoInfo?.country,
       city: session.geoInfo?.city,
-      timezone: session.geoInfo?.timezone
+      timezone: session.geoInfo?.timezone,
     },
-    loginAt: session.loginAt,
+    loginAt: session.createdAt,
     lastAccessedAt: session.lastAccessedAt,
     isActive: session.isActive,
     status: session.status,
     securityInfo: {
       riskLevel: session.securityInfo?.riskLevel,
-      isVerified: session.securityInfo?.isVerified
-    }
+      isVerified: (session.securityInfo as unknown as { isVerified?: boolean })?.isVerified,
+    },
   };
 }

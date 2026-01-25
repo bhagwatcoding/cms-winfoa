@@ -1,12 +1,8 @@
-import {
-  getUsersAction,
-  deleteUserAction,
-  restoreUserAction,
-} from "@/actions/users.actions";
+import { getUsersAction, deleteUserAction, restoreUserAction } from '@/actions/users.actions';
 
 export default async function HomePage() {
   const { data: users, isGod } = await getUsersAction();
-  if (!users) return "Data Not Found";
+  if (!users) return 'Data Not Found';
 
   return (
     <div className="p-10 max-w-4xl mx-auto">
@@ -25,21 +21,19 @@ export default async function HomePage() {
             key={user._id}
             className={`p-4 border rounded-lg flex justify-between items-center transition-all ${
               user.isDeleted
-                ? "bg-red-50 border-red-200 opacity-75"
-                : "bg-white border-gray-200 hover:shadow-md"
+                ? 'bg-red-50 border-red-200 opacity-75'
+                : 'bg-white border-gray-200 hover:shadow-md'
             }`}
           >
             <div>
               <h3
-                className={`font-semibold text-lg ${user.isDeleted ? "text-red-800 line-through" : "text-gray-800"}`}
+                className={`font-semibold text-lg ${user.isDeleted ? 'text-red-800 line-through' : 'text-gray-800'}`}
               >
                 {user.name}
               </h3>
               <p className="text-gray-500 text-sm">{user.email}</p>
               {user.isDeleted && (
-                <p className="text-xs text-red-600 font-mono mt-1">
-                  Deleted by: {user.deletedBy}
-                </p>
+                <p className="text-xs text-red-600 font-mono mt-1">Deleted by: {user.deletedBy}</p>
               )}
             </div>
 

@@ -1,103 +1,62 @@
-import Link from "next/link";
-import { Button } from "@/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/ui/card";
-import {
-  Shield,
-  Code,
-  Users,
-  UserCog,
-  Crown,
-  Globe,
-  Zap,
-  Lock,
-  ArrowRight
-} from "lucide-react";
+import Link from 'next/link';
+import { Button } from '@/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card';
+import { Shield, Code, Users, UserCog, Crown, Globe, Zap, Lock, ArrowRight } from 'lucide-react';
 
 const subdomains = [
   {
-    name: "Authentication Portal",
-    subdomain: "auth",
-    url: "http://auth.localhost:3000",
+    name: 'Authentication Portal',
+    subdomain: 'auth',
+    url: 'http://auth.localhost:3000',
     icon: Shield,
-    description: "User authentication and authorization system",
-    features: [
-      "Login/Signup",
-      "Password Reset",
-      "Session Management",
-      "OAuth Integration",
-    ],
-    color: "bg-red-500",
+    description: 'User authentication and authorization system',
+    features: ['Login/Signup', 'Password Reset', 'Session Management', 'OAuth Integration'],
+    color: 'bg-red-500',
   },
   {
-    name: "API Gateway",
-    subdomain: "api",
-    url: "http://api.localhost:3000",
+    name: 'API Gateway',
+    subdomain: 'api',
+    url: 'http://api.localhost:3000',
     icon: Code,
-    description: "REST API endpoints and services",
-    features: [
-      "API Documentation",
-      "Rate Limiting",
-      "Authentication",
-      "Monitoring",
-    ],
-    color: "bg-green-500",
+    description: 'REST API endpoints and services',
+    features: ['API Documentation', 'Rate Limiting', 'Authentication', 'Monitoring'],
+    color: 'bg-green-500',
   },
   {
-    name: "User Management Platform",
-    subdomain: "ump",
-    url: "http://ump.localhost:3000",
+    name: 'User Management Platform',
+    subdomain: 'ump',
+    url: 'http://ump.localhost:3000',
     icon: Users,
-    description: "User administration and management system",
-    features: ["User Profiles", "Role Management", "Permissions", "Analytics"],
-    color: "bg-purple-500",
+    description: 'User administration and management system',
+    features: ['User Profiles', 'Role Management', 'Permissions', 'Analytics'],
+    color: 'bg-purple-500',
   },
   {
-    name: "My Account",
-    subdomain: "myaccount",
-    url: "http://myaccount.localhost:3000",
+    name: 'My Account',
+    subdomain: 'myaccount',
+    url: 'http://myaccount.localhost:3000',
     icon: UserCog,
-    description: "Personal account management portal",
-    features: [
-      "Profile Settings",
-      "Privacy Controls",
-      "Notifications",
-      "Account Security",
-    ],
-    color: "bg-teal-500",
+    description: 'Personal account management portal',
+    features: ['Profile Settings', 'Privacy Controls', 'Notifications', 'Account Security'],
+    color: 'bg-teal-500',
   },
   {
-    name: "God Mode",
-    subdomain: "god",
-    url: "http://god.localhost:3000",
+    name: 'God Mode',
+    subdomain: 'god',
+    url: 'http://god.localhost:3000',
     icon: Crown,
-    description: "Super Admin Control Panel",
-    features: [
-      "System Analytics",
-      "Global Configuration",
-      "User Oversight",
-      "System Health",
-    ],
-    color: "bg-yellow-600",
+    description: 'Super Admin Control Panel',
+    features: ['System Analytics', 'Global Configuration', 'User Oversight', 'System Health'],
+    color: 'bg-yellow-600',
   },
   {
-    name: "Wallet",
-    subdomain: "wallet",
-    url: "http://wallet.localhost:3000",
+    name: 'Wallet',
+    subdomain: 'wallet',
+    url: 'http://wallet.localhost:3000',
     icon: Zap,
-    description: "Digital wallet and payments",
-    features: [
-      "Balance",
-      "Transactions",
-      "Recharge",
-      "Bill Payments",
-    ],
-    color: "bg-orange-500",
+    description: 'Digital wallet and payments',
+    features: ['Balance', 'Transactions', 'Recharge', 'Bill Payments'],
+    color: 'bg-orange-500',
   },
 ];
 
@@ -116,9 +75,7 @@ export default function MainDashboard() {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Winfoa Platform
                 </h1>
-                <p className="text-sm text-slate-500">
-                  Multi-Domain Architecture
-                </p>
+                <p className="text-sm text-slate-500">Multi-Domain Architecture</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -146,26 +103,15 @@ export default function MainDashboard() {
             </span>
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-8">
-            A comprehensive web application architecture featuring specialized
-            subdomains for authentication, learning management, user
-            administration, and system control.
+            A comprehensive web application architecture featuring specialized subdomains for
+            authentication, learning management, user administration, and system control.
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm text-slate-500">
-            <span className="px-3 py-1 bg-white rounded-full border">
-              Next.js 16
-            </span>
-            <span className="px-3 py-1 bg-white rounded-full border">
-              TypeScript
-            </span>
-            <span className="px-3 py-1 bg-white rounded-full border">
-              Tailwind CSS
-            </span>
-            <span className="px-3 py-1 bg-white rounded-full border">
-              MongoDB
-            </span>
-            <span className="px-3 py-1 bg-white rounded-full border">
-              Subdomain Routing
-            </span>
+            <span className="px-3 py-1 bg-white rounded-full border">Next.js 16</span>
+            <span className="px-3 py-1 bg-white rounded-full border">TypeScript</span>
+            <span className="px-3 py-1 bg-white rounded-full border">Tailwind CSS</span>
+            <span className="px-3 py-1 bg-white rounded-full border">MongoDB</span>
+            <span className="px-3 py-1 bg-white rounded-full border">Subdomain Routing</span>
           </div>
         </div>
 
@@ -180,23 +126,16 @@ export default function MainDashboard() {
               >
                 <CardHeader>
                   <div className="flex justify-between items-start mb-4">
-                    <div
-                      className={`p-3 rounded-xl ${subdomain.color} bg-opacity-10`}
-                    >
+                    <div className={`p-3 rounded-xl ${subdomain.color} bg-opacity-10`}>
                       <IconComponent
-                        className={`h-6 w-6 ${subdomain.color.replace(
-                          "bg-",
-                          "text-"
-                        )}`}
+                        className={`h-6 w-6 ${subdomain.color.replace('bg-', 'text-')}`}
                       />
                     </div>
                     <span className="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">
                       {subdomain.subdomain}.localhost
                     </span>
                   </div>
-                  <CardTitle className="text-xl mb-2">
-                    {subdomain.name}
-                  </CardTitle>
+                  <CardTitle className="text-xl mb-2">{subdomain.name}</CardTitle>
                   <CardDescription>{subdomain.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -223,8 +162,8 @@ export default function MainDashboard() {
         {/* Footer Info */}
         <div className="border-t border-slate-200 pt-8 text-center text-slate-500">
           <p>
-            System Status: <span className="text-green-600 font-medium">Operational</span> • 
-            Version 1.0.0
+            System Status: <span className="text-green-600 font-medium">Operational</span> • Version
+            1.0.0
           </p>
         </div>
       </main>

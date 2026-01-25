@@ -12,7 +12,7 @@ export interface EmailTemplate {
   subject: string;
   html: string;
   text?: string;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
 }
 
 export interface EmailResult {
@@ -67,7 +67,7 @@ export const EMAIL_TEMPLATES = {
         <p>Best regards,<br>The {{platformName}} Team</p>
       </div>
     `,
-    text: `Welcome to {{platformName}}!\n\nHi {{userName}},\n\nThank you for joining {{platformName}}. We're excited to have you on board!\n\nYour account details:\n- Email: {{userEmail}}\n- Role: {{userRole}}\n- Account ID: {{userId}}\n\nBest regards,\nThe {{platformName}} Team`
+    text: `Welcome to {{platformName}}!\n\nHi {{userName}},\n\nThank you for joining {{platformName}}. We're excited to have you on board!\n\nYour account details:\n- Email: {{userEmail}}\n- Role: {{userRole}}\n- Account ID: {{userId}}\n\nBest regards,\nThe {{platformName}} Team`,
   },
 
   courseEnrollment: {
@@ -94,7 +94,7 @@ export const EMAIL_TEMPLATES = {
         <p>Best regards,<br>The {{platformName}} Team</p>
       </div>
     `,
-    text: `Course Enrollment Confirmed!\n\nHi {{studentName}},\n\nYou have successfully enrolled in {{courseTitle}}!\n\nCourse Code: {{courseCode}}\nDuration: {{courseDuration}}\nInstructor: {{instructorName}}\n\nAccess your course at: http://academy.localhost:3000\n\nBest regards,\nThe {{platformName}} Team`
+    text: `Course Enrollment Confirmed!\n\nHi {{studentName}},\n\nYou have successfully enrolled in {{courseTitle}}!\n\nCourse Code: {{courseCode}}\nDuration: {{courseDuration}}\nInstructor: {{instructorName}}\n\nAccess your course at: http://academy.localhost:3000\n\nBest regards,\nThe {{platformName}} Team`,
   },
 
   passwordReset: {
@@ -112,7 +112,7 @@ export const EMAIL_TEMPLATES = {
         <p>Best regards,<br>The {{platformName}} Team</p>
       </div>
     `,
-    text: `Password Reset Request\n\nHi {{userName}},\n\nYou requested a password reset for your {{platformName}} account.\n\nReset Code: {{resetCode}}\n\nThis code will expire in 15 minutes.\n\nIf you didn't request this, please ignore this email.\n\nBest regards,\nThe {{platformName}} Team`
+    text: `Password Reset Request\n\nHi {{userName}},\n\nYou requested a password reset for your {{platformName}} account.\n\nReset Code: {{resetCode}}\n\nThis code will expire in 15 minutes.\n\nIf you didn't request this, please ignore this email.\n\nBest regards,\nThe {{platformName}} Team`,
   },
 
   walletRecharge: {
@@ -137,7 +137,7 @@ export const EMAIL_TEMPLATES = {
         <p>Best regards,<br>The {{platformName}} Team</p>
       </div>
     `,
-    text: `Wallet Recharged Successfully!\n\nHi {{userName}},\n\nYour wallet has been recharged with {{currency}} {{amount}}.\n\nTransaction ID: {{transactionId}}\nNew Balance: {{currency}} {{newBalance}}\n\nView history at: http://wallet.localhost:3000\n\nBest regards,\nThe {{platformName}} Team`
+    text: `Wallet Recharged Successfully!\n\nHi {{userName}},\n\nYour wallet has been recharged with {{currency}} {{amount}}.\n\nTransaction ID: {{transactionId}}\nNew Balance: {{currency}} {{newBalance}}\n\nView history at: http://wallet.localhost:3000\n\nBest regards,\nThe {{platformName}} Team`,
   },
 
   certificateGenerated: {
@@ -161,14 +161,14 @@ export const EMAIL_TEMPLATES = {
         <p>Best regards,<br>The {{platformName}} Team</p>
       </div>
     `,
-    text: `🎓 Congratulations!\n\nHi {{studentName}},\n\nYou have successfully completed {{courseTitle}}!\n\nCertificate ID: {{certificateId}}\nGrade: {{finalGrade}}%\n\nDownload at: http://academy.localhost:3000/certificates\n\nBest regards,\nThe {{platformName}} Team`
-  }
+    text: `🎓 Congratulations!\n\nHi {{studentName}},\n\nYou have successfully completed {{courseTitle}}!\n\nCertificate ID: {{certificateId}}\nGrade: {{finalGrade}}%\n\nDownload at: http://academy.localhost:3000/certificates\n\nBest regards,\nThe {{platformName}} Team`,
+  },
 };
 
 /**
  * Simple template renderer (replaces {{variable}} with values)
  */
-export function renderTemplate(template: string, variables: Record<string, any>): string {
+export function renderTemplate(template: string, variables: Record<string, unknown>): string {
   let rendered = template;
 
   // Handle simple variables {{variable}}
@@ -183,17 +183,19 @@ export function renderTemplate(template: string, variables: Record<string, any>)
     const array = variables[arrayName];
     if (!Array.isArray(array)) return '';
 
-    return array.map(item => {
-      let itemContent = content;
-      if (typeof item === 'string') {
-        itemContent = itemContent.replace(/{{this}}/g, item);
-      } else if (typeof item === 'object') {
-        for (const [key, value] of Object.entries(item)) {
-          itemContent = itemContent.replace(new RegExp(`{{${key}}}`, 'g'), String(value));
+    return array
+      .map((item) => {
+        let itemContent = content;
+        if (typeof item === 'string') {
+          itemContent = itemContent.replace(/{{this}}/g, item);
+        } else if (typeof item === 'object') {
+          for (const [key, value] of Object.entries(item)) {
+            itemContent = itemContent.replace(new RegExp(`{{${key}}}`, 'g'), String(value));
+          }
         }
-      }
-      return itemContent;
-    }).join('');
+        return itemContent;
+      })
+      .join('');
   });
 
   // Handle conditionals {{#if variable}} ... {{/if}}
@@ -210,11 +212,11 @@ export function renderTemplate(template: string, variables: Record<string, any>)
  */
 export async function simulateEmailSending(
   to: EmailRecipient,
-  template: EmailTemplate
+  _template: EmailTemplate
 ): Promise<EmailResult> {
   // Simulate network delay
   const delay = 500 + Math.random() * 2000; // 0.5-2.5 seconds
-  await new Promise(resolve => setTimeout(resolve, delay));
+  await new Promise((resolve) => setTimeout(resolve, delay));
 
   // Simulate success/failure (95% success rate)
   const isSuccess = Math.random() > 0.05;
@@ -224,7 +226,7 @@ export async function simulateEmailSending(
       success: false,
       error: getRandomEmailError(),
       recipient: to,
-      deliveryTime: delay
+      deliveryTime: delay,
     };
   }
 
@@ -232,7 +234,7 @@ export async function simulateEmailSending(
     success: true,
     messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     recipient: to,
-    deliveryTime: delay
+    deliveryTime: delay,
   };
 }
 
@@ -245,7 +247,7 @@ function getRandomEmailError(): string {
     'Mailbox full',
     'Temporary delivery failure',
     'SMTP server timeout',
-    'Email blocked by spam filter'
+    'Email blocked by spam filter',
   ];
   return errors[Math.floor(Math.random() * errors.length)];
 }
@@ -256,7 +258,7 @@ function getRandomEmailError(): string {
 export async function sendEmail(
   to: EmailRecipient,
   templateName: keyof typeof EMAIL_TEMPLATES,
-  variables: Record<string, any> = {}
+  variables: Record<string, unknown> = {}
 ): Promise<EmailResult> {
   try {
     const template = EMAIL_TEMPLATES[templateName];
@@ -264,7 +266,7 @@ export async function sendEmail(
       return {
         success: false,
         error: `Email template '${templateName}' not found`,
-        recipient: to
+        recipient: to,
       };
     }
 
@@ -273,7 +275,7 @@ export async function sendEmail(
       platformName: 'Winfoa Platform',
       currentYear: new Date().getFullYear(),
       supportEmail: EMAIL_CONFIG.replyTo,
-      ...variables
+      ...variables,
     };
 
     // Render template
@@ -281,7 +283,7 @@ export async function sendEmail(
       subject: renderTemplate(template.subject, templateVariables),
       html: renderTemplate(template.html, templateVariables),
       text: template.text ? renderTemplate(template.text, templateVariables) : undefined,
-      variables: templateVariables
+      variables: templateVariables,
     };
 
     if (EMAIL_CONFIG.simulationMode) {
@@ -296,13 +298,12 @@ export async function sendEmail(
       // For now, we'll still simulate
       return await simulateEmailSending(to, renderedTemplate);
     }
-
   } catch (error) {
     console.error('Email sending error:', error);
     return {
       success: false,
       error: 'Failed to send email',
-      recipient: to
+      recipient: to,
     };
   }
 }
@@ -313,7 +314,7 @@ export async function sendEmail(
 export async function sendBulkEmails(
   recipients: EmailRecipient[],
   templateName: keyof typeof EMAIL_TEMPLATES,
-  variables: Record<string, any> = {}
+  variables: Record<string, unknown> = {}
 ): Promise<BulkEmailResult> {
   const results: EmailResult[] = [];
   let sent = 0;
@@ -328,14 +329,12 @@ export async function sendBulkEmails(
     // Send batch emails with rate limiting
     const batchPromises = batch.map(async (recipient, index) => {
       // Add delay between emails to respect rate limits
-      await new Promise(resolve =>
-        setTimeout(resolve, index * EMAIL_CONFIG.rateLimitMs)
-      );
+      await new Promise((resolve) => setTimeout(resolve, index * EMAIL_CONFIG.rateLimitMs));
 
       return sendEmail(recipient, templateName, {
         ...variables,
         recipientName: recipient.name,
-        recipientEmail: recipient.email
+        recipientEmail: recipient.email,
       });
     });
 
@@ -343,7 +342,7 @@ export async function sendBulkEmails(
     results.push(...batchResults);
 
     // Count successes and failures
-    batchResults.forEach(result => {
+    batchResults.forEach((result) => {
       if (result.success) {
         sent++;
       } else {
@@ -352,40 +351,36 @@ export async function sendBulkEmails(
     });
 
     // Log batch completion
-    console.log(`📧 Email batch ${Math.floor(i / batchSize) + 1} completed: ${batchResults.length} emails processed`);
+    console.log(
+      `📧 Email batch ${Math.floor(i / batchSize) + 1} completed: ${batchResults.length} emails processed`
+    );
   }
 
   return {
     success: failed < sent, // Success if more emails sent than failed
     sent,
     failed,
-    results
+    results,
   };
 }
 
 /**
  * Send welcome email to new user
  */
-export async function sendWelcomeEmail(
-  user: {
-    name: string;
-    email: string;
-    role: string;
-    id: string;
-    subdomains: string[];
-  }
-): Promise<EmailResult> {
-  return sendEmail(
-    { email: user.email, name: user.name },
-    'welcome',
-    {
-      userName: user.name,
-      userEmail: user.email,
-      userRole: user.role,
-      userId: user.id,
-      subdomains: user.subdomains
-    }
-  );
+export async function sendWelcomeEmail(user: {
+  name: string;
+  email: string;
+  role: string;
+  id: string;
+  subdomains: string[];
+}): Promise<EmailResult> {
+  return sendEmail({ email: user.email, name: user.name }, 'welcome', {
+    userName: user.name,
+    userEmail: user.email,
+    userRole: user.role,
+    userId: user.id,
+    subdomains: user.subdomains,
+  });
 }
 
 /**
@@ -396,20 +391,16 @@ export async function sendEnrollmentConfirmation(
   course: { title: string; code: string; duration: string; instructor: string },
   enrollment: { date: string; fee?: number; currency?: string }
 ): Promise<EmailResult> {
-  return sendEmail(
-    { email: student.email, name: student.name },
-    'courseEnrollment',
-    {
-      studentName: student.name,
-      courseTitle: course.title,
-      courseCode: course.code,
-      courseDuration: course.duration,
-      instructorName: course.instructor,
-      enrollmentDate: enrollment.date,
-      courseFee: enrollment.fee,
-      currency: enrollment.currency || 'USD'
-    }
-  );
+  return sendEmail({ email: student.email, name: student.name }, 'courseEnrollment', {
+    studentName: student.name,
+    courseTitle: course.title,
+    courseCode: course.code,
+    courseDuration: course.duration,
+    instructorName: course.instructor,
+    enrollmentDate: enrollment.date,
+    courseFee: enrollment.fee,
+    currency: enrollment.currency || 'USD',
+  });
 }
 
 /**
@@ -419,14 +410,10 @@ export async function sendPasswordResetEmail(
   user: { name: string; email: string },
   resetCode: string
 ): Promise<EmailResult> {
-  return sendEmail(
-    { email: user.email, name: user.name },
-    'passwordReset',
-    {
-      userName: user.name,
-      resetCode
-    }
-  );
+  return sendEmail({ email: user.email, name: user.name }, 'passwordReset', {
+    userName: user.name,
+    resetCode,
+  });
 }
 
 /**
@@ -443,19 +430,15 @@ export async function sendWalletRechargeConfirmation(
     date: string;
   }
 ): Promise<EmailResult> {
-  return sendEmail(
-    { email: user.email, name: user.name },
-    'walletRecharge',
-    {
-      userName: user.name,
-      amount: transaction.amount,
-      currency: transaction.currency,
-      paymentMethod: transaction.paymentMethod,
-      transactionId: transaction.transactionId,
-      newBalance: transaction.newBalance,
-      transactionDate: transaction.date
-    }
-  );
+  return sendEmail({ email: user.email, name: user.name }, 'walletRecharge', {
+    userName: user.name,
+    amount: transaction.amount,
+    currency: transaction.currency,
+    paymentMethod: transaction.paymentMethod,
+    transactionId: transaction.transactionId,
+    newBalance: transaction.newBalance,
+    transactionDate: transaction.date,
+  });
 }
 
 /**
@@ -470,21 +453,17 @@ export async function sendCertificateNotification(
     grade: number;
   }
 ): Promise<EmailResult> {
-  return sendEmail(
-    { email: student.email, name: student.name },
-    'certificateGenerated',
-    {
-      studentName: student.name,
-      courseTitle: course.title,
-      courseCode: course.code,
-      certificateId: certificate.id,
-      completionDate: certificate.completionDate,
-      finalGrade: certificate.grade
-    }
-  );
+  return sendEmail({ email: student.email, name: student.name }, 'certificateGenerated', {
+    studentName: student.name,
+    courseTitle: course.title,
+    courseCode: course.code,
+    certificateId: certificate.id,
+    completionDate: certificate.completionDate,
+    finalGrade: certificate.grade,
+  });
 }
 
-export default {
+const EmailService = {
   sendEmail,
   sendBulkEmails,
   sendWelcomeEmail,
@@ -494,5 +473,7 @@ export default {
   sendCertificateNotification,
   renderTemplate,
   EMAIL_TEMPLATES,
-  EMAIL_CONFIG
+  EMAIL_CONFIG,
 };
+
+export default EmailService;

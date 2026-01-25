@@ -8,10 +8,10 @@
 // ==========================================
 
 export interface PaginationParams {
-    page?: number;
-    limit?: number;
-    sortBy?: string;
-    sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
 }
 
 // ==========================================
@@ -19,8 +19,8 @@ export interface PaginationParams {
 // ==========================================
 
 export interface SearchParams extends PaginationParams {
-    search?: string;
-    query?: string;
+  search?: string;
+  query?: string;
 }
 
 // ==========================================
@@ -28,10 +28,10 @@ export interface SearchParams extends PaginationParams {
 // ==========================================
 
 export interface DateRangeParams {
-    startDate?: Date | string;
-    endDate?: Date | string;
-    dateFrom?: Date | string;
-    dateTo?: Date | string;
+  startDate?: Date | string;
+  endDate?: Date | string;
+  dateFrom?: Date | string;
+  dateTo?: Date | string;
 }
 
 // ==========================================
@@ -39,41 +39,41 @@ export interface DateRangeParams {
 // ==========================================
 
 export interface BaseFilterParams extends PaginationParams, DateRangeParams {
-    search?: string;
-    status?: string;
-    isActive?: boolean;
+  search?: string;
+  status?: string;
+  isActive?: boolean;
 }
 
 export interface UserFilterParams extends BaseFilterParams {
-    role?: string;
-    centerId?: string;
-    emailVerified?: boolean;
+  role?: string;
+  centerId?: string;
+  emailVerified?: boolean;
 }
 
 export interface StudentFilterParams extends BaseFilterParams {
-    centerId?: string;
-    courseId?: string;
-    gender?: string;
-    admissionDateFrom?: Date | string;
-    admissionDateTo?: Date | string;
+  centerId?: string;
+  courseId?: string;
+  gender?: string;
+  admissionDateFrom?: Date | string;
+  admissionDateTo?: Date | string;
 }
 
 export interface CourseFilterParams extends BaseFilterParams {
-    centerId?: string;
-    category?: string;
-    level?: string;
-    minDuration?: number;
-    maxDuration?: number;
-    minFees?: number;
-    maxFees?: number;
+  centerId?: string;
+  category?: string;
+  level?: string;
+  minDuration?: number;
+  maxDuration?: number;
+  minFees?: number;
+  maxFees?: number;
 }
 
 export interface CertificateFilterParams extends BaseFilterParams {
-    studentId?: string;
-    courseId?: string;
-    centerId?: string;
-    issueDateFrom?: Date | string;
-    issueDateTo?: Date | string;
+  studentId?: string;
+  courseId?: string;
+  centerId?: string;
+  issueDateFrom?: Date | string;
+  issueDateTo?: Date | string;
 }
 
 // ==========================================
@@ -81,12 +81,12 @@ export interface CertificateFilterParams extends BaseFilterParams {
 // ==========================================
 
 export interface BulkDeleteParams {
-    ids: string[];
+  ids: string[];
 }
 
 export interface BulkUpdateParams<T = unknown> {
-    ids: string[];
-    updates: Partial<T>;
+  ids: string[];
+  updates: Partial<T>;
 }
 
 // ==========================================
@@ -94,11 +94,11 @@ export interface BulkUpdateParams<T = unknown> {
 // ==========================================
 
 export interface IdParam {
-    id: string;
+  id: string;
 }
 
 export interface IdsParam {
-    ids: string[];
+  ids: string[];
 }
 
 // ==========================================
@@ -106,5 +106,5 @@ export interface IdsParam {
 // ==========================================
 
 export interface QueryParams {
-    [key: string]: string | number | boolean | undefined;
+  [key: string]: string | number | boolean | undefined;
 }

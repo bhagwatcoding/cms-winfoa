@@ -1,12 +1,12 @@
 /**
  * Professional API Response Helper
  * Standardized response generation for consistent API contracts
- * 
+ *
  * @module ApiHelper
  */
 
 import { NextResponse } from 'next/server';
-import { ApiResponse, PaginationMeta } from '@/shared/types/api/responses';
+import { ApiResponse, PaginationMeta, PaginatedResponse } from '@/shared/types/api/responses';
 
 // =============================================================================
 // HTTP STATUS CODES
@@ -68,7 +68,7 @@ export class ApiHelper {
     data: T[],
     pagination: PaginationMeta,
     message?: string
-  ): NextResponse<ApiResponse<T>> {
+  ): NextResponse<PaginatedResponse<T>> {
     return NextResponse.json(
       {
         success: true,
@@ -87,6 +87,7 @@ export class ApiHelper {
     message: string,
     status: HttpStatus = HttpStatus.BAD_REQUEST,
     code?: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     errors?: any[]
   ): NextResponse<ApiResponse<null>> {
     return NextResponse.json(
@@ -124,7 +125,10 @@ export class ApiHelper {
   /**
    * Validation Error Response (422)
    */
-  static validationError(errors: any[], message = 'Validation failed'): NextResponse<ApiResponse<null>> {
+  static validationError(
+    errors: unknown[],
+    message = 'Validation failed'
+  ): NextResponse<ApiResponse<null>> {
     return this.error(message, HttpStatus.UNPROCESSABLE_ENTITY, 'VALIDATION_ERROR', errors);
   }
 
@@ -133,11 +137,14 @@ export class ApiHelper {
    */
   static serverError(error: unknown): NextResponse<ApiResponse<null>> {
     console.error('❌ [API] Server Error:', error);
-    
+
     // In production, don't leak error details
-    const message = process.env.NODE_ENV === 'production' 
-      ? 'Internal server error' 
-      : (error instanceof Error ? error.message : 'Unknown error');
+    const message =
+      process.env.NODE_ENV === 'production'
+        ? 'Internal server error'
+        : error instanceof Error
+          ? error.message
+          : 'Unknown error';
 
     return this.error(message, HttpStatus.INTERNAL_SERVER_ERROR, 'INTERNAL_SERVER_ERROR');
   }

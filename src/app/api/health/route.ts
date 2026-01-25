@@ -1,7 +1,7 @@
 /**
  * Health Check API Endpoint
  * Comprehensive health monitoring for multi-subdomain applications
- * 
+ *
  * @module HealthCheck
  * @description Enterprise-grade health monitoring system
  */
@@ -25,7 +25,7 @@ interface HealthStatus {
 }
 
 interface HealthCheckResult {
-  status: 'healthy' | 'unhealthy';
+  status: 'healthy' | 'unhealthy' | 'degraded';
   responseTime: number;
   message?: string;
   error?: string;
@@ -40,32 +40,32 @@ interface HealthCheckResult {
  */
 async function checkMongoDB(): Promise<HealthCheckResult> {
   const startTime = Date.now();
-  
+
   try {
     // Check if MongoDB is connected
     if (mongoose.connection.readyState !== 1) {
       return {
         status: 'unhealthy',
         responseTime: Date.now() - startTime,
-        error: 'MongoDB connection is not established'
+        error: 'MongoDB connection is not established',
       };
     }
-    
+
     // Perform a simple ping operation
-    await mongoose.connection.db.admin().ping();
-    
+    await mongoose.connection.db?.admin().ping();
+
     return {
       status: 'healthy',
       responseTime: Date.now() - startTime,
-      message: 'MongoDB connection is healthy'
+      message: 'MongoDB connection is healthy',
     };
   } catch (error) {
     logger.error('MongoDB health check failed', { error });
-    
+
     return {
       status: 'unhealthy',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -75,23 +75,23 @@ async function checkMongoDB(): Promise<HealthCheckResult> {
  */
 async function checkRedis(): Promise<HealthCheckResult> {
   const startTime = Date.now();
-  
+
   try {
     // Test Redis connection with a simple ping
     await redis.ping();
-    
+
     return {
       status: 'healthy',
       responseTime: Date.now() - startTime,
-      message: 'Redis connection is healthy'
+      message: 'Redis connection is healthy',
     };
   } catch (error) {
     logger.error('Redis health check failed', { error });
-    
+
     return {
       status: 'unhealthy',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -101,31 +101,31 @@ async function checkRedis(): Promise<HealthCheckResult> {
  */
 async function checkMemory(): Promise<HealthCheckResult> {
   const startTime = Date.now();
-  
+
   try {
     const memoryUsage = process.memoryUsage();
     const memoryLimit = 512 * 1024 * 1024; // 512MB limit
-    
+
     if (memoryUsage.heapUsed > memoryLimit) {
       return {
         status: 'unhealthy',
         responseTime: Date.now() - startTime,
-        error: `Memory usage exceeded limit: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`
+        error: `Memory usage exceeded limit: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`,
       };
     }
-    
+
     return {
       status: 'healthy',
       responseTime: Date.now() - startTime,
-      message: `Memory usage: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`
+      message: `Memory usage: ${Math.round(memoryUsage.heapUsed / 1024 / 1024)}MB`,
     };
   } catch (error) {
     logger.error('Memory health check failed', { error });
-    
+
     return {
       status: 'unhealthy',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -135,24 +135,24 @@ async function checkMemory(): Promise<HealthCheckResult> {
  */
 async function checkDiskSpace(): Promise<HealthCheckResult> {
   const startTime = Date.now();
-  
+
   try {
     // This is a simplified check - in production, use a proper disk space check
-    const fs = require('fs');
-    const stats = fs.statSync('/tmp');
-    
+    const fs = await import('fs');
+    fs.statSync('/tmp');
+
     return {
       status: 'healthy',
       responseTime: Date.now() - startTime,
-      message: 'Disk space check passed'
+      message: 'Disk space check passed',
     };
   } catch (error) {
     logger.error('Disk space health check failed', { error });
-    
+
     return {
       status: 'unhealthy',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -162,38 +162,38 @@ async function checkDiskSpace(): Promise<HealthCheckResult> {
  */
 async function checkExternalServices(): Promise<HealthCheckResult> {
   const startTime = Date.now();
-  
+
   try {
     // Check if external services are configured
     const requiredServices = [
       process.env.EMAIL_PROVIDER,
       process.env.SMS_PROVIDER,
-      process.env.STORAGE_PROVIDER
+      process.env.STORAGE_PROVIDER,
     ].filter(Boolean);
-    
+
     if (requiredServices.length === 0) {
       return {
         status: 'healthy',
         responseTime: Date.now() - startTime,
-        message: 'No external services configured'
+        message: 'No external services configured',
       };
     }
-    
+
     // Perform basic connectivity checks for configured services
     // This is a placeholder - implement actual service checks
-    
+
     return {
       status: 'healthy',
       responseTime: Date.now() - startTime,
-      message: `External services configured: ${requiredServices.join(', ')}`
+      message: `External services configured: ${requiredServices.join(', ')}`,
     };
   } catch (error) {
     logger.error('External services health check failed', { error });
-    
+
     return {
       status: 'unhealthy',
       responseTime: Date.now() - startTime,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -206,44 +206,42 @@ async function checkExternalServices(): Promise<HealthCheckResult> {
  * Perform comprehensive health check
  */
 async function performHealthCheck(): Promise<HealthStatus> {
-  const startTime = Date.now();
-  
   // Run all health checks in parallel
   const [mongodb, redis, memory, diskSpace, externalServices] = await Promise.all([
     checkMongoDB(),
     checkRedis(),
     checkMemory(),
     checkDiskSpace(),
-    checkExternalServices()
+    checkExternalServices(),
   ]);
-  
+
   // Determine overall status
   const checks = {
     mongodb,
     redis,
     memory,
     diskSpace,
-    externalServices
+    externalServices,
   };
-  
-  const unhealthyChecks = Object.values(checks).filter(check => check.status === 'unhealthy');
-  const degradedChecks = Object.values(checks).filter(check => check.status === 'degraded');
-  
+
+  const unhealthyChecks = Object.values(checks).filter((check) => check.status === 'unhealthy');
+  const degradedChecks = Object.values(checks).filter((check) => check.status === 'degraded');
+
   let overallStatus: 'healthy' | 'degraded' | 'unhealthy' = 'healthy';
-  
+
   if (unhealthyChecks.length > 0) {
     overallStatus = 'unhealthy';
   } else if (degradedChecks.length > 0) {
     overallStatus = 'degraded';
   }
-  
+
   return {
     status: overallStatus,
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     version: process.env.npm_package_version || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
-    checks
+    checks,
   };
 }
 
@@ -258,28 +256,28 @@ async function performHealthCheck(): Promise<HealthStatus> {
 export async function GET(request: NextRequest) {
   try {
     const healthStatus = await performHealthCheck();
-    
+
     // Log health check results
     logger.info('Health check performed', {
       status: healthStatus.status,
       responseTime: Date.now(),
-      checks: Object.keys(healthStatus.checks).length
+      checks: Object.keys(healthStatus.checks).length,
     });
-    
+
     // Return appropriate HTTP status code
-    const statusCode = healthStatus.status === 'healthy' ? 200 : 
-                      healthStatus.status === 'degraded' ? 200 : 503;
-    
+    const statusCode =
+      healthStatus.status === 'healthy' ? 200 : healthStatus.status === 'degraded' ? 200 : 503;
+
     return NextResponse.json(healthStatus, { status: statusCode });
   } catch (error) {
     logger.error('Health check endpoint failed', { error });
-    
+
     return NextResponse.json(
       {
         status: 'unhealthy',
         timestamp: new Date().toISOString(),
         error: 'Health check failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -291,55 +289,54 @@ export async function GET(request: NextRequest) {
  * GET /api/health/:component
  */
 export async function GET_COMPONENT(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { component: string } }
 ) {
   try {
     const { component } = params;
-    
+
     // Map component names to check functions
     const componentChecks: Record<string, () => Promise<HealthCheckResult>> = {
       mongodb: checkMongoDB,
       redis: checkRedis,
       memory: checkMemory,
       disk: checkDiskSpace,
-      external: checkExternalServices
+      external: checkExternalServices,
     };
-    
+
     const checkFunction = componentChecks[component];
-    
+
     if (!checkFunction) {
-      return NextResponse.json(
-        { error: `Unknown component: ${component}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: `Unknown component: ${component}` }, { status: 400 });
     }
-    
+
     const result = await checkFunction();
-    
+
     logger.info('Component health check performed', {
       component,
       status: result.status,
-      responseTime: result.responseTime
+      responseTime: result.responseTime,
     });
-    
+
     const statusCode = result.status === 'healthy' ? 200 : 503;
-    
-    return NextResponse.json({
-      component,
-      ...result
-    }, { status: statusCode });
-    
+
+    return NextResponse.json(
+      {
+        component,
+        ...result,
+      },
+      { status: statusCode }
+    );
   } catch (error) {
-    logger.error('Component health check failed', { 
+    logger.error('Component health check failed', {
       component: params?.component,
-      error 
+      error,
     });
-    
+
     return NextResponse.json(
       {
         error: 'Component health check failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );
@@ -350,10 +347,10 @@ export async function GET_COMPONENT(
  * Liveness probe endpoint (simple check)
  * GET /api/health/live
  */
-export async function GET_LIVE(request: NextRequest) {
+export async function GET_LIVE(_request: NextRequest) {
   return NextResponse.json({
     status: 'alive',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 }
 
@@ -361,33 +358,32 @@ export async function GET_LIVE(request: NextRequest) {
  * Readiness probe endpoint (checks if app is ready to serve traffic)
  * GET /api/health/ready
  */
-export async function GET_READY(request: NextRequest) {
+export async function GET_READY(_request: NextRequest) {
   try {
     // Perform minimal checks for readiness
-    const [mongodb, redis] = await Promise.all([
-      checkMongoDB(),
-      checkRedis()
-    ]);
-    
+    const [mongodb, redis] = await Promise.all([checkMongoDB(), checkRedis()]);
+
     const isReady = mongodb.status === 'healthy' && redis.status === 'healthy';
-    
-    return NextResponse.json({
-      status: isReady ? 'ready' : 'not_ready',
-      timestamp: new Date().toISOString(),
-      checks: {
-        mongodb: mongodb.status,
-        redis: redis.status
-      }
-    }, { status: isReady ? 200 : 503 });
-    
+
+    return NextResponse.json(
+      {
+        status: isReady ? 'ready' : 'not_ready',
+        timestamp: new Date().toISOString(),
+        checks: {
+          mongodb: mongodb.status,
+          redis: redis.status,
+        },
+      },
+      { status: isReady ? 200 : 503 }
+    );
   } catch (error) {
     logger.error('Readiness check failed', { error });
-    
+
     return NextResponse.json(
       {
         status: 'not_ready',
         timestamp: new Date().toISOString(),
-        error: 'Readiness check failed'
+        error: 'Readiness check failed',
       },
       { status: 503 }
     );
